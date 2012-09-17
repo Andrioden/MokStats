@@ -1,0 +1,26 @@
+{% extends "base.html" %} 
+{% load custom_tags %}
+
+{% block title %}Enter{% endblock %} 
+{% block imports %}{% endblock %} 
+
+{% block content %}
+	<!-- Start of first page -->
+	<div data-role="page" id="foo">
+	
+		<div data-role="header">
+			<h1>Kamper</h1>
+		</div>
+		
+		<div data-role="content">
+			<ul data-role="listview" data-theme="d" data-filter="true">
+				{% for match in matches %}
+				    <li><a href="../match/{{match.id}}" >{{ match.date.year }} - {{match.date.month|month_name}} 
+				    	<span class="smallest"></span>
+				    </a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		
+	</div>
+{% endblock %}

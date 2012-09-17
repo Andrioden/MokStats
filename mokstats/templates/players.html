@@ -1,0 +1,32 @@
+{% extends "base.html" %} 
+
+{% block title %}Enter{% endblock %} 
+{% block imports %}{% endblock %} 
+
+{% block content %}
+
+	<!-- Start of first page -->
+	<div data-role="page" id="foo">
+	
+		<div data-role="header">
+			<h1>Spillere</h1>
+			<button data-role="button" data-mini="true" data-inline="true" onclick="sortBy('played')">Most played</button>
+			<button data-role="button" data-mini="true" data-inline="true" onclick="sortBy('won')">Most wins</button>
+			<button data-role="button" data-mini="true" data-inline="true" onclick="sortBy('winp')">Highest win %</button>
+		</div>
+		
+
+		<div data-role="content">
+			<ul id="players" data-role="listview" data-theme="d">
+				{% for p in players %}
+				    <li><a href="../player/{{p.id}}" >
+				    	<span class="ui-li-count"><span class="winp">{{p.win_perc}}</span>%</span>
+				    	{{p.name}}
+				    	<span class="smaller"> - Won <span class="won">{{p.won}}</span> of <span class="played">{{p.played}}</span></span>
+				    </a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		
+	</div>
+{% endblock %}
