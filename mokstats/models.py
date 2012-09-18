@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save
 from django.core.cache import cache
+import datetime
 
 class Player(models.Model):
     name = models.CharField(max_length=20)
@@ -8,7 +9,11 @@ class Player(models.Model):
         return self.name
 
 def get_last_match_date():
-    return Match.objects.all()[Match.objects.count()-1].date
+    match_count = Match.objects.count()
+    if match_count == 0:
+        return datetime.datetime.now()
+    else:
+        return Match.objects.all()[match_count-1].date
 class Match(models.Model):
     date = models.DateField(default=get_last_match_date)
     def get_winners(self):
