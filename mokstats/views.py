@@ -11,10 +11,8 @@ def index(request):
 
 def players(request):
     cached_data = cache.get('players')
-    #cached_data = None
     if cached_data:
         data =  cached_data
-        print 'FOUND IN CACHE'
     else:
         players = []
         for player in Player.objects.all():
@@ -23,10 +21,14 @@ def players(request):
             for match in matches:
                 if player in match.get_winners():
                     won+=1
-            players.append({'id': player.id, 'name': player.name, 'played': matches.count(), 'won': won, 'win_perc': won*100/matches.count()})
+            played_count = matches.count()
+            if played_count == 0:
+                win_percent = 0
+            else:
+                win_percent = won*100/played_count
+            players.append({'id': player.id, 'name': player.name, 'played': played_count, 'won': won, 'win_perc': win_percent})
         data = {'players': players}
         cache.set('players', data)
-        print 'CACHED'
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
 def matches(request):
