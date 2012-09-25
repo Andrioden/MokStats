@@ -52,5 +52,5 @@ class MatchAdmin(admin.ModelAdmin):
     inlines = [ResultInline,]
     class Media:
         js = ("http://code.jquery.com/jquery-1.7.1.min.js",
-              "admin.js",)
+              "admin_match.js",)
 admin.site.register(Match, MatchAdmin)
