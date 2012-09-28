@@ -20,15 +20,17 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
         for form in self.forms:
             try:
                 if form.cleaned_data:
+                    sum_queens = form.cleaned_data['sum_queens']
+                    if not sum_queens%4 == 0:
+                        raise forms.ValidationError('Ulovlig dameverdi, %s er gitt, bare 4 er lovlig' % sum_queens)
                     player_count += 1
                     spades_total += form.cleaned_data['sum_spades']
-                    queens_total += form.cleaned_data['sum_queens']
+                    queens_total += sum_queens
                     pass_total += form.cleaned_data['sum_pass']
                     grand_total += form.cleaned_data['sum_grand']
                     trumph_total += form.cleaned_data['sum_trumph']
             except AttributeError:
                 pass
-        return
         if player_count < 2:
             raise forms.ValidationError('Minst to spillere')
         if not spades_total == 13:

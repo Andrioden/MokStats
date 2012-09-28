@@ -33,7 +33,6 @@ def players(request):
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
 def matches(request):
-    print "oklol"
     places = {}
     for place in Place.objects.all():
         places[place.id] = place.name
@@ -47,23 +46,17 @@ def matches(request):
     return render_to_response('matches.html', data, context_instance=RequestContext(request))
 
 def match(request, mid):
-    print "lol"
-    print mid
     # Get match
     m = Match.objects.select_related('place').get(id=mid)
-    print m
     results = []
     # Get players result for match
-    print "sec"
     for result in PlayerResult.objects.select_related('player').filter(match=m):
-        print "here"
         vals = result.vals()
         if vals['player']['id'] in [p.id for p in m.get_winners()]:
             vals['winner'] = True
         else:
             vals['winner'] = False
         results.append(vals)
-    print "now"
     # Sort matches by game position
     results = sorted(results, key=lambda result: result['total'])
     # Create context data and return http request
