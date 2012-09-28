@@ -28,6 +28,7 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
                     trumph_total += form.cleaned_data['sum_trumph']
             except AttributeError:
                 pass
+        return
         if player_count < 2:
             raise forms.ValidationError('Minst to spillere')
         if not spades_total == 13:

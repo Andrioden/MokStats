@@ -1,23 +1,41 @@
 {% extends "base.html" %} 
-{% load custom_tags %}
 
 {% block title %}Enter{% endblock %} 
 {% block imports %}{% endblock %} 
 
 {% block content %}
+	<script>
+		// Custom search function for the filter bar
+		$(document).ready(function() {
+			$("#matches").listview('option', 'filterCallback', function(text, search){
+				text = text.trim().toLowerCase();
+				console.log(text);
+				console.log(search);
+				var searchArray = search.split(" ");
+				for (var i = 0; i < searchArray.length; i++) {
+					if (text.search(searchArray[i]) == -1) return true;
+				}
+				return false;
+			});
+		});
+
+	</script>
 	<!-- Start of first page -->
 	<div data-role="page" id="foo">
 	
 		<div data-role="header">
+			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
 			<h1>Kamper</h1>
 		</div>
 		
 		<div data-role="content">
-			<ul data-role="listview" data-theme="d" data-filter="true">
+			<ul id="matches" data-role="listview" data-theme="d" data-filter="true" data-filter-placeholder="Søk i kamper...">
 				{% for match in matches %}
-				    <li><a href="../match/{{match.id}}" >{{ match.date.year }} - {{match.date.month|month_name}} 
-				    	<span class="smallest"></span>
-				    </a></li>
+				    <li>
+				    	<a href="../matches/{{match.id}}/" >{{ match.year }}, {{match.month}} | {{match.place}} 
+				    		<span class="smallest"></span>
+				    	</a>
+				    </li>
 				{% endfor %}
 			</ul>
 		</div>

@@ -14,6 +14,7 @@ admin.site.unregister(Group)
 urlpatterns = patterns('',
     (r'^$', 'mokstats.views.index'),
     (r'^players/$', 'mokstats.views.players'),
+    (r'^matches/(?P<mid>\d+)/$', 'mokstats.views.match'),
     (r'^matches/$', 'mokstats.views.matches'),
     (r'^stats/$', 'mokstats.views.stats'),
     (r'^admin/', include(admin.site.urls)),

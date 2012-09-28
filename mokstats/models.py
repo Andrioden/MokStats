@@ -55,12 +55,23 @@ class PlayerResult(models.Model):
     player = models.ForeignKey(Player)
     sum_spades = models.PositiveSmallIntegerField()
     sum_queens = models.PositiveSmallIntegerField()
-    sum_solitare_lines = models.PositiveSmallIntegerField()
-    sum_solitare_cards = models.PositiveSmallIntegerField()
+    sum_solitaire_lines = models.PositiveSmallIntegerField()
+    sum_solitaire_cards = models.PositiveSmallIntegerField()
     sum_pass = models.PositiveSmallIntegerField()
     sum_grand = models.PositiveSmallIntegerField()
     sum_trumph = models.PositiveSmallIntegerField()
+    def vals(self):
+        return {'player': {'id': self.player.id,
+                           'name': self.player.name},
+                'spades': self.sum_spades,
+                'queens': self.sum_queens,
+                'solitaire_lines': self.sum_solitaire_lines,
+                'solitaire_cards': self.sum_solitaire_cards,
+                'pass': self.sum_pass,
+                'grand': self.sum_grand,
+                'trumph': self.sum_trumph,
+                'total': self.total()}
     def total(self):
-        return self.sum_spades+self.sum_queens+self.sum_solitare_lines+self.sum_solitare_cards+self.sum_pass-self.sum_grand-self.sum_trumph
+        return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):
         return ""

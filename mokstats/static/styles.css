@@ -1,2 +1,43 @@
-.smaller {font-size: 80%}
-.smallest {font-size: 60%}
+.smaller {font-size: 80%;}
+.smallest {font-size: 60%;}
+.left {float: left;}
+.center_outer {
+	float: left;
+	position: relative; 
+	left: 50%;
+} /* USE TOGETHER */
+.center_inner {
+    position: relative;
+    left: -50%;
+}
+
+
+/************************* Match.html *************************/
+table#results {
+	width: 100%;
+}
+
+table#results td.center {
+	text-align: center;
+}
+
+table#results td {
+	border: 1px solid gray;
+}
+
+span.icon {
+	width: 18px;
+	height: 18px;
+	background-image: url('./icon_sprite.png');
+	background-repeat: no-repeat;
+	display: block;
+}
+span.icon_star {background-position: -0px -0px;}
+span.icon_spade {background-position: -18px -0px;}
+span.icon_queen {background-position: -36px -0px;}
+span.icon_solit_lines {background-position: -54px -0px;}
+span.icon_solit_cards {background-position: -72px -0px;}
+span.icon_pass {background-position: -90px -0px;}
+span.icon_grand {background-position: -108px -0px;}
+span.icon_trumph {background-position: -126px -0px;}
+span.icon_sum {background-position: -144px -0px;}

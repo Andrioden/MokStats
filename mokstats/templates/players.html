@@ -9,11 +9,13 @@
 	<div data-role="page" id="foo">
 	
 		<div data-role="header">
+			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
 			<h1>Spillere</h1>
 			<div>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('played')">Most played</a>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('won')">Most wins</a>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('winp')">Highest win %</a>
+				<span>Sortering: </span>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('played')">Kamper</a>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('won')">Seire</a>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('winp')">Seiers %</a>
 			</div>
 		</div>
 		

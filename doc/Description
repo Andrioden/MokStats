@@ -9,11 +9,11 @@ UseCases
 	
 UC3: Everyone can view statistics over:
 	- All players
-	- Player with highest winning percentage
-	- Player with most played games
+	|Done| - Player with highest winning percentage
+	|Done| - Player with most played games
 	- Highest/Lowest score for individual round types.
 	
-UC4: Johnny wants to be able to view a fetch a specific match and se the results.
+UC4: Johnny wants to be able to view a specific match and see the results.
 	
 	
 

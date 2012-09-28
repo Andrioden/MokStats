@@ -1,0 +1,57 @@
+{% extends "base.html" %} 
+
+{% block title %}Enter{% endblock %} 
+{% block imports %}{% endblock %} 
+
+{% block content %}
+	<
+	
+	<!-- Start of first page -->
+	<div data-role="page" id="foo">
+	
+		<div data-role="header">
+			<a href="../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<a href="../" data-role="button" data-icon="back">Kamper</a>
+			<h1>{{ year }}, {{month}} | {{place}} </h1>
+		</div>
+		
+	
+		<div data-role="content">
+			<table id="results">
+				<thead>
+					<tr>
+						<th></th>
+						<th title="Spa"><div class="center_outer"><span class="icon icon_spade center_inner"></span></div></th>
+						<th title="Dame"><div class="center_outer"><span class="icon icon_queen center_inner"></span></div></th>
+						<th title="Kabal: streker"><div class="center_outer"><span class="icon icon_solit_lines center_inner"></span></div></th>
+						<th title="Kabal: kort igjen"><div class="center_outer"><span class="icon icon_solit_cards center_inner"></span></div></th>
+						<th title="Pass"><div class="center_outer"><span class="icon icon_pass center_inner"></span></div></th>
+						<th title="Grand"><div class="center_outer"><span class="icon icon_grand center_inner"></span></div></th>
+						<th title="Trumf"><div class="center_outer"><span class="icon icon_trumph center_inner"></span></div></th>
+						<th title="Sum"><div class="center_outer"><span class="icon icon_sum center_inner"></span></div></th>
+					</tr>
+				</thead>
+				<tbody>
+				{% for result in results %}
+					<tr>
+						<td>
+							<span class="left" style="margin-right: 5px;">{{result.player.name}}</span>
+							{% if result.winner %}
+								<span title="Vinner" class="icon icon_star left"></span>
+							{% endif %}
+						</td>
+						<td class="center">{{result.spades}}</td>
+						<td class="center">{{result.queens}}</td>
+						<td class="center">{{result.solitaire_lines}}</td>
+						<td class="center">{{result.solitaire_cards}}</td>
+						<td class="center">{{result.pass}}</td>
+						<td class="center">{{result.grand}}</td>
+						<td class="center">{{result.trumph}}</td>
+						<td class="center"><b>{{result.total}}</b></td>
+					</tr>
+				{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endblock %}
