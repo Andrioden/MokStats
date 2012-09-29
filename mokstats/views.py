@@ -12,7 +12,7 @@ def index(request):
 
 def players(request):
     cached_data = cache.get('players')
-    if False:
+    if cached_data:
         data =  cached_data
     else:
         players = []
