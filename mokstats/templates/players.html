@@ -5,6 +5,17 @@
 
 {% block content %}
 
+	<script>
+		$(document).ready(function() {
+		console.log($("#select_place").parents('.ui-btn'))
+		    $(".ui-selectmenu").append('<a data-role="button" data-mini="true" >Last ny side</a>').trigger( "create" );
+		});
+		
+		function sortBy(type) {
+			$('#players li').tsort("."+type, {order:'desc'})
+		}
+	</script>
+
 	<!-- Start of first page -->
 	<div data-role="page" id="foo">
 	
@@ -32,5 +43,17 @@
 			</ul>
 		</div>
 		
+		<div data-role="footer">
+			<div data-role="fieldcontain" style="margin: 0;">
+				<label for="select_place" class="select">Sted(er):</label>
+				<select name="select_place" id="select_place" data-native-menu="false" data-inline="false" multiple>
+					<option>Steder</option>
+					{% for p in places %}
+						<option value="{{p.name}}" selected>{{p.name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+
 	</div>
 {% endblock %}

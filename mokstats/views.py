@@ -12,7 +12,7 @@ def index(request):
 
 def players(request):
     cached_data = cache.get('players')
-    if cached_data:
+    if False:
         data =  cached_data
     else:
         players = []
@@ -26,9 +26,9 @@ def players(request):
             if played_count == 0:
                 win_percent = 0
             else:
-                win_percent = won*100/played_count
+                win_percent = int(round(won*100.00/played_count))
             players.append({'id': player.id, 'name': player.name, 'played': played_count, 'won': won, 'win_perc': win_percent})
-        data = {'players': players}
+        data = {'players': players, 'places': Place.objects.all()}
         cache.set('players', data)
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
@@ -37,7 +37,7 @@ def matches(request):
     for place in Place.objects.all():
         places[place.id] = place.name
     matches = []
-    for match in Match.objects.all():
+    for match in reversed(Match.objects.all()):
         matches.append({'id': match.id,
                         'year': match.date.year, 
                         'month': _month_name(match.date.month),

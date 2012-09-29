@@ -1,1 +1,6 @@
-- Validate queen field better, needs to check for divided by 4.
+- Show total amount of matches.
+- Allow navigation between result inputs with keyboard arrows. up, down, left, right.
+
+- Filter player stats by place, period,
+- Best in individual types of games.
+- Max/Min for a game.
