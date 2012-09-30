@@ -74,4 +74,4 @@ class PlayerResult(models.Model):
     def total(self):
         return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):
-        return ""
+        return "Results for %s" % self.player.name

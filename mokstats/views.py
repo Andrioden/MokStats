@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
@@ -11,13 +11,32 @@ def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def players(request):
-    cached_data = cache.get('players')
-    if cached_data:
-        data =  cached_data
+    places_strings = request.GET.getlist('places[]', None)
+
+    # Validate that all places exists
+    place_ids = []
+    for place in places_strings:
+        place_ids.append(get_object_or_404(Place, name=place).id)
+    if not place_ids:
+        place_ids = Place.objects.values_list('id', flat=True)
+    place_ids = sorted(place_ids)
+
+    # Make valid cache string
+    cache_string = "players_places"
+    for pid in place_ids:
+        cache_string += str(pid)
+        if not pid == place_ids[-1]: # Not last item
+            cache_string += ","
+            
+    # Get stats data, either from cache or from database
+    cached_players = cache.get(cache_string)
+    if cached_players:
+        players =  cached_players
     else:
         players = []
         for player in Player.objects.all():
-            matches = Match.objects.filter(id__in=PlayerResult.objects.filter(player=player).values_list('match_id', flat=True))
+            player_result_ids = PlayerResult.objects.filter(player=player).values_list('match_id', flat=True)
+            matches = Match.objects.filter(id__in=player_result_ids, place_id__in=place_ids)
             won = 0
             for match in matches:
                 if player in match.get_winners():
@@ -28,8 +47,14 @@ def players(request):
             else:
                 win_percent = int(round(won*100.00/played_count))
             players.append({'id': player.id, 'name': player.name, 'played': played_count, 'won': won, 'win_perc': win_percent})
-        data = {'players': players, 'places': Place.objects.all()}
-        cache.set('players', data)
+        cache.set(cache_string, players)
+        
+    places = []
+    for place in Place.objects.all():
+        p = {'name': place.name}
+        p['selected'] = "selected" if (place.id in place_ids) else ""
+        places.append(p)
+    data = {'players': players, 'places': places}
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
 def matches(request):
