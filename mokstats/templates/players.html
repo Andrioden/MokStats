@@ -5,25 +5,7 @@
 
 {% block content %}
 
-	<script>
-		
-		$(document).on('change', '.select_place', function(){
-			console.log("change");
-			var places = []; 
-			$(this).find(':selected').each(function(){ 
-				places.push($(this).val());
-			});
-			$.mobile.changePage( "./", {
-				type: "get", 
-				data: { places: places, }
-			});	
-		});
-		
-		
-		function sortBy(type) {
-			$('#players li').tsort("."+type, {order:'desc'})
-		}
-	</script>
+
 
 	<!-- Start of first page -->
 	<div data-role="page" id="player_page">
@@ -63,6 +45,22 @@
 				</select>
 			</div>
 		</div>
-
+		
+		<script>
+			$('.select_place').last().bind( "change", function(event, ui) {
+				var places = []; 
+				$(this).find(':selected').each(function(){ 
+					places.push($(this).val());
+				});
+				$.mobile.changePage( "./", {
+					type: "get", 
+					data: { places: places, }
+				});	
+			});
+			
+			function sortBy(type) {
+				$('#players li').tsort("."+type, {order:'desc'})
+			}
+		</script>
 	</div>
 {% endblock %}
