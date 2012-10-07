@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from mokstats.settings import CACHE_DIR
 import os
 import shutil
@@ -48,13 +48,15 @@ class Match(models.Model):
         verbose_name = "Match"
         verbose_name_plural = "Matches" 
         
-def match_post_save(sender, **kwargs):
+def delete_cache(sender, **kwargs):
     for root, dirs, files in os.walk(CACHE_DIR):
         for f in files:
             os.unlink(os.path.join(root, f))
         for d in dirs:
             shutil.rmtree(os.path.join(root, d))
-post_save.connect(match_post_save, sender=Match)
+post_save.connect(delete_cache, sender=Match)
+post_delete.connect(delete_cache, sender=Match)
+
     
 class PlayerResult(models.Model):
     match = models.ForeignKey(Match)
