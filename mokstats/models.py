@@ -1,6 +1,8 @@
 from django.db import models
 from django.db.models.signals import post_save
-from django.core.cache import cache
+from mokstats.settings import CACHE_DIR
+import os
+import shutil
 import datetime
 
 class Player(models.Model):
@@ -47,7 +49,11 @@ class Match(models.Model):
         verbose_name_plural = "Matches" 
         
 def match_post_save(sender, **kwargs):
-    cache.delete('players')
+    for root, dirs, files in os.walk(CACHE_DIR):
+        for f in files:
+            os.unlink(os.path.join(root, f))
+        for d in dirs:
+            shutil.rmtree(os.path.join(root, d))
 post_save.connect(match_post_save, sender=Match)
     
 class PlayerResult(models.Model):

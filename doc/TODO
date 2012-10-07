@@ -1,6 +1,14 @@
+TODO
+----
 - Show total amount of matches.
 - Allow navigation between result inputs with keyboard arrows. up, down, left, right.
+- Alphabetic sorting of players in adding player to match.
 
-- Filter player stats by place, period,
+- Filter player stats by period,
 - Best in individual types of games.
 - Max/Min for a game.
+
+BUGS
+------
+- Delete all cache data when new match is added.
+- Verify that filter works on mobile.
