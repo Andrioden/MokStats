@@ -11,3 +11,4 @@ BUGS
 ------
 - Delete all cache data when new match is added.
 - Verify that filter works on mobile.
+- Dont use document ready in matches for search thingy applying.

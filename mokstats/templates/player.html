@@ -3,9 +3,7 @@
 {% block title %}Enter{% endblock %}
 
 {% block imports %}
-	<link rel="stylesheet" href="{{ STATIC_URL }}jqplot/jquery.jqplot.min.css" />
-	<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
-	<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
+
 {% endblock %} 
 
 {% block content %}
@@ -22,19 +20,16 @@
 	
 		<div data-role="content">
 			<div class="center_outer">
-				{{won}}
-				{{lost}}
-				{{played}}
-				<div id="pie_graph" class="graph center_inner"></div>
+				<div id="{{name}}_pie_graph" class="graph center_inner"></div>
 			</div>
-		</div>
-		
-		<script>
-			$(document).ready(function(){
+			
+			<script>
+			$(document).bind('pagecreate', function(){
+				console.log("HEREYE")
 				var other = {{ played }} - {{ won }} - {{ lost }};
 			    var s1 = [['Vunnet',{{ won }}], ['Annet',other], ['Tapt',{{ lost }}]];
-		         
-			    var plot8 = $.jqplot('pie_graph', [s1], {
+			    console.log($('#{{name}}_pie_graph'))
+			    var plot8 = $.jqplot('{{name}}_pie_graph', [s1], {
 			    	seriesColors: ['#90EE90', '#F0F03F', '#FC7E7E'],
 			        /*grid: {
 			            drawBorder: false,
@@ -58,8 +53,13 @@
 			            },
 			            location: 's'
 			        }
-			    }); 
+			    });
 			});
-		</script>
+
+
+			</script>
+		
+		</div>
+	
 	</div>
 {% endblock %}
