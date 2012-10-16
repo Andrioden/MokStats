@@ -41,3 +41,11 @@ span.icon_pass {background-position: -90px -0px;}
 span.icon_grand {background-position: -108px -0px;}
 span.icon_trumph {background-position: -126px -0px;}
 span.icon_sum {background-position: -144px -0px;}
+
+
+/************************* player.html *************************/
+
+.graph {
+	width: 300px;	
+	text-shadow: none;
+}

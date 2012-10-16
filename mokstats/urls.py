@@ -13,6 +13,7 @@ admin.site.unregister(Group)
 """ LIST OF PATTERNS """
 urlpatterns = patterns('',
     (r'^$', 'mokstats.views.index'),
+    (r'^players/(?P<pid>\d+)/$', 'mokstats.views.player'),
     (r'^players/$', 'mokstats.views.players'),
     (r'^matches/(?P<mid>\d+)/$', 'mokstats.views.match'),
     (r'^matches/$', 'mokstats.views.matches'),

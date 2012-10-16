@@ -57,6 +57,21 @@ def players(request):
     data = {'players': players, 'places': places}
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
+def player(request, pid):
+    player = Player.objects.get(id=pid)
+    player_result_ids = PlayerResult.objects.filter(player=player).values_list('match_id', flat=True)
+    matches = Match.objects.filter(id__in=player_result_ids)
+    won = 0
+    lost = 0
+    for match in matches:
+        position = match.get_position(player.id)
+        if position == 1:
+            won += 1
+        elif position == PlayerResult.objects.filter(match=match).count():
+            lost += 1
+    data = {'name': player.name, 'won': won, 'lost': lost, 'played': matches.count()}
+    return render_to_response('player.html', data, context_instance=RequestContext(request))
+
 def matches(request):
     places = {}
     for place in Place.objects.all():

@@ -7,6 +7,8 @@ import datetime
 
 class Player(models.Model):
     name = models.CharField(max_length=20)
+    class Meta:
+        ordering = ['name']
     def __unicode__(self):
         return self.name
 
@@ -42,6 +44,25 @@ class Match(models.Model):
             elif total == min_sum:
                 winners.append(result.player)
         return winners
+    def get_position(self, pid):
+        players = [{'id': res.player_id, 'total': res.total()} for res in PlayerResult.objects.filter(match=self)]
+        splayers = sorted(players, key=lambda player: player['total'])
+        for i in range(len(splayers)):
+            if splayers[i]['id'] == pid:
+                # Check if winner
+                if splayers[i]['total'] == splayers[0]['total']:
+                    return 1
+                # Check if player got same total as someone ahead in the sorted list
+                for pos in range(i): 
+                    if splayers[i]['total'] == splayers[pos]['total']:
+                        return pos+1
+                # Check if player got same total as someone behind in the sorted list
+                for pos in range(len(splayers)-1, i+1, -1):
+                    if splayers[i]['total'] == splayers[pos]['total']:
+                        return pos+1
+                # Player did not have the same total as someone else
+                return i+1
+        print 'PlayerResult for player %s not found in match %s' % (pid, self.pk)
     def __unicode__(self):
         return "%s - %s (ID: %s)" % (self.date, self.place.name, self.pk)
     class Meta:
