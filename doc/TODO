@@ -1,7 +1,7 @@
 TODO
 ----
 - Show total amount of matches.
-- Alphabetic sorting of players in adding player to match.
+- Allow navigation between result inputs with keyboard arrows. up, down, left, right.
 
 - Filter player stats by period,
 - Best in individual types of games.
@@ -9,8 +9,6 @@ TODO
 
 BUGS
 ------
+- Delete all cache data when new match is added.
 - Verify that filter works on mobile.
-
-IDEA
-----
-- Add a "see when I was at hytta" view.
+- Dont use document ready in matches for search thingy applying.

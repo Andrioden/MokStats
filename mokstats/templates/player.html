@@ -1,0 +1,65 @@
+{% extends "base.html" %} 
+
+{% block title %}Enter{% endblock %}
+
+{% block imports %}
+
+{% endblock %} 
+
+{% block content %}
+	
+	<!-- Start of first page -->
+	<div data-role="page" id="player_page">
+	
+		<div data-role="header">
+			<a href="../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<a href="../" data-role="button" data-icon="back">Spillere</a>
+			<h1>{{ name }}</h1>
+		</div>
+		
+	
+		<div data-role="content">
+			<div class="center_outer">
+				<div id="{{name}}_pie_graph" class="graph center_inner"></div>
+			</div>
+			
+			<script>
+			$(document).bind('pagecreate', function(){
+				console.log("HEREYE")
+				var other = {{ played }} - {{ won }} - {{ lost }};
+			    var s1 = [['Vunnet',{{ won }}], ['Annet',other], ['Tapt',{{ lost }}]];
+			    console.log($('#{{name}}_pie_graph'))
+			    var plot8 = $.jqplot('{{name}}_pie_graph', [s1], {
+			    	seriesColors: ['#90EE90', '#F0F03F', '#FC7E7E'],
+			        /*grid: {
+			            drawBorder: false,
+			            drawGridlines: false,
+			            background: '#EEEEEE',
+			            shadow:false
+			        },*/
+			        axesDefaults: {
+			             
+			        },
+			        seriesDefaults:{
+			            renderer:$.jqplot.PieRenderer,
+			            rendererOptions: {
+			                showDataLabels: true
+			            }
+			        },
+			        legend: {
+			            show: true,
+			            rendererOptions: {
+			                numberRows: 1
+			            },
+			            location: 's'
+			        }
+			    });
+			});
+
+
+			</script>
+		
+		</div>
+	
+	</div>
+{% endblock %}
