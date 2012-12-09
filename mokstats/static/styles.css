@@ -1,6 +1,8 @@
 .smaller {font-size: 80%;}
 .smallest {font-size: 60%;}
 .left {float: left;}
+.text_center {text-align: center;}
+
 .center_outer {
 	float: left;
 	position: relative; 
