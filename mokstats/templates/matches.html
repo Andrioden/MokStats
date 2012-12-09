@@ -9,14 +9,17 @@
 		$(document).ready(function() {
 			$("#matches").listview('option', 'filterCallback', function(text, search){
 				text = text.trim().toLowerCase();
-				console.log(text);
-				console.log(search);
 				var searchArray = search.split(" ");
 				for (var i = 0; i < searchArray.length; i++) {
 					if (text.search(searchArray[i]) == -1) return true;
 				}
 				return false;
 			});
+		    $("#matches").prev().on("keyup",function(){
+		    	console.log("UP")
+		        var visibleCount = $("#matches li:visible").length;
+		        $("#match_count").text(visibleCount);
+		    });
 		});
 
 	</script>
@@ -25,7 +28,7 @@
 	
 		<div data-role="header">
 			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
-			<h1>Kamper</h1>
+			<h1>Kamper (<span id="match_count">{{matches|length}}</span>)</h1>
 		</div>
 		
 		<div data-role="content">

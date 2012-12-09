@@ -107,6 +107,7 @@ def match(request, mid):
     return render_to_response('match.html', match, context_instance=RequestContext(request))
 
 def stats(request):
+    
     return render_to_response('stats.html', {}, context_instance=RequestContext(request))
 
 

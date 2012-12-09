@@ -8,7 +8,7 @@ UseCases
 	The registration requires a selected month.
 	
 UC3: Everyone can view statistics over:
-	- All players
+	|Done| - All players
 	|Done| - Player with highest winning percentage
 	|Done| - Player with most played games
 	- Highest/Lowest score for individual round types.

@@ -1,8 +1,6 @@
 TODO
 ----
-- Show total amount of matches.
 - Allow navigation between result inputs with keyboard arrows. up, down, left, right.
-
 - Filter player stats by period,
 - Best in individual types of games.
 - Max/Min for a game.
