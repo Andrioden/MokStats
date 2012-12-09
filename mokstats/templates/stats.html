@@ -14,6 +14,80 @@
 		
 	
 		<div data-role="content">
+					
+			<div id="match_rounds_stats" data-role="collapsible-set" data-inset="false" data-iconpos="right">
+			
+				<div data-role="collapsible" data-collapsed="false">
+					<h3><span class="icon icon_spade left"></span><span class="text left">Spar</span></h3>
+					<p>
+						<div>Spar er en runde der maximum/minimum kan oppn&arings, derfor representerer best/d&aringrligst hvem som <b>f&oslashrst</b> fikk poengsummen. </div>
+						<ul>
+							<li>Beste runde av <a href="../players/{{spades.best.pid}}/">{{spades.best.pname}}</a> med {{spades.best.sum}} poeng.</li>
+							<li>D&aringrligste runde av <a href="../players/{{spades.worst.pid}}/">{{spades.worst.pname}}</a> med {{spades.worst.sum}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk spar er {{spades.average}} poeng.</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_queen left"></span><span class="text left">Damer</span></h3>
+					<p>
+						<div>Damer er en runde der maximum/minimum kan oppn&arings, derfor representerer best/d&aringrligst hvem som <b>f&oslashrst</b> fikk poengsummen. </div>
+						<ul>
+							<li>Beste runde av <a href="../players/{{queens.best.pid}}/">{{queens.best.pname}}</a> med {{queens.best.sum}} poeng.</li>
+							<li>D&aringrligste runde av <a href="../players/{{queens.worst.pid}}/">{{queens.worst.pname}}</a> med {{queens.worst.sum}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk spar er {{queens.average}} poeng.</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_solit_lines left"></span><span class="text left">Kabal</span></h3>
+					<p>
+						<ul>
+							<li>as</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_pass left"></span><span class="text left">Pass</span></h3>
+					<p>
+						<ul>
+							<li>as</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_grand left"></span><span class="text left">Grand</span></h3>
+					<p>
+						<ul>
+							<li>as</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_trumph left"></span><span class="text left">Trumf</span></h3>
+					<p>
+						<ul>
+							<li>as</li>
+						</ul>
+					</p>
+				</div>
+				
+				<div data-role="collapsible">
+					<h3><span class="icon icon_sum left"></span><span class="text left">Sum</span></h3>
+					<p>
+						<ul>
+							<li>as</li>
+						</ul>
+					</p>
+				</div>
+				
+			</div>
+	
 		</div>
 	</div>
 {% endblock %}

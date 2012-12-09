@@ -51,3 +51,9 @@ span.icon_sum {background-position: -144px -0px;}
 	width: 300px;	
 	text-shadow: none;
 }
+
+/************************* stats.html *************************/
+
+#match_rounds_stats span.text {
+	margin-left: 5px;
+}

@@ -107,8 +107,58 @@ def match(request, mid):
     return render_to_response('match.html', match, context_instance=RequestContext(request))
 
 def stats(request):
+    data = {'spades': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'queens': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'solitaire': {'best-lines': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+                      'worst-lines': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'average-lines': 0,
+                      'best-cards': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst-cards': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'average-cards': 0},
+            'pass': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'grand': {'best': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'trumph': {'best': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'sum': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+                    'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+                    'third': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+                    'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown'},
+                    'average': 0},
+            }
     
-    return render_to_response('stats.html', {}, context_instance=RequestContext(request))
+    """
+    OMG USE DATABASE FUNCTIONS INSTEAD; NOT MANUAL FUCKING CALC
+    """
+    
+    #TODO: Sort players results by date
+    #TODO: Add all other types
+    player_results = PlayerResult.objects.select_related('player').order_by('match__date').all()
+    for result in player_results:
+        for round_type in ['spades', 'queens', 'pass', 'grand', 'trumph']:
+            data[round_type]['average'] += result.sum_spades
+            if result.sum_spades < data[round_type]['best']['sum']:
+                data[round_type]['best']['sum'] = eval('result.sum_'+round_type)
+                data[round_type]['best']['pid'] = result.player_id
+                data[round_type]['best']['pname'] = result.player.name
+            if result.sum_spades > data[round_type]['worst']['sum']:
+                data[round_type]['worst']['sum'] = eval('result.sum_'+round_type)
+                data[round_type]['worst']['pid'] = result.player_id
+                data[round_type]['worst']['pname'] = result.player.name
+    # Calculate averages
+    data['spades']['average'] /= player_results.count()
+    data['queens']['average'] /= player_results.count()
+            
+    
+    return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 
 def _month_name(month_number):
