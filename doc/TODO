@@ -2,8 +2,8 @@ TODO
 ----
 - Allow navigation between result inputs with keyboard arrows. up, down, left, right.
 - Filter player stats by period,
-- Best in individual types of games.
-- Max/Min for a game.
+- Evaluate if i need all the stats calculations in views.py, might reduce calc time by removing unncesseary ones.
+- Filter round stats by number of players in game.
 
 BUGS
 ------

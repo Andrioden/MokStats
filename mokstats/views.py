@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from models import *
 from django.core.cache import cache
-import calendar
+import calendar, copy
 
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
@@ -113,49 +113,81 @@ def stats(request):
             'queens': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'solitaire': {'best-lines': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                      'worst-lines': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average-lines': 0,
-                      'best-cards': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst-cards': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average-cards': 0},
+            'solitaire_lines': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'solitaire_cards': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'average': 0},
+            'solitaire_total': {'worst':{'sum': -1, 'pid': 0, 'pname': 'unknown'}},
             'pass': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                     'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                     'average': 0},
+            'grand': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'grand': {'best': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+            'trumph': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'trumph': {'best': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
-            'sum': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
+            'total': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
                     'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
                     'third': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
                     'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown'},
                     'average': 0},
             }
     
-    """
-    OMG USE DATABASE FUNCTIONS INSTEAD; NOT MANUAL FUCKING CALC
-    """
-    
-    #TODO: Sort players results by date
     #TODO: Add all other types
     player_results = PlayerResult.objects.select_related('player').order_by('match__date').all()
+    round_types = ['spades', 'queens', 'solitaire_lines', 'solitaire_cards', 'pass', 'grand', 'trumph']
     for result in player_results:
-        for round_type in ['spades', 'queens', 'pass', 'grand', 'trumph']:
-            data[round_type]['average'] += result.sum_spades
+        for round_type in round_types:
+            round_sum = eval('result.sum_'+round_type)
+            if round_sum > 0:
+                data[round_type]['average'] += round_sum
             if result.sum_spades < data[round_type]['best']['sum']:
-                data[round_type]['best']['sum'] = eval('result.sum_'+round_type)
+                data[round_type]['best']['sum'] = round_sum
                 data[round_type]['best']['pid'] = result.player_id
                 data[round_type]['best']['pname'] = result.player.name
             if result.sum_spades > data[round_type]['worst']['sum']:
-                data[round_type]['worst']['sum'] = eval('result.sum_'+round_type)
+                data[round_type]['worst']['sum'] = round_sum
                 data[round_type]['worst']['pid'] = result.player_id
                 data[round_type]['worst']['pname'] = result.player.name
+        #Solitaire total
+        soli_total = result.sum_solitaire_lines + result.sum_solitaire_cards
+        if soli_total > data['solitaire_total']['worst']['sum']:
+            data['solitaire_total']['worst']['sum'] = soli_total
+            data['solitaire_total']['worst']['pid'] = result.player_id
+            data['solitaire_total']['worst']['pname'] = result.player.name
+        #Sum
+        total = result.total()
+        data['total']['average'] += total
+        if total < data['total']['best']['sum']:
+            # Copy second best to third best
+            data['total']['third'] = copy.copy(data['total']['second'])
+            # Copy best to second best
+            data['total']['second'] = copy.copy(data['total']['best'])
+            # Rewrite best
+            data['total']['best']['sum'] = total
+            data['total']['best']['pid'] = result.player_id
+            data['total']['best']['pname'] = result.player.name
+        elif total < data['total']['second']['sum']:
+            # Copy second best to third best
+            data['total']['third'] = copy.copy(data['total']['second'])
+            # Rewrite second best
+            data['total']['second']['sum'] = total
+            data['total']['second']['pid'] = result.player_id
+            data['total']['second']['pname'] = result.player.name
+        elif total < data['total']['third']['sum']:
+            data['total']['third']['sum'] = total
+            data['total']['third']['pid'] = result.player_id
+            data['total']['third']['pname'] = result.player.name
+        if total > data['total']['worst']['sum']:
+            data['total']['worst']['sum'] = total
+            data['total']['worst']['pid'] = result.player_id
+            data['total']['worst']['pname'] = result.player.name
     # Calculate averages
-    data['spades']['average'] /= player_results.count()
-    data['queens']['average'] /= player_results.count()
+    for round_type in (round_types+['total']):
+        data[round_type]['average'] /= player_results.count()
             
     
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
