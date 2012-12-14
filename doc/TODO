@@ -1,12 +1,8 @@
 TODO
 ----
-- Allow navigation between result inputs with keyboard arrows. up, down, left, right.
+
 - Filter player stats by period,
 - Evaluate if i need all the stats calculations in views.py, might reduce calc time by removing unncesseary ones.
 - Filter round stats by number of players in game.
-
-BUGS
-------
-- Delete all cache data when new match is added.
+- Allow navigation between result inputs with keyboard arrows. up, down, left, right.
 - Verify that filter works on mobile.
-- Dont use document ready in matches for search thingy applying.

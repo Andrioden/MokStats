@@ -6,7 +6,7 @@
 {% block content %}
 	<script>
 		// Custom search function for the filter bar
-		$(document).ready(function() {
+		$(document).on('pageinit', function() {
 			$("#matches").listview('option', 'filterCallback', function(text, search){
 				text = text.trim().toLowerCase();
 				var searchArray = search.split(" ");
@@ -16,7 +16,6 @@
 				return false;
 			});
 		    $("#matches").prev().on("keyup",function(){
-		    	console.log("UP")
 		        var visibleCount = $("#matches li:visible").length;
 		        $("#match_count").text(visibleCount);
 		    });
