@@ -136,8 +136,11 @@ def stats(request):
                     'average': 0},
             }
     
-    #TODO: Add all other types
     player_results = PlayerResult.objects.select_related('player').order_by('match__date').all()
+    
+    if player_results.count() == 0:
+        return render_to_response('stats.html', data, context_instance=RequestContext(request))
+    
     round_types = ['spades', 'queens', 'solitaire_lines', 'solitaire_cards', 'pass', 'grand', 'trumph']
     for result in player_results:
         for round_type in round_types:

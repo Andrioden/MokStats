@@ -1,0 +1,55 @@
+GUIDES (SOURCE)
+----------------
+Guide 1 and 2 are loosely followed. Guide 3 and 4 are almost fully followed.
+
+1. http://chenliangblog.wordpress.com/2011/01/02/some-pointers-on-setting-up-a-basic-django-project-under-ubuntu-10-04-1/
+2. http://www.lennu.net/2012/05/14/django-deployement-installation-to-ubuntu-12-dot-04-server/
+3. http://blog.iiilx.com/programming/how-to-install-postgres-on-ubuntu-for-django/
+4. http://lassebunk.dk/2011/03/16/linux-dropbox-remote-backup/
+
+
+
+RUN IN SHELL
+----------------
+apt-get update
+apt-get upgrade
+apt-get install apache2 python python-django libapache2-mod-wsgi pip postgresql python-psycopg2
+pip install django
+
+
+
+Apache 2 virtual host file (/etc/apache2/sites-enabled)
+------------------------------------------------
+<VirtualHost *:20000>
+
+        WSGIScriptAlias /mokstats/ /srv/djangoapps/mokstatsapp/mokstats/wsgi.py
+
+        <Directory /srv/djangoapps/mokstatsapp/mokstats>
+                <Files wsgi.py>
+                Order deny,allow
+                Allow from all
+                </Files>
+        </Directory>
+
+        Alias /mokstats/static/ /srv/djangoapps/mokstatsapp/static/
+
+        <Directory /srv/djangoapps/mokstats/mokstatsapp/static>
+        Order deny,allow
+        Allow from all
+        </Directory>
+
+</VirtualHost>
+
+
+
+Wsgi.py
+---------------
+import sys, os
+
+sys.path.insert(0,os.sep.join(os.path.abspath(__file__).split(os.sep)[:-2]))
+
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'mokstats.settings'
+
+import django.core.handlers.wsgi
+application = django.core.handlers.wsgi.WSGIHandler()
