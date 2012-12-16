@@ -1,12 +1,12 @@
 GUIDES (SOURCE)
 ----------------
-Guide 1 and 2 are loosely followed. Guide 3 and 4 are almost fully followed.
+Guide 1 and 2 are loosely followed. Guide 3 and 4 are almost fully followed. 5 are modified and used.
 
 1. http://chenliangblog.wordpress.com/2011/01/02/some-pointers-on-setting-up-a-basic-django-project-under-ubuntu-10-04-1/
 2. http://www.lennu.net/2012/05/14/django-deployement-installation-to-ubuntu-12-dot-04-server/
 3. http://blog.iiilx.com/programming/how-to-install-postgres-on-ubuntu-for-django/
 4. http://lassebunk.dk/2011/03/16/linux-dropbox-remote-backup/
-
+5. http://lassebunk.dk/2011/03/11/linux-backup-script/
 
 
 RUN IN SHELL

@@ -47,7 +47,7 @@
 							<li>Gjennomsnitt av antal strek hvis man fikk en eller flere: {{solitaire_lines.average}} strek.</li>
 							<li>H&oslashyeste antall kort igjen i en runde: <a href="../players/{{solitaire_cards.worst.pid}}/">{{solitaire_cards.worst.pname}}</a> med {{solitaire_cards.worst.sum}} kort.</li>
 							<li>Gjennomsnitt av antal kort hvis man satt igjen med et eller flere: {{solitaire_cards.average}} kort.</li>
-							<li>D&aringrligste runde: <a href="../players/{{solitaire_total.worst.pid}}/">{{solitaire_total.worst.pname}}</a> med {{solitaire_total.worst.sum}} poeng.</li>
+							<li>D&aringrligste <a href="../matches/{{solitaire_total.worst.mid}}/">runde</a>: <a href="../players/{{solitaire_total.worst.pid}}/">{{solitaire_total.worst.pname}}</a> med {{solitaire_total.worst.sum}} poeng.</li>
 						</ul>
 					</p>
 				</div>
@@ -86,10 +86,10 @@
 					<h3><span class="icon icon_sum left"></span><span class="text left">Totalt</span></h3>
 					<p>
 						<ul>
-							<li>Beste kamp: <a href="../players/{{total.best.pid}}/">{{total.best.pname}}</a> med {{total.best.sum}} poeng.</li>
-							<li>Neste beste kamp: <a href="../players/{{total.second.pid}}/">{{total.second.pname}}</a> med {{total.second.sum}} poeng.</li>
-							<li>Tredje beste kamp: <a href="../players/{{total.third.pid}}/">{{total.third.pname}}</a> med {{total.third.sum}} poeng.</li>
-							<li>D&aringrligste kamp: <a href="../players/{{total.worst.pid}}/">{{total.worst.pname}}</a> med {{total.worst.sum}} poeng.</li>
+							<li>Beste <a href="../matches/{{total.best.mid}}/">kamp</a>: <a href="../players/{{total.best.pid}}/">{{total.best.pname}}</a> med {{total.best.sum}} poeng.</li>
+							<li>Neste beste <a href="../matches/{{total.second.mid}}/">kamp</a>: <a href="../players/{{total.second.pid}}/">{{total.second.pname}}</a> med {{total.second.sum}} poeng.</li>
+							<li>Tredje beste <a href="../matches/{{total.third.mid}}/">kamp</a>: <a href="../players/{{total.third.pid}}/">{{total.third.pname}}</a> med {{total.third.sum}} poeng.</li>
+							<li>D&aringrligste <a href="../matches/{{total.worst.mid}}/">kamp</a>: <a href="../players/{{total.worst.pid}}/">{{total.worst.pname}}</a> med {{total.worst.sum}} poeng.</li>
 						</ul>
 					</p>
 				</div>

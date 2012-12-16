@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	// Find the correct table containing players and their results
 	var playersTable = $('table').first();
-	console.log(playersTable)
 	// Update the total sum field on every user key input
 	playersTable.on('keyup', 'input', function(event) {
 		var playerRow = $(this).parents('tr');

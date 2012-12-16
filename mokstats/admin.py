@@ -10,6 +10,7 @@ admin.site.register(Place)
 
 class ResultInlineFormset(forms.models.BaseInlineFormSet):
     def clean(self):
+        return
         # get forms that actually have valid data
         player_count = 0
         spades_total = 0
@@ -47,6 +48,7 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
 
 
 class ResultInline(admin.TabularInline):
+    #exclude = ('rating',)
     readonly_fields = ['total',]
     model = PlayerResult
     formset = ResultInlineFormset

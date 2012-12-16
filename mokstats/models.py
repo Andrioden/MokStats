@@ -44,9 +44,16 @@ class Match(models.Model):
             elif total == min_sum:
                 winners.append(result.player)
         return winners
-    def get_position(self, pid):
+    def get_positions(self):
         players = [{'id': res.player_id, 'total': res.total()} for res in PlayerResult.objects.filter(match=self)]
         splayers = sorted(players, key=lambda player: player['total'])
+        for i in range(len(players)):
+            players[i]['position'] = self.get_position(players[i]['id'], splayers)
+        return players
+    def get_position(self, pid, splayers=None):
+        if not splayers:
+            players = [{'id': res.player_id, 'total': res.total()} for res in PlayerResult.objects.filter(match=self)]
+            splayers = sorted(players, key=lambda player: player['total'])
         for i in range(len(splayers)):
             if splayers[i]['id'] == pid:
                 # Check if winner
@@ -78,6 +85,11 @@ def delete_cache(sender, **kwargs):
 post_save.connect(delete_cache, sender=Match)
 post_delete.connect(delete_cache, sender=Match)
 
+def remove_newer_result_ratings(instance, **kwargs):
+    date = instance.date
+    PlayerResult.objects.filter(match__date__gt=date).update(rating=None)
+post_save.connect(remove_newer_result_ratings, sender=Match)
+post_delete.connect(remove_newer_result_ratings, sender=Match)
     
 class PlayerResult(models.Model):
     match = models.ForeignKey(Match)
@@ -89,6 +101,7 @@ class PlayerResult(models.Model):
     sum_pass = models.PositiveSmallIntegerField()
     sum_grand = models.PositiveSmallIntegerField()
     sum_trumph = models.PositiveSmallIntegerField()
+    rating = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     def vals(self):
         return {'player': {'id': self.player.id,
                            'name': self.player.name},
@@ -104,3 +117,5 @@ class PlayerResult(models.Model):
         return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):
         return "Results for %s" % self.player.name
+    class Meta:
+        unique_together = ("match", "player")

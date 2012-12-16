@@ -1,6 +1,11 @@
 import unittest
 from models import *
 import datetime
+
+
+
+
+
 class MatchPositionTestCase(unittest.TestCase):
     def setUp(self):
         place = Place.objects.create(name="Lolplace")

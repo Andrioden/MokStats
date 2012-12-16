@@ -4,6 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.template import RequestContext
 from models import *
+from rating import RatingCalculator, RatingResult, START_RATING
 from django.core.cache import cache
 import calendar, copy
 
@@ -119,7 +120,7 @@ def stats(request):
             'solitaire_cards': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'solitaire_total': {'worst':{'sum': -1, 'pid': 0, 'pname': 'unknown'}},
+            'solitaire_total': {'worst':{'sum': -1, 'pid': 0, 'pname': 'unknown', 'mid': 0}},
             'pass': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
                      'average': 0},
@@ -129,14 +130,14 @@ def stats(request):
             'trumph': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'total': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                    'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                    'third': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                    'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown'},
+            'total': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
+                    'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
+                    'third': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
+                    'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
                     'average': 0},
             }
     
-    player_results = PlayerResult.objects.select_related('player').order_by('match__date').all()
+    player_results = PlayerResult.objects.select_related('player').order_by('match__date')
     
     if player_results.count() == 0:
         return render_to_response('stats.html', data, context_instance=RequestContext(request))
@@ -161,6 +162,7 @@ def stats(request):
             data['solitaire_total']['worst']['sum'] = soli_total
             data['solitaire_total']['worst']['pid'] = result.player_id
             data['solitaire_total']['worst']['pname'] = result.player.name
+            data['solitaire_total']['worst']['mid'] =result.match_id
         #Sum
         total = result.total()
         data['total']['average'] += total
@@ -173,6 +175,7 @@ def stats(request):
             data['total']['best']['sum'] = total
             data['total']['best']['pid'] = result.player_id
             data['total']['best']['pname'] = result.player.name
+            data['total']['best']['mid'] = result.match_id
         elif total < data['total']['second']['sum']:
             # Copy second best to third best
             data['total']['third'] = copy.copy(data['total']['second'])
@@ -180,14 +183,17 @@ def stats(request):
             data['total']['second']['sum'] = total
             data['total']['second']['pid'] = result.player_id
             data['total']['second']['pname'] = result.player.name
+            data['total']['second']['mid'] = result.match_id
         elif total < data['total']['third']['sum']:
             data['total']['third']['sum'] = total
             data['total']['third']['pid'] = result.player_id
             data['total']['third']['pname'] = result.player.name
+            data['total']['third']['mid'] = result.match_id
         if total > data['total']['worst']['sum']:
             data['total']['worst']['sum'] = total
             data['total']['worst']['pid'] = result.player_id
             data['total']['worst']['pname'] = result.player.name
+            data['total']['worst']['mid'] = result.match_id
     # Calculate averages
     for round_type in (round_types+['total']):
         data[round_type]['average'] /= player_results.count()
@@ -198,3 +204,28 @@ def stats(request):
 
 def _month_name(month_number):
     return calendar.month_name[month_number]
+
+def _update_ratings():
+    calc = RatingCalculator()
+    players = {}
+    match_ids = list(set(PlayerResult.objects.filter(rating=None).values_list('match_id', flat=True)))
+    for match in Match.objects.filter(id__in=match_ids).order_by('date', 'id'):
+        player_positions = match.get_positions()
+        rating_results = []
+        for p in player_positions:
+            # Fetch the current rating value
+            if not players.get(p['id'], False):
+                rated_results = PlayerResult.objects.filter(player=p['id']).exclude(rating=None).order_by('-match__date', '-match__id')
+                if not rated_results.exists():
+                    rating = START_RATING
+                else:
+                    rating = rated_results[0].rating
+            else:
+                rating = players[p['id']]
+            rating_results.append(RatingResult(p['id'], rating, p['position']))
+        # Calculate new ratings
+        new_player_ratings = calc.new_ratings(rating_results)
+        # Update
+        for p in new_player_ratings:
+            players[p.dbid] = p.rating
+            PlayerResult.objects.filter(player=p.dbid).filter(match=match).update(rating=p.rating)
