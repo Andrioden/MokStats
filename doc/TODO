@@ -11,3 +11,4 @@ TODO
 - Player stats calc can improves, instead of doing player by player, do match by match.
 - Add full rating graph
 - Validate: At least one player must have 0 cards as stats for solitaire.
+- Make description page for rating calc.
