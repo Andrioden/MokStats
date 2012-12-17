@@ -68,7 +68,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = PROJECT_DIR+'static/'
+STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -137,7 +137,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'mokstats'
 )
-"""
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -146,22 +146,22 @@ LOGGING = {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
         },
         'simple': {
-            'format': '%(levelname)s %(message)s'
+            'format': '%(asctime)s %(levelname)s %(message)s'
         },
     },
     'handlers': {
         'file': {                # define and name a handler
             'level': 'DEBUG',
             'class': 'logging.FileHandler', # set the logging class to log to a file
-            'formatter': 'verbose',         # define the formatter to associate
+            'formatter': 'simple',         # define the formatter to associate
             'filename': PROJECT_DIR+"logs/debuglog" # log file
         },
     },
     'loggers': {
         'file_logger': {              # define a logger - give it a name
             'handlers': ['file'], # specify what handler to associate
-            'level': 'INFO',                 # specify the logging level
+            'level': 'DEBUG',                 # specify the logging level
             'propagate': True,
         },      
     }       
-}"""
+}

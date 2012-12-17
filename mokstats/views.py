@@ -1,4 +1,4 @@
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
@@ -7,9 +7,17 @@ from models import *
 from rating import RatingCalculator, RatingResult, START_RATING
 from django.core.cache import cache
 import calendar, copy
+import logging
+logger = logging.getLogger("file_logger")
 
 def index(request):
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    logging.DEBUG("Accessing "+request.path)
+    logging.DEBUG("Last is "+request.path[-1])
+    if not request.path[-1] == "/":
+        logging.DEBUG("IN HERE")
+        return redirect(request.path+"/")
+    else:
+        return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def players(request):
     places_strings = request.GET.getlist('places[]', None)
