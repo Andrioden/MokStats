@@ -229,6 +229,8 @@ def stats(request):
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def rating(request):
+    if PlayerResult.objects.count() == 0:
+        return render_to_response('rating.html', {}, context_instance=RequestContext(request))
     max_rating = PlayerResult.objects.aggregate(Max('rating'))['rating__max']
     max_obj = PlayerResult.objects.select_related('player__name').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
     min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
