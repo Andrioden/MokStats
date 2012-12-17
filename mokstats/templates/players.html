@@ -18,6 +18,7 @@
 				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('played')">Kamper</a>
 				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('won')">Seire</a>
 				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('winp')">Seiers %</a>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('rating')">Rating</a>
 			</div>
 		</div>
 		
@@ -26,9 +27,11 @@
 			<ul id="players" data-role="listview" data-theme="d">
 				{% for p in players %}
 				    <li><a href="../players/{{p.id}}/" >
-				    	<span class="ui-li-count"><span class="winp">{{p.win_perc}}</span>%</span>
+				    	<span class="ui-li-count"><span class="rating">{{p.rating}}</span></span>
 				    	{{p.name}}
-				    	<span class="smaller"> - Won <span class="won">{{p.won}}</span> of <span class="played">{{p.played}}</span></span>
+				    	<span class="smaller"> - Won <span class="won">{{p.won}}
+				    	</span> of <span class="played">{{p.played}} </span>
+				    	(<span class="winp">{{p.win_perc}}</span>%)</span>
 				    </a></li>
 				{% endfor %}
 			</ul>
@@ -61,6 +64,7 @@
 			function sortBy(type) {
 				$('#players li').tsort("."+type, {order:'desc'})
 			}
+			sortBy("rating");
 		</script>
 	</div>
 {% endblock %}

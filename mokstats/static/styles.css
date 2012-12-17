@@ -27,6 +27,16 @@ table#results td {
 	border: 1px solid gray;
 }
 
+table#results td.dif {
+	border: none;
+	width: 5px;
+	font-size: 75%;
+	text-align: right;
+}
+
+table#results td.positive {color: green; font-weight: bold;}
+table#results td.negative {color: red;}
+
 span.icon {
 	width: 18px;
 	height: 18px;
@@ -48,7 +58,7 @@ span.icon_sum {background-position: -144px -0px;}
 /************************* player.html *************************/
 
 .graph {
-	width: 300px;	
+	width: 400px;	
 	text-shadow: none;
 }
 

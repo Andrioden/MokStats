@@ -28,6 +28,7 @@
 						<th title="Grand"><div class="center_outer"><span class="icon icon_grand center_inner"></span></div></th>
 						<th title="Trumf"><div class="center_outer"><span class="icon icon_trumph center_inner"></span></div></th>
 						<th title="Sum"><div class="center_outer"><span class="icon icon_sum center_inner"></span></div></th>
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -47,6 +48,13 @@
 						<td class="center">{{result.grand}}</td>
 						<td class="center">{{result.trumph}}</td>
 						<td class="center"><b>{{result.total}}</b></td>
+						{% if result.rating_change > 0 %}
+							<td class="center dif positive">+{{result.rating_change}}</td>
+						{% elif result.rating_change < 0 %}
+							<td class="center dif negative">{{result.rating_change}}</td>
+						{% else %}
+							<td class="center dif">{{result.rating_change}}</td>
+						{% endif %}
 					</tr>
 				{% endfor %}
 				</tbody>

@@ -7,3 +7,5 @@ TODO
 - Allow navigation between result inputs with keyboard arrows. up, down, left, right.
 - Verify that filter works on mobile.
 - Use a ripple effect PlayerResult rating resetter, instead of a RESET ALL NEWER RESULTS megareset.
+- Fornorske ui
+- Player stats calc can improves, instead of doing player by player, do match by match.

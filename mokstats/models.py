@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_save, post_delete
 from mokstats.settings import CACHE_DIR
+from rating import START_RATING
 import os
 import shutil
 import datetime
@@ -102,7 +103,16 @@ class PlayerResult(models.Model):
     sum_grand = models.PositiveSmallIntegerField()
     sum_trumph = models.PositiveSmallIntegerField()
     rating = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    def rating_dif(self):
+        if not self.rating:
+            return "?"
+        older_results = PlayerResult.objects.filter(player=self.player).filter(match__date__lt=self.match.date)
+        if older_results.exists(): 
+            return self.rating - older_results.order_by('-match__date', '-pk')[0].rating
+        else:
+            return self.rating - START_RATING
     def vals(self):
+        
         return {'player': {'id': self.player.id,
                            'name': self.player.name},
                 'spades': self.sum_spades,
@@ -112,7 +122,8 @@ class PlayerResult(models.Model):
                 'pass': self.sum_pass,
                 'grand': self.sum_grand,
                 'trumph': self.sum_trumph,
-                'total': self.total()}
+                'total': self.total(),
+                'rating_change': self.rating_dif()}
     def total(self):
         return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):

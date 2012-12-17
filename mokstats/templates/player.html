@@ -3,7 +3,7 @@
 {% block title %}Enter{% endblock %}
 
 {% block imports %}
-
+	
 {% endblock %} 
 
 {% block content %}
@@ -23,6 +23,7 @@
 		<div data-role="content">
 			<div class="center_outer">
 				<div id="{{name}}_pie_graph" class="graph center_inner"></div>
+				<div id="{{name}}_rating_graph" class="graph center_inner"></div>
 			</div>
 		
 		</div>
@@ -35,7 +36,8 @@
 				* at the correct time.
 				*/
 				var interval = setInterval(function(){
-					initPlayerGraph("{{ name }}", {{ played }}, {{ won }}, {{ lost }});
+					initResultGraph("{{ name }}", {{ played }}, {{ won }}, {{ lost }});
+					initRatingGraph("{{ name }}", {{ ratings|safe }});
 					if ($("#{{ name }}_pie_graph").find('canvas').length > 0) {
 						window.clearInterval(interval);		
 					}
@@ -43,7 +45,7 @@
 				
 			});
 			
-			function initPlayerGraph(name, played, won, lost) {
+			function initResultGraph(name, played, won, lost) {
 				var other = played - won - lost;
 			    var s1 = [
 			    	['Vunnet ('+won+')', won], 
@@ -52,6 +54,7 @@
 			    ];
 
 			    var plot = $.jqplot(name+'_pie_graph', [s1], {
+			    	title:'Resultater',
 			    	seriesColors: ['#90EE90', '#F0F03F', '#FC7E7E'],
 			        /*grid: {
 			            drawBorder: false,
@@ -76,9 +79,43 @@
 			            location: 's'
 			        }
 			    });
+				
+			    
+			}
+			
+			function initRatingGraph(name, ratings) {
+				var plot1 = $.jqplot(name+'_rating_graph', [ratings], {
+					title:'Rating utvikling',
+					axes:{
+						xaxis:{
+							renderer:$.jqplot.DateAxisRenderer,
+							tickOptions:{
+								formatString:'%b&nbsp;%#d'
+							}
+						},
+						yaxis:{
+							tickOptions:{
+								formatString:'%.0f'
+							}
+						}
+					},
+					highlighter: {
+						show: true,
+						sizeAdjust: 7.5
+					},
+					cursor: {
+				        show: true,
+				        zoom:true,
+					}
+				});
 			}
 		</script>
-	
+		
+		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
 	</div>
 
 

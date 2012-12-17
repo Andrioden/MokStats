@@ -3,6 +3,7 @@ from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.template import RequestContext
+from django.db.models import Max, Min
 from models import *
 from rating import RatingCalculator, RatingResult, START_RATING
 from django.core.cache import cache
@@ -11,6 +12,7 @@ import logging
 logger = logging.getLogger("file_logger")
 
 def index(request):
+    print request
     logger.debug("Accessing %s" % request.path)
     logger.debug("Last is %s" % request.path[-1])
     if not request.path[-1] == "/":
@@ -42,10 +44,13 @@ def players(request):
     if cached_players:
         players =  cached_players
     else:
+        _update_ratings()
         players = []
         for player in Player.objects.all():
-            player_result_ids = PlayerResult.objects.filter(player=player).values_list('match_id', flat=True)
+            player_results = PlayerResult.objects.filter(player=player)
+            player_result_ids = player_results.values_list('match_id', flat=True)
             matches = Match.objects.filter(id__in=player_result_ids, place_id__in=place_ids)
+            # Played - Win Ratio
             won = 0
             for match in matches:
                 if player in match.get_winners():
@@ -55,7 +60,14 @@ def players(request):
                 win_percent = 0
             else:
                 win_percent = int(round(won*100.00/played_count))
-            players.append({'id': player.id, 'name': player.name, 'played': played_count, 'won': won, 'win_perc': win_percent})
+            # Get last rating
+            if player_results.exists():
+                rating = int(player_results.order_by('-match__date', '-match__id')[0].rating)
+            else:
+                rating = "-"
+            players.append({'id': player.id, 'name': player.name,
+                            'played': played_count, 'won': won,
+                            'win_perc': win_percent, 'rating': rating})
         cache.set(cache_string, players)
         
     places = []
@@ -67,9 +79,12 @@ def players(request):
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
 def player(request, pid):
+    _update_ratings()
     player = Player.objects.get(id=pid)
-    player_result_ids = PlayerResult.objects.filter(player=player).values_list('match_id', flat=True)
+    player_results = PlayerResult.objects.filter(player=player)
+    player_result_ids = player_results.values_list('match_id', flat=True)
     matches = Match.objects.filter(id__in=player_result_ids)
+    # Won - Loss - Other counts
     won = 0
     lost = 0
     for match in matches:
@@ -78,7 +93,12 @@ def player(request, pid):
             won += 1
         elif position == PlayerResult.objects.filter(match=match).count():
             lost += 1
-    data = {'name': player.name, 'won': won, 'lost': lost, 'played': matches.count()}
+    # Ratings
+    ratings = []
+    for result in player_results.select_related('match__date'):
+        ratings.append([result.match.date.isoformat(), int(result.rating)])
+    data = {'name': player.name, 'won': won, 'lost': lost, 'played': matches.count(),
+            'ratings': ratings}
     return render_to_response('player.html', data, context_instance=RequestContext(request))
 
 def matches(request):
@@ -95,11 +115,12 @@ def matches(request):
     return render_to_response('matches.html', data, context_instance=RequestContext(request))
 
 def match(request, mid):
+    _update_ratings()
     # Get match
     m = Match.objects.select_related('place').get(id=mid)
     results = []
     # Get players result for match
-    for result in PlayerResult.objects.select_related('player').filter(match=m):
+    for result in PlayerResult.objects.select_related('player', 'match__date').filter(match=m):
         vals = result.vals()
         if vals['player']['id'] in [p.id for p in m.get_winners()]:
             vals['winner'] = True
@@ -205,10 +226,19 @@ def stats(request):
     # Calculate averages
     for round_type in (round_types+['total']):
         data[round_type]['average'] /= player_results.count()
-            
-    
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
+def rating(request):
+    max_rating = PlayerResult.objects.aggregate(Max('rating'))['rating__max']
+    max_obj = PlayerResult.objects.select_related('player__name').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
+    min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
+    min_obj = PlayerResult.objects.select_related('player__name').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
+    data = {'max': {'pid': max_obj.player_id, 'pname': max_obj.player.name, 
+                    'mid': max_obj.match_id, 'rating': max_obj.rating},
+            'min': {'pid': min_obj.player_id, 'pname': min_obj.player.name, 
+                    'mid': min_obj.match_id, 'rating': min_obj.rating},
+            }
+    return render_to_response('rating.html', data, context_instance=RequestContext(request))
 
 def _month_name(month_number):
     return calendar.month_name[month_number]

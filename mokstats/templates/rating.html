@@ -1,0 +1,26 @@
+{% extends "base.html" %} 
+
+{% block title %}Rating{% endblock %} 
+{% block imports %}{% endblock %} 
+
+{% block content %}
+	<!-- Start of first page -->
+	<div data-role="page" id="rating_page">
+	
+		<div data-role="header">
+			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Rating</h1>
+		</div>
+		
+	
+		<div data-role="content">
+			<p>Rating er en verdi som angir ferdighet på gitt tidspunkt og blir regnet ut på samme måte som <a href="http://en.wikipedia.org/wiki/Elo_rating_system">Elo rating</a>.</p>
+			<div>
+				<ul>
+					<li>Høyeste rating oppnådd er {{max.rating}} og ble først oppnådd av <a href="../players/{{max.pid}}/">{{max.pname}}</a> i <a href="../matches/{{max.mid}}/">denne</a> kampen.</li>
+					<li>Laveste rating oppnådd er {{min.rating}} og ble først oppnådd av <a href="../players/{{min.pid}}/">{{min.pname}}</a> i <a href="../matches/{{min.mid}}/">denne</a> kampen.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+{% endblock %}
