@@ -97,8 +97,8 @@ def player(request, pid):
     ratings = []
     for result in player_results.select_related('match__date'):
         ratings.append([result.match.date.isoformat(), int(result.rating)])
-    data = {'name': player.name, 'won': won, 'lost': lost, 'played': matches.count(),
-            'ratings': ratings}
+    data = {'name': player.name, 'id': player.id, 'won': won, 'lost': lost, 
+            'played': matches.count(), 'ratings': ratings}
     return render_to_response('player.html', data, context_instance=RequestContext(request))
 
 def matches(request):

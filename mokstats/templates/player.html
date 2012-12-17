@@ -11,7 +11,7 @@
 
 	
 	<!-- Start of first page -->
-	<div data-role="page" id="player_page_{{name}}">
+	<div data-role="page" id="player_page_{{id}}">
 	
 		<div data-role="header">
 			<a href="../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
@@ -22,30 +22,30 @@
 	
 		<div data-role="content">
 			<div class="center_outer">
-				<div id="{{name}}_pie_graph" class="graph center_inner"></div>
-				<div id="{{name}}_rating_graph" class="graph center_inner"></div>
+				<div id="{{id}}_pie_graph" class="graph center_inner"></div>
+				<div id="{{id}}_rating_graph" class="graph center_inner"></div>
 			</div>
 		
 		</div>
 		
 		<script>
-			$("#player_page_{{name}}").on('pageinit', function(){
+			$("#player_page_{{id}}").on('pageinit', function(){
 				/*
 				* This method is a semi-hax that attempts to init the graph in
 				* an interval until it succeds. I was unable to trigger the method
 				* at the correct time.
 				*/
 				var interval = setInterval(function(){
-					initResultGraph("{{ name }}", {{ played }}, {{ won }}, {{ lost }});
-					initRatingGraph("{{ name }}", {{ ratings|safe }});
-					if ($("#{{ name }}_pie_graph").find('canvas').length > 0) {
+					initResultGraph({{ id }}, {{ played }}, {{ won }}, {{ lost }});
+					initRatingGraph({{ id }}, {{ ratings|safe }});
+					if ($("#{{ id }}_pie_graph").find('canvas').length > 0) {
 						window.clearInterval(interval);		
 					}
 				},100);
 				
 			});
 			
-			function initResultGraph(name, played, won, lost) {
+			function initResultGraph(id, played, won, lost) {
 				var other = played - won - lost;
 			    var s1 = [
 			    	['Vunnet ('+won+')', won], 
@@ -53,7 +53,7 @@
 			    	['Tapt ('+lost+')', lost],
 			    ];
 
-			    var plot = $.jqplot(name+'_pie_graph', [s1], {
+			    var plot = $.jqplot(id+'_pie_graph', [s1], {
 			    	title:'Resultater',
 			    	seriesColors: ['#90EE90', '#F0F03F', '#FC7E7E'],
 			        /*grid: {
@@ -83,8 +83,8 @@
 			    
 			}
 			
-			function initRatingGraph(name, ratings) {
-				var plot1 = $.jqplot(name+'_rating_graph', [ratings], {
+			function initRatingGraph(id, ratings) {
+				var plot1 = $.jqplot(id+'_rating_graph', [ratings], {
 					title:'Rating utvikling',
 					axes:{
 						xaxis:{
