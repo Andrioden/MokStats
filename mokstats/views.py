@@ -138,26 +138,26 @@ def match(request, mid):
 
 def stats(request):
     data = {'spades': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
             'queens': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
             'solitaire_lines': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
+                                'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                                'average': 0},
             'solitaire_cards': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
+                                'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                                'average': 0},
             'solitaire_total': {'worst':{'sum': -1, 'pid': 0, 'pname': 'unknown', 'mid': 0}},
             'pass': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                     'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+                     'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
                      'average': 0},
-            'grand': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+            'grand': {'best': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
-            'trumph': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -100, 'pid': 0, 'pname': 'unknown'},
+            'trumph': {'best': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
+                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
                       'average': 0},
             'total': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
                     'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
@@ -165,6 +165,24 @@ def stats(request):
                     'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
                     'average': 0},
             }
+    
+    def compare(result, round_sum, round_type, stats_type, greater=True):
+        """ Define a reusable method that compares round data with best/worst data
+        @param result:     The PlayerResult object
+        @param round_sum:  The sum to be compared with current sum
+        @param round_type: Typical spades, queens, etc
+        @param stats_type: Either best, or worst string
+        @param greater:    If the sum has to be greater/lesser than current sum to be set.
+        
+        """
+        current_sum = data[round_type][stats_type]['sum']
+        #print "current %s, vs round %s, round %s, stats %s, greater %s" % (current_sum, round_sum, round_type, stats_type, greater)
+        if (greater and (round_sum > current_sum)) or (not greater and (round_sum < current_sum)):
+            data[round_type][stats_type]['sum'] = round_sum
+            data[round_type][stats_type]['pid'] = result.player_id
+            data[round_type][stats_type]['pname'] = result.player.name
+            if data[round_type][stats_type].has_key("mid"):
+                data[round_type][stats_type]['mid'] = result.match_id
     
     player_results = PlayerResult.objects.select_related('player').order_by('match__date')
     
@@ -174,24 +192,21 @@ def stats(request):
     round_types = ['spades', 'queens', 'solitaire_lines', 'solitaire_cards', 'pass', 'grand', 'trumph']
     for result in player_results:
         for round_type in round_types:
+            # Check if the game type is of the reversed type
+            if round_type in ['grand', 'trumph']:
+                best_worst = [True, False]
+            else:
+                best_worst = [False, True]
+            # Get sum and average
             round_sum = eval('result.sum_'+round_type)
             if round_sum > 0:
                 data[round_type]['average'] += round_sum
-            if result.sum_spades < data[round_type]['best']['sum']:
-                data[round_type]['best']['sum'] = round_sum
-                data[round_type]['best']['pid'] = result.player_id
-                data[round_type]['best']['pname'] = result.player.name
-            if result.sum_spades > data[round_type]['worst']['sum']:
-                data[round_type]['worst']['sum'] = round_sum
-                data[round_type]['worst']['pid'] = result.player_id
-                data[round_type]['worst']['pname'] = result.player.name
+            # Compare and update data
+            compare(result, round_sum, round_type, "best", best_worst[0])
+            compare(result, round_sum, round_type, "worst", best_worst[1])
         #Solitaire total
         soli_total = result.sum_solitaire_lines + result.sum_solitaire_cards
-        if soli_total > data['solitaire_total']['worst']['sum']:
-            data['solitaire_total']['worst']['sum'] = soli_total
-            data['solitaire_total']['worst']['pid'] = result.player_id
-            data['solitaire_total']['worst']['pname'] = result.player.name
-            data['solitaire_total']['worst']['mid'] =result.match_id
+        compare(result, soli_total, "solitaire_total", "worst", True)
         #Sum
         total = result.total()
         data['total']['average'] += total

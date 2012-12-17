@@ -17,13 +17,13 @@
 					
 			<div id="match_rounds_stats" data-role="collapsible-set" data-inset="false" data-iconpos="right">
 			
-				<div data-role="collapsible" data-collapsed="false">
+				<div data-role="collapsible">
 					<h3><span class="icon icon_spade left"></span><span class="text left">Spar</span></h3>
 					<p>
 						<div>Spar er en runde der maximum/minimum kan oppnås, derfor representerer best/dårligst hvem som <b>først</b> fikk poengsummen. </div>
 						<ul>
 							<li>Dårligste runde: <a href="../players/{{spades.worst.pid}}/">{{spades.worst.pname}}</a> med {{spades.worst.sum}} poeng.</li>
-							<li>Gjennomsnitt hvis man fikk spar: {{spades.average}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk spa(r): {{spades.average}} poeng.</li>
 						</ul>
 					</p>
 				</div>
@@ -34,7 +34,7 @@
 						<div>Damer er en runde der maximum/minimum kan oppnås, derfor representerer best/dårligst hvem som <b>først</b> fikk poengsummen. </div>
 						<ul>
 							<li>Dårligste runde: <a href="../players/{{queens.worst.pid}}/">{{queens.worst.pname}}</a> med {{queens.worst.sum}} poeng.</li>
-							<li>Gjennomsnitt hvis man fikk spar: {{queens.average}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk dame(r): {{queens.average}} poeng.</li>
 						</ul>
 					</p>
 				</div>
@@ -57,7 +57,7 @@
 					<p>
 						<div>Pass er en runde der maximum/minimum kan oppnås, derfor representerer best/dårligst hvem som <b>først</b> fikk poengsummen. </div>
 						<ul>
-							<li>Dårligste runde: <a href="../players/{{pass.worst.pid}}/">{{pass.worst.pname}}</a> med {{pass.worst.sum}} poeng.</li>
+							<li>Dårligste runde: <a href="../players/{{pass.worst.pid}}/">{{pass.worst.pname}}</a> med {{pass.worst.sum}} stikk.</li>
 						</ul>
 					</p>
 				</div>
@@ -67,7 +67,7 @@
 					<p>
 						<div>Grand er en runde der maximum/minimum kan oppnås, derfor representerer best/dårligst hvem som <b>først</b> fikk poengsummen. </div>
 						<ul>
-							<li>Beste runde: <a href="../players/{{grand.best.pid}}/">{{grand.best.pname}}</a> med -{{grand.best.sum}} poeng.</li>
+							<li>Beste runde: <a href="../players/{{grand.best.pid}}/">{{grand.best.pname}}</a> med {{grand.best.sum}} stikk.</li>
 						</ul>
 					</p>
 				</div>
@@ -77,12 +77,12 @@
 					<p>
 						<div>Trumf er en runde der maximum/minimum kan oppnås, derfor representerer best/dårligst hvem som <b>først</b> fikk poengsummen. </div>
 						<ul>
-							<li>Beste runde: <a href="../players/{{trumph.best.pid}}/">{{trumph.best.pname}}</a> med -{{trumph.best.sum}} poeng.</li>
+							<li>Beste runde: <a href="../players/{{trumph.best.pid}}/">{{trumph.best.pname}}</a> med {{trumph.best.sum}} stikk.</li>
 						</ul>
 					</p>
 				</div>
 				
-				<div data-role="collapsible">
+				<div data-role="collapsible" data-collapsed="false">
 					<h3><span class="icon icon_sum left"></span><span class="text left">Totalt</span></h3>
 					<p>
 						<ul>
@@ -90,6 +90,7 @@
 							<li>Neste beste <a href="../matches/{{total.second.mid}}/">kamp</a>: <a href="../players/{{total.second.pid}}/">{{total.second.pname}}</a> med {{total.second.sum}} poeng.</li>
 							<li>Tredje beste <a href="../matches/{{total.third.mid}}/">kamp</a>: <a href="../players/{{total.third.pid}}/">{{total.third.pname}}</a> med {{total.third.sum}} poeng.</li>
 							<li>Dårligste <a href="../matches/{{total.worst.mid}}/">kamp</a>: <a href="../players/{{total.worst.pid}}/">{{total.worst.pname}}</a> med {{total.worst.sum}} poeng.</li>
+							<li>Gjennomsnittet er {{total.average}} poeng.</li>
 						</ul>
 					</p>
 				</div>
