@@ -11,10 +11,10 @@ import logging
 logger = logging.getLogger("file_logger")
 
 def index(request):
-    logging.DEBUG("Accessing "+request.path)
-    logging.DEBUG("Last is "+request.path[-1])
+    logger.debug("Accessing %s" % request.path)
+    logger.debug("Last is %s" % request.path[-1])
     if not request.path[-1] == "/":
-        logging.DEBUG("IN HERE")
+        logger.debug("IN HERE")
         return redirect(request.path+"/")
     else:
         return render_to_response('index.html', {}, context_instance=RequestContext(request))
