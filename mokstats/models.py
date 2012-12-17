@@ -106,7 +106,7 @@ class PlayerResult(models.Model):
     def rating_dif(self):
         if not self.rating:
             return "?"
-        older_results = PlayerResult.objects.filter(player=self.player).filter(match__date__lt=self.match.date)
+        older_results = PlayerResult.objects.filter(player=self.player).filter(match__date__lte=self.match.date).filter(id__lt=self.pk)
         if older_results.exists(): 
             return self.rating - older_results.order_by('-match__date', '-pk')[0].rating
         else:
