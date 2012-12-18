@@ -1,21 +1,15 @@
-TODO
-----
-
 HIGH PRI
 ---------
 - Filter player stats by period,
 - Filter round stats by number of players in game.
 - Use a ripple effect PlayerResult rating resetter, instead of a RESET ALL NEWER RESULTS megareset.
-- Player stats calc can improves, instead of doing player by player, do match by match.
 - Add full rating graph
-- Validate: At least one player must have 0 cards as stats for solitaire.
 - Make description page for rating calc.
 
 LOW PRI
 ---------
 - Evaluate if i need all the stats calculations in views.py, might reduce calc time by removing unncesseary ones.
 - Allow navigation between result inputs with keyboard arrows. up, down, left, right.
-- Verify that filter works on mobile.
 - Fornorske ui
 - Button to make new match with same playerlist.
 - Next match button when viewing matches

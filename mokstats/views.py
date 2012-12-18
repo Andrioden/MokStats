@@ -12,13 +12,7 @@ import logging
 logger = logging.getLogger("file_logger")
 
 def index(request):
-    logger.debug("Accessing %s" % request.path)
-    logger.debug("Last is %s" % request.path[-1])
-    if not request.path[-1] == "/":
-        logger.debug("IN HERE")
-        return redirect(request.path+"/")
-    else:
-        return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def players(request):
     places_strings = request.GET.getlist('places[]', None)
@@ -44,6 +38,7 @@ def players(request):
         players =  cached_players
     else:
         _update_ratings()
+        match_winners_cache = {}
         players = []
         for player in Player.objects.all():
             player_results = PlayerResult.objects.filter(player=player)
@@ -52,7 +47,11 @@ def players(request):
             # Played - Win Ratio
             won = 0
             for match in matches:
-                if player in match.get_winners():
+                winners = match_winners_cache.get(match.id, False)
+                if not winners: # Not in cache
+                    winners = match.get_winners()
+                    match_winners_cache[match.id] = winners
+                if player in winners:
                     won+=1
             played_count = matches.count()
             if played_count == 0:
