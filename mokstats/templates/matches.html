@@ -15,10 +15,15 @@
 				}
 				return false;
 			});
-		    $("#matches").prev().on("keyup",function(){
+		    $("#matches").prev().on("keyup keypress blur change", function(){
 		        var visibleCount = $("#matches li:visible").length;
 		        $("#match_count").text(visibleCount);
 		    });
+		    /*$("#matches").prev().on("keyup keypress blur change", function(){
+		    	console.log("gay");
+		        var visibleCount = $("#matches li:visible").length;
+		        $("#match_count").text(visibleCount);
+		    });*/
 		});
 
 	</script>
