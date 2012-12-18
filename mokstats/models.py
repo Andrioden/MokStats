@@ -88,7 +88,8 @@ post_delete.connect(delete_cache, sender=Match)
 
 def remove_newer_result_ratings(instance, **kwargs):
     date = instance.date
-    PlayerResult.objects.filter(match__date__gt=date).update(rating=None)
+    mid = instance.id
+    PlayerResult.objects.filter(match__date__gte=date).filter(match__id__gte=mid).update(rating=None)
 post_save.connect(remove_newer_result_ratings, sender=Match)
 post_delete.connect(remove_newer_result_ratings, sender=Match)
     
