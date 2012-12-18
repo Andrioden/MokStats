@@ -36,7 +36,7 @@ class MatchPositionTestCase(unittest.TestCase):
         PlayerResult.objects.create(sum_spades = 33, match=self.match4, player=self.player3, sum_queens = 0,sum_solitaire_lines = 0,sum_solitaire_cards = 0,sum_pass = 0,sum_grand = 0,sum_trumph = 0)
         
         
-    def test_get_position(self):
+    def testGetPosition(self):
         # Match 1
         self.assertEqual(self.match1.get_position(self.player1.id), 1)
         self.assertEqual(self.match1.get_position(self.player2.id), 1)

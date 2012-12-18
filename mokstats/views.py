@@ -12,7 +12,6 @@ import logging
 logger = logging.getLogger("file_logger")
 
 def index(request):
-    print request
     logger.debug("Accessing %s" % request.path)
     logger.debug("Last is %s" % request.path[-1])
     if not request.path[-1] == "/":
@@ -269,15 +268,15 @@ def _update_ratings():
         rating_results = []
         for p in player_positions:
             # Fetch the current rating value
-            if not players.get(p['id'], False):
+            #if not players.get(p['id'], False):
                 rated_results = PlayerResult.objects.filter(player=p['id']).exclude(rating=None).order_by('-match__date', '-match__id')
                 if not rated_results.exists():
                     rating = START_RATING
                 else:
                     rating = rated_results[0].rating
-            else:
-                rating = players[p['id']]
-            rating_results.append(RatingResult(p['id'], rating, p['position']))
+            #else:
+            #    rating = players[p['id']]
+                rating_results.append(RatingResult(p['id'], rating, p['position']))
         # Calculate new ratings
         new_player_ratings = calc.new_ratings(rating_results)
         # Update
