@@ -47,7 +47,7 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
 
 
 class ResultInline(admin.TabularInline):
-    #exclude = ('rating',)
+    exclude = ('rating',)
     readonly_fields = ['total',]
     model = PlayerResult
     formset = ResultInlineFormset
