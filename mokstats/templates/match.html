@@ -60,5 +60,14 @@
 				</tbody>
 			</table>
 		</div>
+		
+		<div style="overflow: hidden" data-role="footer" >
+			{% if prev_match_id %}
+				<a href="../{{ prev_match_id }}/" data-role="button" data-icon="arrow-l">Forrige</a>
+			{% endif %}
+			{% if next_match_id %}
+				<a href="../{{ next_match_id }}/" class="right" data-role="button" data-icon="arrow-r" data-iconpos="right">Neste</a>
+			{% endif %}
+		</div>
 	</div>
 {% endblock %}

@@ -1,6 +1,7 @@
 .smaller {font-size: 80%;}
 .smallest {font-size: 60%;}
 .left {float: left;}
+.right {float: right;}
 .text_center {text-align: center;}
 
 .center_outer {
@@ -55,7 +56,7 @@ span.icon_trumph {background-position: -126px -0px;}
 span.icon_sum {background-position: -144px -0px;}
 
 
-/************************* player.html *************************/
+/************************* Graphs *************************/
 
 .graph {
 	width: 400px;	

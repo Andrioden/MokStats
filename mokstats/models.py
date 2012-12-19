@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save, post_delete
 from mokstats.settings import CACHE_DIR
 from rating import START_RATING
@@ -6,8 +7,16 @@ import os
 import shutil
 import datetime
 
+""" SOME QUERIES """
+
 class Player(models.Model):
     name = models.CharField(max_length=20)
+    def get_ratings(self):
+        results = PlayerResult.objects.filter(player=self).select_related('match__date')
+        ratings = []
+        for res in results:
+            ratings.append([res.match.date.isoformat(), int(res.rating), res.match_id])
+        return ratings
     class Meta:
         ordering = ['name']
     def __unicode__(self):
@@ -71,6 +80,24 @@ class Match(models.Model):
                 # Player did not have the same total as someone else
                 return i+1
         print 'PlayerResult for player %s not found in match %s' % (pid, self.pk)
+    def get_newer_matches(self):
+        excludeQ = Q(date__lt=self.date) | (Q(date=self.date) & Q(id__lte=self.pk))
+        return Match.objects.exclude(excludeQ)
+    def get_older_matches(self):
+        excludeQ = Q(date__gt=self.date) | (Q(date=self.date) & Q(id__gte=self.pk))
+        return Match.objects.exclude(excludeQ)
+    def get_next_match_id(self):
+        newer = self.get_newer_matches()
+        if newer.exists():
+            return newer.order_by('date', 'id').values('id')[0]['id']
+        else:
+            return None
+    def get_prev_match_id(self):
+        older = self.get_older_matches()
+        if older.exists():
+            return older.order_by('-date', '-id').values('id')[0]['id']
+        else:
+            return None
     def __unicode__(self):
         return "%s - %s (ID: %s)" % (self.date, self.place.name, self.pk)
     class Meta:
@@ -86,12 +113,13 @@ def delete_cache(sender, **kwargs):
 post_save.connect(delete_cache, sender=Match)
 post_delete.connect(delete_cache, sender=Match)
 
-def remove_newer_result_ratings(instance, **kwargs):
-    date = instance.date
-    mid = instance.id
-    PlayerResult.objects.filter(match__date__gte=date).filter(match__id__gte=mid).update(rating=None)
-post_save.connect(remove_newer_result_ratings, sender=Match)
-post_delete.connect(remove_newer_result_ratings, sender=Match)
+def clear_affected_results_rating(instance, **kwargs):
+    newer = instance.get_newer_matches()
+    newer_mids = list(newer.values_list('id', flat=True))
+    affected_mids = newer_mids + [instance.id]
+    PlayerResult.objects.filter(match_id__in=affected_mids).update(rating=None)
+post_save.connect(clear_affected_results_rating, sender=Match)
+post_delete.connect(clear_affected_results_rating, sender=Match)
     
 class PlayerResult(models.Model):
     match = models.ForeignKey(Match)

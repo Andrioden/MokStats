@@ -79,8 +79,7 @@ def players(request):
 def player(request, pid):
     _update_ratings()
     player = Player.objects.get(id=pid)
-    player_results = PlayerResult.objects.filter(player=player)
-    player_result_ids = player_results.values_list('match_id', flat=True)
+    player_result_ids = PlayerResult.objects.filter(player=player).values_list('match_id', flat=True)
     matches = Match.objects.filter(id__in=player_result_ids)
     # Won - Loss - Other counts
     won = 0
@@ -91,12 +90,8 @@ def player(request, pid):
             won += 1
         elif position == PlayerResult.objects.filter(match=match).count():
             lost += 1
-    # Ratings
-    ratings = []
-    for result in player_results.select_related('match__date'):
-        ratings.append([result.match.date.isoformat(), int(result.rating)])
     data = {'name': player.name, 'id': player.id, 'won': won, 'lost': lost, 
-            'played': matches.count(), 'ratings': ratings}
+            'played': matches.count(), 'ratings': player.get_ratings()}
     return render_to_response('player.html', data, context_instance=RequestContext(request))
 
 def matches(request):
@@ -128,11 +123,13 @@ def match(request, mid):
     # Sort matches by game position
     results = sorted(results, key=lambda result: result['total'])
     # Create context data and return http request
-    match = {'year': m.date.year,
-             'month': _month_name(m.date.month),
-             'place': m.place.name,
-             'results': results}
-    return render_to_response('match.html', match, context_instance=RequestContext(request))
+    data = {'year': m.date.year,
+            'month': _month_name(m.date.month),
+            'place': m.place.name,
+            'results': results,
+            'next_match_id': m.get_next_match_id(),
+            'prev_match_id': m.get_prev_match_id()}
+    return render_to_response('match.html', data, context_instance=RequestContext(request))
 
 def stats(request):
     data = {'spades': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
@@ -248,10 +245,13 @@ def rating(request):
     max_obj = PlayerResult.objects.select_related('player__name').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
     min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
     min_obj = PlayerResult.objects.select_related('player__name').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
+    players = Player.objects.all()
     data = {'max': {'pid': max_obj.player_id, 'pname': max_obj.player.name, 
                     'mid': max_obj.match_id, 'rating': max_obj.rating},
             'min': {'pid': min_obj.player_id, 'pname': min_obj.player.name, 
                     'mid': min_obj.match_id, 'rating': min_obj.rating},
+            'players': [p.get_ratings() for p in players],
+            'player_names': [str(p.name) for p in players],
             }
     return render_to_response('rating.html', data, context_instance=RequestContext(request))
 

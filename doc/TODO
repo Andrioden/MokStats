@@ -1,15 +1,15 @@
 HIGH PRI
 ---------
-- Filter player stats by period,
+
 - Filter round stats by number of players in game.
-- Use a ripple effect PlayerResult rating resetter, instead of a RESET ALL NEWER RESULTS megareset.
-- Add full rating graph
+- Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
 - Make description page for rating calc.
+- Show better text at match list, indicate what players, or how many.
 
 LOW PRI
 ---------
 - Evaluate if i need all the stats calculations in views.py, might reduce calc time by removing unncesseary ones.
-- Allow navigation between result inputs with keyboard arrows. up, down, left, right.
 - Fornorske ui
 - Button to make new match with same playerlist.
-- Next match button when viewing matches
+
+- Filter player stats by period,

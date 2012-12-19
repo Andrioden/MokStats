@@ -23,6 +23,48 @@
 					</ul>
 				</div>
 			{% endif %}
+			<div class="center_outer">
+				<div id="ratings_graph" class="graph center_inner"></div>
+			</div>
 		</div>
+		
+		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.enhancedLegendRenderer.min.js"></script>
+		<script src="{{ STATIC_URL }}grapher.js"></script>
+				
+		<script>
+			$("#rating_page").on('pageinit', function(){
+				// Set graph with
+				$("#ratings_graph").width($(window).width()-20);
+				/*
+				* This method is a semi-hax that attempts to init the graph in
+				* an interval until it succeds. I was unable to trigger the method
+				* at the correct time.
+				*/
+				var interval = setInterval(function(){
+					try {
+						initRatingGraph('ratings_graph', {{ players|safe }}, {{ player_names|safe }});
+					}
+					catch(err) {
+						window.clearInterval(interval);
+						alert("Failed to initiate graph: "+err);
+					}
+					if ($("#ratings_graph").find('canvas').length > 0) {
+						window.clearInterval(interval);
+					}
+				},100);
+				/*
+				* Can navigate to the match by clicking the chart point.
+				*/
+				$("#ratings_graph").on("jqplotDataClick", function(ev, seriesIndex, pointIndex, data) {
+					$.mobile.changePage("../matches/"+data[2]+"/");
+				});
+				
+				
+			});
+		</script>
 	</div>
 {% endblock %}

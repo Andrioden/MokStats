@@ -1,15 +1,9 @@
 {% extends "base.html" %} 
 
 {% block title %}Enter{% endblock %}
-
-{% block imports %}
-	
-{% endblock %} 
+{% block imports %}{% endblock %} 
 
 {% block content %}
-
-
-	
 	<!-- Start of first page -->
 	<div data-role="page" id="player_page_{{id}}">
 	
@@ -28,6 +22,13 @@
 		
 		</div>
 		
+		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
+		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
+		<script src="{{ STATIC_URL }}grapher.js"></script>
+		
 		<script>
 			$("#player_page_{{id}}").on('pageinit', function(){
 				/*
@@ -36,86 +37,28 @@
 				* at the correct time.
 				*/
 				var interval = setInterval(function(){
-					initResultGraph({{ id }}, {{ played }}, {{ won }}, {{ lost }});
-					initRatingGraph({{ id }}, {{ ratings|safe }});
+					try {
+						initResultGraph({{ id }}+'_pie_graph', {{ played }}, {{ won }}, {{ lost }});
+						initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}]);
+					}
+					catch(err) {
+						window.clearInterval(interval);
+						alert("Failed to initiate graph: "+err);
+					}
 					if ($("#{{ id }}_pie_graph").find('canvas').length > 0) {
 						window.clearInterval(interval);		
 					}
 				},100);
+				/*
+				* Can navigate to the match by clicking the chart point.
+				*/
+				$("#{{id}}_rating_graph").on("jqplotDataClick", function(ev, seriesIndex, pointIndex, data) {
+					$.mobile.changePage("../../matches/"+data[2]+"/");
+				});
+				
 				
 			});
-			
-			function initResultGraph(id, played, won, lost) {
-				var other = played - won - lost;
-			    var s1 = [
-			    	['Vunnet ('+won+')', won], 
-			    	['Annet ('+other+')', other],
-			    	['Tapt ('+lost+')', lost],
-			    ];
-
-			    var plot = $.jqplot(id+'_pie_graph', [s1], {
-			    	title:'Resultater',
-			    	seriesColors: ['#90EE90', '#F0F03F', '#FC7E7E'],
-			        /*grid: {
-			            drawBorder: false,
-			            drawGridlines: false,
-			            background: '#EEEEEE',
-			            shadow:false
-			        },*/
-			        axesDefaults: {
-			             
-			        },
-			        seriesDefaults:{
-			            renderer:$.jqplot.PieRenderer,
-			            rendererOptions: {
-			                showDataLabels: true
-			            }
-			        },
-			        legend: {
-			            show: true,
-			            rendererOptions: {
-			                numberRows: 1
-			            },
-			            location: 's'
-			        }
-			    });
-				
-			    
-			}
-			
-			function initRatingGraph(id, ratings) {
-				var plot1 = $.jqplot(id+'_rating_graph', [ratings], {
-					title:'Rating utvikling',
-					axes:{
-						xaxis:{
-							renderer:$.jqplot.DateAxisRenderer,
-							tickOptions:{
-								formatString:'%b&nbsp;%#d'
-							}
-						},
-						yaxis:{
-							tickOptions:{
-								formatString:'%.0f'
-							}
-						}
-					},
-					highlighter: {
-						show: true,
-						sizeAdjust: 7.5
-					},
-					cursor: {
-				        show: true,
-				        zoom:true,
-					}
-				});
-			}
 		</script>
-		
-		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
 	</div>
 
 
