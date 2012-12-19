@@ -101,7 +101,7 @@ def matches(request):
     for place in Place.objects.all():
         places[place.id] = place.name
     matches = []
-    for match in reversed(Match.objects.all()):
+    for match in Match.objects.all().order_by("-date", "-id"):
         matches.append({'id': match.id,
                         'year': match.date.year, 
                         'month': _month_name(match.date.month),
