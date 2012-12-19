@@ -3,7 +3,7 @@ from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import HttpResponse
 from django.template import RequestContext
-from django.db.models import Max, Min
+from django.db.models import Max, Min, Avg, Count
 from models import *
 from rating import RatingCalculator, RatingResult, START_RATING
 from django.core.cache import cache
@@ -133,114 +133,72 @@ def match(request, mid):
             'prev_match_id': m.get_prev_match_id()}
     return render_to_response('match.html', data, context_instance=RequestContext(request))
 
-def stats(request):
-    data = {'spades': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
-            'queens': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
-            'solitaire_lines': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown'},
-                                'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                                'average': 0},
-            'solitaire_cards': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                                'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                                'average': 0},
-            'solitaire_total': {'worst':{'sum': -1, 'pid': 0, 'pname': 'unknown', 'mid': 0}},
-            'pass': {'best': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                     'worst': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                     'average': 0},
-            'grand': {'best': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
-            'trumph': {'best': {'sum': -1, 'pid': 0, 'pname': 'unknown'},
-                      'worst': {'sum': 100, 'pid': 0, 'pname': 'unknown'},
-                      'average': 0},
-            'total': {'best': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
-                    'second': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
-                    'third': {'sum': 1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
-                    'worst': {'sum': -1000, 'pid': 0, 'pname': 'unknown', 'mid': 0},
-                    'average': 0},
-            }
+def stats2(request):
+    """ Does all kind of statistical fun fact calculations.
     
-    def compare(result, round_sum, round_type, stats_type, greater=True):
-        """ Define a reusable method that compares round data with best/worst data
-        @param result:     The PlayerResult object
-        @param round_sum:  The sum to be compared with current sum
-        @param round_type: Typical spades, queens, etc
-        @param stats_type: Either best, or worst string
-        @param greater:    If the sum has to be greater/lesser than current sum to be set.
+    """
+    
+    ALL_P_RESULTS = PlayerResult.objects.select_related() # User several times
+    
+    def minmax(aggfunc, round_type):
+        """ Returns min or max value for a round type"""
+        field = "sum_"+round_type
+        val = ALL_P_RESULTS.aggregate(aggfunc(field))[field+'__max']
+        results = ALL_P_RESULTS.filter(**{field: val})
+        first = results.order_by('match__date', 'match__id').select_related()[0]
+        return {'sum': val, 'mid': first.match_id,
+                'pid': first.player_id, 'pname': first.player.name}
         
-        """
-        current_sum = data[round_type][stats_type]['sum']
-        #print "current %s, vs round %s, round %s, stats %s, greater %s" % (current_sum, round_sum, round_type, stats_type, greater)
-        if (greater and (round_sum > current_sum)) or (not greater and (round_sum < current_sum)):
-            data[round_type][stats_type]['sum'] = round_sum
-            data[round_type][stats_type]['pid'] = result.player_id
-            data[round_type][stats_type]['pname'] = result.player.name
-            if data[round_type][stats_type].has_key("mid"):
-                data[round_type][stats_type]['mid'] = result.match_id
+    def gt0_avg(round_type):
+        field = "sum_"+round_type
+        result = ALL_P_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
+        print result
+        return round(result[field+'__avg'],1)
     
-    player_results = PlayerResult.objects.select_related('player').order_by('match__date')
+    def bot(amount, value_field):
+        return top(amount, value_field, "")
+    def top(amount, value_field_usage, total_prechar="-"):
+        select_query = {'total': '('+value_field_usage+')'}
+        results = ALL_P_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
+        top = []
+        for i in range(min(results.count(), amount)):
+            top.append({'sum': results[i].total, 'mid': results[i].match_id,
+                        'pid': results[i].player_id, 'pname': results[i].player.name})
+        return top
     
-    if player_results.count() == 0:
-        return render_to_response('stats.html', data, context_instance=RequestContext(request))
+    results_totals = ALL_P_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
+    total_avg = sum([r.total for r in results_totals])/results_totals.count()
+    best_match_results = bot(3, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
+    worst_match_results = top(3, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
     
-    round_types = ['spades', 'queens', 'solitaire_lines', 'solitaire_cards', 'pass', 'grand', 'trumph']
-    for result in player_results:
-        for round_type in round_types:
-            # Check if the game type is of the reversed type
-            if round_type in ['grand', 'trumph']:
-                best_worst = [True, False]
-            else:
-                best_worst = [False, True]
-            # Get sum and average
-            round_sum = eval('result.sum_'+round_type)
-            if round_sum > 0:
-                data[round_type]['average'] += round_sum
-            # Compare and update data
-            compare(result, round_sum, round_type, "best", best_worst[0])
-            compare(result, round_sum, round_type, "worst", best_worst[1])
-        #Solitaire total
-        soli_total = result.sum_solitaire_lines + result.sum_solitaire_cards
-        compare(result, soli_total, "solitaire_total", "worst", True)
-        #Sum
-        total = result.total()
-        data['total']['average'] += total
-        if total < data['total']['best']['sum']:
-            # Copy second best to third best
-            data['total']['third'] = copy.copy(data['total']['second'])
-            # Copy best to second best
-            data['total']['second'] = copy.copy(data['total']['best'])
-            # Rewrite best
-            data['total']['best']['sum'] = total
-            data['total']['best']['pid'] = result.player_id
-            data['total']['best']['pname'] = result.player.name
-            data['total']['best']['mid'] = result.match_id
-        elif total < data['total']['second']['sum']:
-            # Copy second best to third best
-            data['total']['third'] = copy.copy(data['total']['second'])
-            # Rewrite second best
-            data['total']['second']['sum'] = total
-            data['total']['second']['pid'] = result.player_id
-            data['total']['second']['pname'] = result.player.name
-            data['total']['second']['mid'] = result.match_id
-        elif total < data['total']['third']['sum']:
-            data['total']['third']['sum'] = total
-            data['total']['third']['pid'] = result.player_id
-            data['total']['third']['pname'] = result.player.name
-            data['total']['third']['mid'] = result.match_id
-        if total > data['total']['worst']['sum']:
-            data['total']['worst']['sum'] = total
-            data['total']['worst']['pid'] = result.player_id
-            data['total']['worst']['pname'] = result.player.name
-            data['total']['worst']['mid'] = result.match_id
-    # Calculate averages
-    for round_type in (round_types+['total']):
-        data[round_type]['average'] /= player_results.count()
+    data = {'spades': {'worst': minmax(Max, 'spades'),
+                       'average': gt0_avg("spades")},
+            
+            'queens': {'worst': minmax(Max, 'queens'),
+                       'average': gt0_avg("queens")},
+            
+            'solitaire_lines': {'worst': minmax(Max, "solitaire_lines"),
+                                'average': gt0_avg("solitaire_lines")},
+            'solitaire_cards': {'worst': minmax(Max, "solitaire_cards"),
+                                'average': gt0_avg("solitaire_cards")},
+            'solitaire_total': {'worst': top(1, "sum_solitaire_lines + sum_solitaire_cards")[0]},
+            
+            'pass': {'worst': minmax(Max, 'pass')},
+            
+            'grand': {'best': minmax(Max, 'grand')},
+            
+            'trumph': {'best': minmax(Max, 'trumph')},
+            
+            'total': {'best': best_match_results[0],
+                    'second': best_match_results[1],
+                    'third': best_match_results[2],
+                    'worst': worst_match_results[0],
+                    'average': total_avg},
+            }
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def rating(request):
+    _update_ratings()
     if PlayerResult.objects.count() == 0:
         return render_to_response('rating.html', {}, context_instance=RequestContext(request))
     max_rating = PlayerResult.objects.aggregate(Max('rating'))['rating__max']

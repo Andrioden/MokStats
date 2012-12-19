@@ -1,6 +1,6 @@
 from decimal import *
 
-K = Decimal('10.0')
+K = Decimal('3.0')
 START_RATING = Decimal('100.0')
 
 class RatingCalculator:

@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     (r'^players/$', 'mokstats.views.players'),
     (r'^matches/(?P<mid>\d+)/$', 'mokstats.views.match'),
     (r'^matches/$', 'mokstats.views.matches'),
-    (r'^stats/$', 'mokstats.views.stats'),
+    (r'^stats/$', 'mokstats.views.stats2'),
     (r'^rating/$', 'mokstats.views.rating'),
     (r'^admin/', include(admin.site.urls)),
 )

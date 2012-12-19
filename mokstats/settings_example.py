@@ -2,10 +2,13 @@
 
 """
 
-PROJECT_DIR = "C:/projects/mokstats/"
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+PROJECT_DIR = "D:/HIST/eclipse/mokstats/"
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 DATABASES = {
     'default': {
@@ -31,9 +34,7 @@ CACHES = {
 
 """
 
-ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+TEMPLATE_DEBUG = DEBUG
 
 MANAGERS = ADMINS
 
@@ -41,11 +42,11 @@ MANAGERS = ADMINS
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'Europe/Oslo'
+TIME_ZONE = 'America/Chicago'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'no-bok'
+LANGUAGE_CODE = 'en-us'
 
 SITE_ID = 1
 
@@ -138,30 +139,31 @@ INSTALLED_APPS = (
     'mokstats'
 )
 
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(asctime)s %(levelname)s %(message)s'
-        },
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
     },
     'handlers': {
-        'file': {                # define and name a handler
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler', # set the logging class to log to a file
-            'formatter': 'simple',         # define the formatter to associate
-            'filename': PROJECT_DIR+"logs/debuglog" # log file
-        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
     },
     'loggers': {
-        'file_logger': {              # define a logger - give it a name
-            'handlers': ['file'], # specify what handler to associate
-            'level': 'DEBUG',                 # specify the logging level
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
             'propagate': True,
-        },      
-    }       
+        },
+    }
 }

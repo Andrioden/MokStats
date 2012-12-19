@@ -1,3 +1,5 @@
+/************************* Generelt *************************/
+
 .smaller {font-size: 80%;}
 .smallest {font-size: 60%;}
 .left {float: left;}
@@ -16,6 +18,8 @@
 
 .positive {color: green; font-weight: bold;}
 .negative {color: red;}
+
+.ui-body-c .ui-link {text-decoration: none;}
 
 /************************* Match.html *************************/
 table#results {
