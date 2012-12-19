@@ -46,7 +46,7 @@
 				*/
 				var interval = setInterval(function(){
 					try {
-						initRatingGraph('ratings_graph', {{ players|safe }}, {{ player_names|safe }});
+						initRatingGraph('ratings_graph', {{ players|safe }}, "../matches/", {{ player_names|safe }});
 					}
 					catch(err) {
 						window.clearInterval(interval);
@@ -56,14 +56,6 @@
 						window.clearInterval(interval);
 					}
 				},100);
-				/*
-				* Can navigate to the match by clicking the chart point.
-				*/
-				$("#ratings_graph").on("jqplotDataClick", function(ev, seriesIndex, pointIndex, data) {
-					$.mobile.changePage("../matches/"+data[2]+"/");
-				});
-				
-				
 			});
 		</script>
 	</div>

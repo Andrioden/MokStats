@@ -14,6 +14,8 @@
     left: -50%;
 }
 
+.positive {color: green; font-weight: bold;}
+.negative {color: red;}
 
 /************************* Match.html *************************/
 table#results {
@@ -34,9 +36,6 @@ table#results td.dif {
 	font-size: 75%;
 	text-align: right;
 }
-
-table#results td.positive {color: green; font-weight: bold;}
-table#results td.negative {color: red;}
 
 span.icon {
 	width: 18px;

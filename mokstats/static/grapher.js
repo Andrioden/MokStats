@@ -27,7 +27,7 @@ function initResultGraph(id, played, won, lost) {
 
 }
 
-function initRatingGraph(id, plotdata, labels) {
+function initRatingGraph(id, plotdata, clickUrl, labels) {
 	// Create the dynamic label that behaves different when labels are supplied
 	var customLegend = {};
 	if (labels) {
@@ -42,7 +42,7 @@ function initRatingGraph(id, plotdata, labels) {
 				},
 		};
 	}
-		
+	
 	$.jqplot(id, plotdata, {
 		title:'Rating utvikling',
 		legend: customLegend,
@@ -61,12 +61,21 @@ function initRatingGraph(id, plotdata, labels) {
 		},
 		highlighter: {
 			show: true,
-			sizeAdjust: 7.5
+			sizeAdjust: 7.5,
+			yvalues: 3,
+		    formatString:'<span>%s: %s <span class="smaller %s">(%s)</span></span>'
 		},
 		cursor: {
 			show: true,
 			zoom:true,
 		}
+	});
+	
+	/*
+	* Can navigate to the match by clicking the chart point.
+	*/
+	$("#"+id).on("jqplotDataClick", function(ev, seriesIndex, pointIndex, data) {
+		$.mobile.changePage(clickUrl+data[4]+"/");
 	});
 }
 

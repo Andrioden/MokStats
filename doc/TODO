@@ -1,8 +1,5 @@
 HIGH PRI
 ---------
-
-- Filter round stats by number of players in game.
-- Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
 - Make description page for rating calc.
 - Show better text at match list, indicate what players, or how many.
 
@@ -13,3 +10,7 @@ LOW PRI
 - Button to make new match with same playerlist.
 
 - Filter player stats by period,
+
+PERFORMANCE / INTERNAL SHIT
+-------------------------
+- Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.

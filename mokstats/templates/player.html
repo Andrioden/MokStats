@@ -39,7 +39,7 @@
 				var interval = setInterval(function(){
 					try {
 						initResultGraph({{ id }}+'_pie_graph', {{ played }}, {{ won }}, {{ lost }});
-						initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}]);
+						initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}], "../../matches/");
 					}
 					catch(err) {
 						window.clearInterval(interval);
@@ -48,15 +48,7 @@
 					if ($("#{{ id }}_pie_graph").find('canvas').length > 0) {
 						window.clearInterval(interval);		
 					}
-				},100);
-				/*
-				* Can navigate to the match by clicking the chart point.
-				*/
-				$("#{{id}}_rating_graph").on("jqplotDataClick", function(ev, seriesIndex, pointIndex, data) {
-					$.mobile.changePage("../../matches/"+data[2]+"/");
-				});
-				
-				
+				},100);				
 			});
 		</script>
 	</div>

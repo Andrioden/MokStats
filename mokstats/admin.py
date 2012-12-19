@@ -31,8 +31,8 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
                     trumph_total += form.cleaned_data['sum_trumph']
             except AttributeError:
                 pass
-        if player_count < 2:
-            raise forms.ValidationError('Minst to spillere')
+        if player_count < 3:
+            raise forms.ValidationError('Minst 3 spillere')
         if not spades_total == 13:
             raise forms.ValidationError('For få/mange Spa poeng gitt, %s totalt nå, 13 krevd' % spades_total)
         if not queens_total == 16:
@@ -47,7 +47,7 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
 
 
 class ResultInline(admin.TabularInline):
-    exclude = ('rating',)
+    #exclude = ('rating',)
     readonly_fields = ['total',]
     model = PlayerResult
     formset = ResultInlineFormset

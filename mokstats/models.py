@@ -14,8 +14,19 @@ class Player(models.Model):
     def get_ratings(self):
         results = PlayerResult.objects.filter(player=self).select_related('match__date')
         ratings = []
-        for res in results:
-            ratings.append([res.match.date.isoformat(), int(res.rating), res.match_id])
+        prev_rating = START_RATING
+        for res in results.order_by('match__date', 'match__id'):
+            dif = res.rating-prev_rating
+            if dif > 0:
+                dif = "+"+str(dif)
+                css_class = "positive"
+            elif dif < 0:
+                css_class = "negative"
+            else:
+                css_class = ""
+            ratings.append([res.match.date.isoformat(), int(res.rating), 
+                            css_class, str(dif), res.match_id])
+            prev_rating = res.rating
         return ratings
     class Meta:
         ordering = ['name']
@@ -135,13 +146,13 @@ class PlayerResult(models.Model):
     def rating_dif(self):
         if not self.rating:
             return "?"
-        older_results = PlayerResult.objects.filter(player=self.player).filter(match__date__lte=self.match.date).filter(id__lt=self.pk)
+        older_matches = self.match.get_older_matches().values_list('id', flat=True)
+        older_results = PlayerResult.objects.filter(player=self.player).filter(match__id__in=older_matches)
         if older_results.exists(): 
-            return self.rating - older_results.order_by('-match__date', '-pk')[0].rating
+            return self.rating - older_results.order_by('-match__date', '-match__id')[0].rating
         else:
             return self.rating - START_RATING
     def vals(self):
-        
         return {'player': {'id': self.player.id,
                            'name': self.player.name},
                 'spades': self.sum_spades,
