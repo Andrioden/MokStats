@@ -5,7 +5,7 @@
 
 {% block content %}
 	<!-- Start of first page -->
-	<div data-role="page" id="stats_page">
+	<div data-role="page" id="stats_page" data-dom-cache="true">
 	
 		<div data-role="header">
 			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
@@ -72,7 +72,7 @@
 					<h3><span class="icon icon_trumph left"></span><span class="text left">Trumf</span></h3>
 					<p>
 						<ul>
-							<li>Først med feste <a href="../matches/{{trumph.best.mid}}/">runde</a>: <a href="../players/{{trumph.best.pid}}/">{{trumph.best.pname}}</a> med {{trumph.best.sum}} stikk.</li>
+							<li>Først med beste <a href="../matches/{{trumph.best.mid}}/">runde</a>: <a href="../players/{{trumph.best.pid}}/">{{trumph.best.pname}}</a> med {{trumph.best.sum}} stikk.</li>
 						</ul>
 					</p>
 				</div>

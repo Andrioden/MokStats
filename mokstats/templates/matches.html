@@ -4,26 +4,8 @@
 {% block imports %}{% endblock %} 
 
 {% block content %}
-	<script>
-		// Custom search function for the filter bar
-		$(document).on('pageinit', function() {
-			$("#matches").listview('option', 'filterCallback', function(text, search){
-				text = text.trim().toLowerCase();
-				var searchArray = search.split(" ");
-				for (var i = 0; i < searchArray.length; i++) {
-					if (text.search(searchArray[i]) == -1) return true;
-				}
-				return false;
-			});
-		    $("#matches").prev().on("keyup keypress blur change", function(){
-		        var visibleCount = $("#matches li:visible").length;
-		        $("#match_count").text(visibleCount);
-		    });
-		});
-
-	</script>
 	<!-- Start of first page -->
-	<div data-role="page" class="matches_page">
+	<div data-role="page" class="matches_page" data-dom-cache="true">
 	
 		<div data-role="header">
 			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
@@ -41,6 +23,25 @@
 				{% endfor %}
 			</ul>
 		</div>
+		
+		<script>
+			// Custom search function for the filter bar
+			$(document).on('pageinit', function() {
+				$("#matches").listview('option', 'filterCallback', function(text, search){
+					text = text.trim().toLowerCase();
+					var searchArray = search.split(" ");
+					for (var i = 0; i < searchArray.length; i++) {
+						if (text.search(searchArray[i]) == -1) return true;
+					}
+					return false;
+				});
+			    $("#matches").prev().on("keyup keypress blur change", function(){
+			        var visibleCount = $("#matches li:visible").length;
+			        $("#match_count").text(visibleCount);
+			    });
+			});
+	
+		</script>
 		
 	</div>
 {% endblock %}

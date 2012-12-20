@@ -1,6 +1,6 @@
 HIGH PRI
 ---------
-- Calculate last players results automatically.
+- Calculate last players results automatically, do some highlight indicator when it happens.
 
 LOW PRI
 ---------
@@ -15,3 +15,4 @@ PERFORMANCE / INTERNAL SHIT
 -------------------------
 - Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
 - cache entire rendered templates
+- Preload 
