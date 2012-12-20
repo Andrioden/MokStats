@@ -5,7 +5,6 @@ HIGH PRI
 LOW PRI
 ---------
 - Make description page for rating calc.
-- Evaluate if i need all the stats calculations in views.py, might reduce calc time by removing unncesseary ones.
 - Fornorske ui
 - Add Button to make new match with same playerlist.
 - Filter player stats by period.
@@ -13,5 +12,4 @@ LOW PRI
 
 PERFORMANCE / INTERNAL SHIT
 -------------------------
-- Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
-- cache entire rendered templates
+- Combine all jquery files into one, or find an cdn.
