@@ -15,4 +15,3 @@ PERFORMANCE / INTERNAL SHIT
 -------------------------
 - Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
 - cache entire rendered templates
-- Preload 

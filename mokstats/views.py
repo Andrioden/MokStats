@@ -26,49 +26,37 @@ def players(request):
     if not place_ids:
         place_ids = Place.objects.values_list('id', flat=True)
     place_ids = sorted(place_ids)
-
-    # Make valid cache string
-    cache_string = "players_places"
-    for pid in place_ids:
-        cache_string += str(pid)
-        if not pid == place_ids[-1]: # Not last item
-            cache_string += ","
-            
-    # Get stats data, either from cache or from database
-    cached_players = cache.get(cache_string)
-    if cached_players:
-        players =  cached_players
-    else:
-        _update_ratings()
-        match_winners_cache = {}
-        players = []
-        for player in Player.objects.all():
-            player_results = PlayerResult.objects.filter(player=player)
-            player_result_ids = player_results.values_list('match_id', flat=True)
-            matches = Match.objects.filter(id__in=player_result_ids, place_id__in=place_ids)
-            # Played - Win Ratio
-            won = 0
-            for match in matches:
-                winners = match_winners_cache.get(match.id, False)
-                if not winners: # Not in cache
-                    winners = match.get_winners()
-                    match_winners_cache[match.id] = winners
-                if player in winners:
-                    won+=1
-            played_count = matches.count()
-            if played_count == 0:
-                win_percent = 0
-            else:
-                win_percent = int(round(won*100.00/played_count))
-            # Get last rating
-            if player_results.exists():
-                rating = int(player_results.order_by('-match__date', '-match__id')[0].rating)
-            else:
-                rating = "-"
-            players.append({'id': player.id, 'name': player.name,
-                            'played': played_count, 'won': won,
-                            'win_perc': win_percent, 'rating': rating})
-        cache.set(cache_string, players)
+    
+    # Create stats
+    _update_ratings()
+    match_winners_cache = {}
+    players = []
+    for player in Player.objects.all():
+        player_results = PlayerResult.objects.filter(player=player)
+        player_result_ids = player_results.values_list('match_id', flat=True)
+        matches = Match.objects.filter(id__in=player_result_ids, place_id__in=place_ids)
+        # Played - Win Ratio
+        won = 0
+        for match in matches:
+            winners = match_winners_cache.get(match.id, False)
+            if not winners: # Not in cache
+                winners = match.get_winners()
+                match_winners_cache[match.id] = winners
+            if player in winners:
+                won+=1
+        played_count = matches.count()
+        if played_count == 0:
+            win_percent = 0
+        else:
+            win_percent = int(round(won*100.00/played_count))
+        # Get last rating
+        if player_results.exists():
+            rating = int(player_results.order_by('-match__date', '-match__id')[0].rating)
+        else:
+            rating = "-"
+        players.append({'id': player.id, 'name': player.name,
+                        'played': played_count, 'won': won,
+                        'win_perc': win_percent, 'rating': rating})
         
     places = []
     for place in Place.objects.all():
