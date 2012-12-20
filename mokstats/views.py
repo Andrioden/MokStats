@@ -127,75 +127,109 @@ def match(request, mid):
     # Create context data and return http request
     data = {'year': m.date.year,
             'month': _month_name(m.date.month),
+            'day': m.date.day,
             'place': m.place.name,
             'results': results,
             'next_match_id': m.get_next_match_id(),
             'prev_match_id': m.get_prev_match_id()}
     return render_to_response('match.html', data, context_instance=RequestContext(request))
 
-def stats2(request):
-    """ Does all kind of statistical fun fact calculations.
+
+def stats(request):
+    """ This is the stats page that show all the stats that didnt fit
+    anywhere else.
     
     """
+    ALL_RESULTS = PlayerResult.objects.select_related() # User several times
+    PRS = PRStatser(ALL_RESULTS)
+        
+    results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
+    total_avg = sum([r.total for r in results_totals])/results_totals.count()
+    best_match_result = PRS.bot_total(1)[0]
+    worst_match_result = PRS.top_total(1)[0]
+
+    data = {'spades': {'worst': PRS.minmax(Max, 'spades'),
+                       'average': PRS.gt0_avg("spades")},
+            
+            'queens': {'worst': PRS.minmax(Max, 'queens'),
+                       'average': PRS.gt0_avg("queens")},
+            
+            'solitaire_lines': {'worst': PRS.minmax(Max, "solitaire_lines"),
+                                'average': PRS.gt0_avg("solitaire_lines")},
+            'solitaire_cards': {'worst': PRS.minmax(Max, "solitaire_cards"),
+                                'average': PRS.gt0_avg("solitaire_cards")},
+            'solitaire_total': {'worst': PRS.top(1, "sum_solitaire_lines + sum_solitaire_cards")[0]},
+            
+            'pass': {'worst': PRS.minmax(Max, 'pass')},
+            
+            'grand': {'best': PRS.minmax(Max, 'grand')},
+            
+            'trumph': {'best': PRS.minmax(Max, 'trumph')},
+            
+            'extremes': {'gain': PRS.top(1, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass")[0],
+                         'loss': PRS.bot(1, "0 - sum_grand - sum_trumph")[0]},
+            
+            'total': {'best': best_match_result,
+                    'worst': worst_match_result,
+                    'average': total_avg},
+            }   
+    return render_to_response('stats.html', data, context_instance=RequestContext(request))
+
+def stats_best_results(request):
+    print request.GET 
+    amount = int(request.GET.get("amount", 20))
+    print amount
+    PRS = PRStatser(PlayerResult.objects.select_related())
+    data = {'results': PRS.bot_total(amount)}
+    return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
+   
+def stats_worst_results(request):
+    amount = int(request.GET.get("amount", 20))
+    PRS = PRStatser(PlayerResult.objects.select_related())
+    data = {'results': PRS.top_total(amount)}
+    return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
+
+
+class PRStatser:
+    """ Does all kind of statistical fun fact calculations with the
+    supplied PlayerResult object.
     
-    ALL_P_RESULTS = PlayerResult.objects.select_related() # User several times
+    """
+    ALL_RESULTS = None
     
-    def minmax(aggfunc, round_type):
+    def __init__(self, all_results):
+        self.ALL_RESULTS = all_results
+    
+    def minmax(self, aggfunc, round_type):
         """ Returns min or max value for a round type"""
         field = "sum_"+round_type
-        val = ALL_P_RESULTS.aggregate(aggfunc(field))[field+'__max']
-        results = ALL_P_RESULTS.filter(**{field: val})
+        val = self.ALL_RESULTS.aggregate(aggfunc(field))[field+'__max']
+        results = self.ALL_RESULTS.filter(**{field: val})
         first = results.order_by('match__date', 'match__id').select_related()[0]
         return {'sum': val, 'mid': first.match_id,
                 'pid': first.player_id, 'pname': first.player.name}
         
-    def gt0_avg(round_type):
+    def gt0_avg(self, round_type):
         field = "sum_"+round_type
-        result = ALL_P_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
-        print result
+        result = self.ALL_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
         return round(result[field+'__avg'],1)
     
-    def bot(amount, value_field):
-        return top(amount, value_field, "")
-    def top(amount, value_field_usage, total_prechar="-"):
+    def top_total(self, amount):
+        return self.top(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
+    def bot_total(self, amount):
+        return self.bot(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
+    
+    def bot(self, amount, value_field):
+        return self.top(amount, value_field, "")
+    
+    def top(self, amount, value_field_usage, total_prechar="-"):
         select_query = {'total': '('+value_field_usage+')'}
-        results = ALL_P_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
+        results = self.ALL_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
         top = []
         for i in range(min(results.count(), amount)):
             top.append({'sum': results[i].total, 'mid': results[i].match_id,
                         'pid': results[i].player_id, 'pname': results[i].player.name})
         return top
-    
-    results_totals = ALL_P_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
-    total_avg = sum([r.total for r in results_totals])/results_totals.count()
-    best_match_results = bot(3, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
-    worst_match_results = top(3, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
-    
-    data = {'spades': {'worst': minmax(Max, 'spades'),
-                       'average': gt0_avg("spades")},
-            
-            'queens': {'worst': minmax(Max, 'queens'),
-                       'average': gt0_avg("queens")},
-            
-            'solitaire_lines': {'worst': minmax(Max, "solitaire_lines"),
-                                'average': gt0_avg("solitaire_lines")},
-            'solitaire_cards': {'worst': minmax(Max, "solitaire_cards"),
-                                'average': gt0_avg("solitaire_cards")},
-            'solitaire_total': {'worst': top(1, "sum_solitaire_lines + sum_solitaire_cards")[0]},
-            
-            'pass': {'worst': minmax(Max, 'pass')},
-            
-            'grand': {'best': minmax(Max, 'grand')},
-            
-            'trumph': {'best': minmax(Max, 'trumph')},
-            
-            'total': {'best': best_match_results[0],
-                    'second': best_match_results[1],
-                    'third': best_match_results[2],
-                    'worst': worst_match_results[0],
-                    'average': total_avg},
-            }
-    return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def rating(request):
     _update_ratings()
@@ -219,8 +253,8 @@ def rating(request):
 def _month_name(month_number):
     return calendar.month_name[month_number]
 
+calc = RatingCalculator()
 def _update_ratings():
-    calc = RatingCalculator()
     players = {}
     match_ids = list(set(PlayerResult.objects.filter(rating=None).values_list('match_id', flat=True)))
     for match in Match.objects.filter(id__in=match_ids).order_by('date', 'id'):

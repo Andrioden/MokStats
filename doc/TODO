@@ -1,14 +1,7 @@
 HIGH PRI
 ---------
-- Show better text at match list, indicate what players, or how many.
 - Calculate last players results automatically.
-- Stats:
-	- Who is averagely best at each type of round.
-	- Highest lowest score achieved ever (not end result, but mid game as well).
-	- Loosing/winning streak.
-	- Can click (view more) to get a full list of the special statses, such as the best game.
-	- How many times someone got min/max in the different types of rounds.
-- Add year to rating x axis.
+
 LOW PRI
 ---------
 - Make description page for rating calc.
@@ -21,3 +14,4 @@ LOW PRI
 PERFORMANCE / INTERNAL SHIT
 -------------------------
 - Use a ripple effect PlayerResult rating reseter, instead of a RESET ALL NEWER RESULTS megareset.
+- cache entire rendered templates

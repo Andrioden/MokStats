@@ -50,7 +50,7 @@ function initRatingGraph(id, plotdata, clickUrl, labels) {
 			xaxis:{
 				renderer:$.jqplot.DateAxisRenderer,
 				tickOptions:{
-					formatString:'%b&nbsp;%#d'
+					formatString:'%b&nbsp;%y'
 				}
 			},
 			yaxis:{

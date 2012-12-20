@@ -1,0 +1,29 @@
+{% extends "base.html" %} 
+
+{% block title %}Diverse{% endblock %} 
+{% block imports %}{% endblock %} 
+
+{% block content %}
+	<!-- Start of first page -->
+	<div data-role="page" id="stats_top_results_page">
+	
+		<div data-role="header">
+			<a href="../../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Beste kampresultater</h1>
+		</div>
+		
+	
+		<div data-role="content">
+			<ol data-role="listview" data-filter="true">
+			{% for r in results %}
+			    <li>
+			    	<span class="ui-li-count">{{r.sum}}</span>
+			    	<span onclick='$.mobile.changePage("../../../players/{{r.pid}}/")'>{{r.pname}}</span>
+			    	<span class="smaller"><a href="../../../matches/{{r.mid}}/">kampen</a></span>
+			    </li>
+			{% endfor %}
+			</ol>
+
+		</div>
+	</div>
+{% endblock %}
