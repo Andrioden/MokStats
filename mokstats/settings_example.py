@@ -10,6 +10,8 @@ PROJECT_DIR = "D:/HIST/eclipse/mokstats/"
 
 DEBUG = True
 
+COMPRESS_ENABLED = True
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
@@ -84,7 +86,9 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+
 )
 
 # Make this unique, and don't share it with anybody.
@@ -138,7 +142,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'mokstats'
+    'mokstats',
+    "compressor",
 )
 
 # A sample logging configuration. The only tangible logging
@@ -169,3 +174,10 @@ LOGGING = {
         },
     }
 }
+
+COMPRESS_CSS_FILTERS = [
+     'compressor.filters.cssmin.CSSMinFilter'
+]
+COMPRESS_JS_FILTERS = [
+     'compressor.filters.jsmin.JSMinFilter'
+]

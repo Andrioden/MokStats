@@ -1,3 +1,5 @@
+{% load compress %}
+
 <!DOCTYPE html>  
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
@@ -5,15 +7,23 @@
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+	{% compress css %}
 	<link rel="stylesheet" href="{{ STATIC_URL }}styles.css" />
-	<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
-	<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
-
 	<link rel="stylesheet" href="{{ STATIC_URL }}jqplot/jquery.jqplot.min.css" />
-	{% block imports %}{% endblock %}
+	{% endcompress %}
 </head>
 <body>
 	{% block content %}{% endblock %}
 </body>
+<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+{% compress js %}
+<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
+<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
+<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
+<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
+<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
+<script src="{{ STATIC_URL }}jqplot/jqplot.enhancedLegendRenderer.min.js"></script>
+<script src="{{ STATIC_URL }}grapher.js"></script>
+{% endcompress %}
 </html>

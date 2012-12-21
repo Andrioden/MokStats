@@ -24,6 +24,8 @@
 			</ul>
 		</div>
 		
+		{% load compress %}
+		{% compress js inline %}
 		<script>
 			// Custom search function for the filter bar
 			$(document).on('pageinit', function() {
@@ -40,8 +42,7 @@
 			        $("#match_count").text(visibleCount);
 			    });
 			});
-	
 		</script>
-		
+		{% endcompress %}
 	</div>
 {% endblock %}

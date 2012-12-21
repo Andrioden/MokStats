@@ -22,13 +22,8 @@
 		
 		</div>
 		
-		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
-		<script src="{{ STATIC_URL }}grapher.js"></script>
-		
+		{% load compress %}
+		{% compress js inline %}
 		<script>
 			$("#player_page_{{id}}").on('pageinit', function(){
 				/*
@@ -51,6 +46,7 @@
 				},100);				
 			});
 		</script>
+		{% endcompress %}
 	</div>
 
 

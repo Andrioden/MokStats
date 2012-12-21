@@ -1,6 +1,5 @@
 HIGH PRI
 ---------
-- Calculate last players results automatically, do some highlight indicator when it happens.
 
 LOW PRI
 ---------
@@ -12,4 +11,4 @@ LOW PRI
 
 PERFORMANCE / INTERNAL SHIT
 -------------------------
-- Combine all jquery files into one, or find an cdn.
+- Compress template files???? Makes source ugly, but still.

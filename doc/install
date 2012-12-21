@@ -14,7 +14,7 @@ RUN IN SHELL
 apt-get update
 apt-get upgrade
 apt-get install apache2 python python-django libapache2-mod-wsgi pip postgresql python-psycopg2
-pip install django
+pip install django, django_compress
 
 
 

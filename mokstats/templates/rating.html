@@ -28,13 +28,8 @@
 			</div>
 		</div>
 		
-		<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.cursor.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
-		<script src="{{ STATIC_URL }}jqplot/jqplot.enhancedLegendRenderer.min.js"></script>
-		<script src="{{ STATIC_URL }}grapher.js"></script>
-				
+		{% load compress %}
+		{% compress js inline %}
 		<script>
 			$("#rating_page").on('pageinit', function(){
 				// Set graph with
@@ -58,5 +53,6 @@
 				},100);
 			});
 		</script>
+		{% endcompress %}
 	</div>
 {% endblock %}

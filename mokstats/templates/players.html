@@ -48,7 +48,10 @@
 				</select>
 			</div>
 		</div>
-		
+	
+		{% load compress %}
+		{% compress js inline %}
+		<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
 		<script>
 			$('.select_place').last().bind( "change", function(event, ui) {
 				var places = []; 
@@ -66,5 +69,7 @@
 			}
 			sortBy("rating");
 		</script>
+		{% endcompress %}
+	
 	</div>
 {% endblock %}
