@@ -1,7 +1,6 @@
 {% extends "base.html" %} 
 
-{% block title %}Rating{% endblock %} 
-{% block imports %}{% endblock %} 
+{% block title %}Rating{% endblock %}
 
 {% block content %}
 	<!-- Start of first page -->
@@ -14,7 +13,6 @@
 		
 	
 		<div data-role="content">
-			<p>Rating er en verdi som angir ferdighet på gitt tidspunkt og blir regnet ut på samme måte som <a href="http://en.wikipedia.org/wiki/Elo_rating_system">Elo rating</a>.</p>
 			{% if max %}
 				<div>
 					<ul>
@@ -25,6 +23,9 @@
 			{% endif %}
 			<div class="center_outer">
 				<div id="ratings_graph" class="graph center_inner"></div>
+			</div>
+			<div style="overflow: hidden;">
+				<p><i class="smaller">Les om hvordan ratingen blir regnet ut <a href="./description/">her</a>.</i></p>
 			</div>
 		</div>
 		

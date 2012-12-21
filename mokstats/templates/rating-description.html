@@ -1,0 +1,49 @@
+{% extends "base.html" %} 
+
+{% block title %}Beskrivelse av ratingsystemet{% endblock %} 
+
+{% block content %}
+
+	<!-- Start of first page -->
+	<div data-role="page">
+	
+		<div data-role="header">
+			<a href="../../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Hvordan rating blir regnet ut</h1>
+		</div>
+		
+		<div data-role="content">
+			<p>
+			Rating er en verdi som angir ferdighet på gitt tidspunkt og blir regnet ut 
+			tilsvarende <a href="http://en.wikipedia.org/wiki/Elo_rating_system">Elo rating</a>, 
+			bare i en enklere form. Følgende skjer:</p>
+			<ol>
+				<li>Alle spillere starter med {{ START_RATING }} rating.</li>
+				<li>Etter hver kamp blir spillerenes <i>antatte vinnersjanse</i> regnet ut etter 
+				hvor stor andel av den totale ratingen spilleren har.</li>
+				<li>Ved å bruke vinnersjansen finner man <i>antatt sluttplassering</i> i kampen.</li>
+				<li><i>Differansen</i> mellom den <i>faktiske og antatte sluttplasseringen</i> indikerer hvor mye rating som tapes/vinnes.</li>
+				<li>En <i>K-verdi</i> multipliseres så med differansen og man har ergo rating tap eller økning. Lavere K-verdi gir altså 
+				en lavere rating forandring, og sørger dermed får en mer stabil rating utvikling.</li>
+			</ol>
+			<p>En egenskap ved dette systemet er at det blir et null-regnskap, totalt så vil spillernes tap/økning bli 0.
+			Dette gjør at man inngår inflasjon, noe som igjen gjør at spillere med få kamper kan nå høyt opp på topplaseringen.
+			</p>
+			
+			<h3>Scenario</h3>
+
+			<ol style="font-family: courier new;">
+				<li>Spillere: [André: 100 rating] [Tine: 100 rating]</li>
+				<li>André har en vinnersjanse på 100/200 = 50%</li>
+				<li>Antatt plassering er 50% av plassering 1 og 2, altså (1+2)/2 = 1,5</li>
+				<li>André vinner og får plassering 1, differansen er 1,5-1 = 0,5</li>
+				<li>Multiplisert med K-verdien (nå {{K_VALUE}}) gir, 0,5*3 = <span id="rating_gained" class="positive"></span> rating vunnet</li>
+				<li>Samme utregning for Tine vil gi tap av samme verdi.</li>
+			</ol>
+			<script>
+				$('#rating_gained').text(({{K_VALUE}}*0.5+"").replace(".", ","));
+			</script>
+			
+		</div>
+	</div>
+{% endblock %}

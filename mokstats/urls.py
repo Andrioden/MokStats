@@ -21,6 +21,7 @@ urlpatterns = patterns('',
     (r'^stats/best-results/$', 'mokstats.views.stats_best_results'),
     (r'^stats/worst-results/$', 'mokstats.views.stats_worst_results'),
     (r'^rating/$', 'mokstats.views.rating'),
+    (r'^rating/description/$', 'mokstats.views.rating_description'),
     (r'^admin/', include(admin.site.urls)),
 )
 

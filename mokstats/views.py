@@ -6,6 +6,7 @@ from django.template import RequestContext
 from django.db.models import Max, Min, Avg, Count
 from models import *
 from rating import RatingCalculator, RatingResult, START_RATING
+from rating import K as K_VALUE
 from django.core.cache import cache
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
@@ -237,6 +238,10 @@ def rating(request):
             'player_names': player_names,
             }
     return render_to_response('rating.html', data, context_instance=RequestContext(request))
+
+def rating_description(request):
+    data = {'K_VALUE': int(K_VALUE), 'START_RATING': int(START_RATING)}
+    return render_to_response('rating-description.html', data, context_instance=RequestContext(request))
 
 def _month_name(month_number):
     return calendar.month_name[month_number]
