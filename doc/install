@@ -9,13 +9,22 @@ Guide 1 and 2 are loosely followed. Guide 3 and 4 are almost fully followed. 5 a
 5. http://lassebunk.dk/2011/03/11/linux-backup-script/
 
 
-RUN IN SHELL
+RUN IN SHELL - anywhere
 ----------------
 apt-get update
 apt-get upgrade
 apt-get install apache2 python python-django libapache2-mod-wsgi pip postgresql python-psycopg2
 pip install django, django_compress
 
+RUN IN SHELL - at install location
+------------------------------------------------
+Uncertain about exact shit to be done, but git clone, and folder creation has to be done:
+- projectdir/static
+- projectdir/static/CACHE
+- projectdir/static/CACHE/css
+- projectdir/static/CACHE/js
+- some (not js/css) cache folder anywhere.
+- Both cache folders, 777
 
 
 Apache 2 virtual host file (/etc/apache2/sites-enabled)
