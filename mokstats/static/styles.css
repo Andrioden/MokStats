@@ -66,8 +66,12 @@ span.icon_sum {background-position: -144px -0px;}
 	text-shadow: none;
 }
 
-/************************* stats.html *************************/
+/************************* Stats *************************/
 
 #match_rounds_stats span.text {
 	margin-left: 5px;
 }
+
+/************************* Players *************************/
+.ascending { border: 2px solid red; }
+.descending { border: 2px solid green; }

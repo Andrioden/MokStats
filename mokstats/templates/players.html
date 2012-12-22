@@ -7,17 +7,17 @@
 
 
 	<!-- Start of first page -->
-	<div data-role="page" id="player_page" data-dom-cache="true">
+	<div data-role="page" id="players_page" data-dom-cache="true">
 	
 		<div data-role="header">
 			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
 			<h1>Spillere</h1>
 			<div>
 				<span>Sortering: </span>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('played')">Kamper</a>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('won')">Seire</a>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('winp')">Seiers %</a>
-				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy('rating')">Rating</a>
+				<a id="lolatm" data-role="button" data-mini="true" data-inline="true" onclick="sortBy(this, 'played')">Kamper</a>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy(this, 'won')">Seire</a>
+				<a data-role="button" data-mini="true" data-inline="true" onclick="sortBy(this, 'winp')">Seiers %</a>
+				<a id="sort_me" data-role="button" data-mini="true" data-inline="true" onclick="sortBy(this,'rating')">Rating</a>
 			</div>
 		</div>
 		
@@ -51,7 +51,7 @@
 		{% load compress %}
 		{% compress js inline %}
 		<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
-		<script>
+		<script>			
 			$('.select_place').last().bind( "change", function(event, ui) {
 				var places = []; 
 				$(this).find(':selected').each(function(){ 
@@ -63,10 +63,24 @@
 				});	
 			});
 			
-			function sortBy(type) {
-				$('#players li').tsort("."+type, {order:'desc'})
+			function sortBy(element, type) {
+				element = $(element);
+				if (element.hasClass('descending')) {
+					element.parent().children().removeClass('descending ascending');
+					element.addClass('ascending');
+					$('#players li').tsort("."+type, {order:'asc'});
+				}
+				else {
+					element.parent().children().removeClass('descending ascending');
+					element.addClass('descending');
+					$('#players li').tsort("."+type, {order:'desc'});
+				}
 			}
-			sortBy("rating");
+			
+			$("#players_page").on('pageinit', function(){
+				$('#players').find('.ui-li-last').removeClass('ui-li-last');
+				sortBy($('#sort_me'), "rating");
+			});
 		</script>
 		{% endcompress %}
 	

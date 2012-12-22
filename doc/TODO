@@ -3,9 +3,9 @@ HIGH PRI
 
 LOW PRI
 ---------
-- Add Button to make new match with same playerlist.
 - Filter player stats by period.
 - Hytte log, show activity when people have been at the cabin.
+- Sort opposite direction at player list.
 
 PERFORMANCE / INTERNAL SHIT
 -------------------------
