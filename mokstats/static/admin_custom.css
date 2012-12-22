@@ -1,2 +1,7 @@
+.left {
+	float: left;
+}
 /* Make the Total colon at the add match page bold */
-#playerresult_set-group tbody td.field-total p { font-weight: bold;}
+#playerresult_set-group tbody td.field-total p { 
+	font-weight: bold;
+}

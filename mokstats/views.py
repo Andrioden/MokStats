@@ -8,8 +8,6 @@ from models import *
 from rating import RatingCalculator, RatingResult, START_RATING
 from rating import K as K_VALUE
 from django.core.cache import cache
-from django.utils import simplejson
-from django.core.serializers.json import DjangoJSONEncoder
 import calendar, copy
 import logging
 logger = logging.getLogger("file_logger")
@@ -130,7 +128,7 @@ def stats(request):
     
     """
     ALL_RESULTS = PlayerResult.objects.select_related() # User several times
-    PRS = PRStatser(ALL_RESULTS)
+    PRS = PlayerResultStatser(ALL_RESULTS)
         
     results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
     total_avg = sum([r.total for r in results_totals])/results_totals.count()
@@ -168,18 +166,18 @@ def stats_best_results(request):
     print request.GET 
     amount = int(request.GET.get("amount", 20))
     print amount
-    PRS = PRStatser(PlayerResult.objects.select_related())
+    PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.bot_total(amount)}
     return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
    
 def stats_worst_results(request):
     amount = int(request.GET.get("amount", 20))
-    PRS = PRStatser(PlayerResult.objects.select_related())
+    PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.top_total(amount)}
     return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
 
 
-class PRStatser:
+class PlayerResultStatser:
     """ Does all kind of statistical fun fact calculations with the
     supplied PlayerResult object.
     

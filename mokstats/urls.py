@@ -12,6 +12,7 @@ admin.site.unregister(Group)
 
 """ LIST OF PATTERNS """
 urlpatterns = patterns('',
+    # VIEWS
     (r'^$', 'mokstats.views.index'),
     (r'^players/(?P<pid>\d+)/$', 'mokstats.views.player'),
     (r'^players/$', 'mokstats.views.players'),
@@ -22,6 +23,9 @@ urlpatterns = patterns('',
     (r'^stats/worst-results/$', 'mokstats.views.stats_worst_results'),
     (r'^rating/$', 'mokstats.views.rating'),
     (r'^rating/description/$', 'mokstats.views.rating_description'),
+    # AJAX CALLS
+    (r'^ajax_last_playerlist/$', 'mokstats.ajax.last_playerlist'),
+    # ADMIN PAGES
     (r'^admin/', include(admin.site.urls)),
 )
 
