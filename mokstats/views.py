@@ -157,7 +157,8 @@ def stats(request):
             'trumph': {'best': PRS.minmax(Max, 'trumph')},
             
             'extremes': {'gain': PRS.top(1, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass")[0],
-                         'loss': PRS.bot(1, "0 - sum_grand - sum_trumph")[0]},
+                         'loss': PRS.bot(1, "0 - sum_grand - sum_trumph")[0],
+                         'match_size': Match.objects.annotate(count=Count("playerresult")).order_by("-count", "-date", "-id").values("id", "count")[0]},
             
             'total': {'best': best_match_result,
                     'worst': worst_match_result,
@@ -178,48 +179,6 @@ def stats_worst_results(request):
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.top_total(amount)}
     return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
-
-
-class PlayerResultStatser:
-    """ Does all kind of statistical fun fact calculations with the
-    supplied PlayerResult object.
-    
-    """
-    ALL_RESULTS = None
-    
-    def __init__(self, all_results):
-        self.ALL_RESULTS = all_results
-    
-    def minmax(self, aggfunc, round_type):
-        """ Returns min or max value for a round type"""
-        field = "sum_"+round_type
-        val = self.ALL_RESULTS.aggregate(aggfunc(field))[field+'__max']
-        results = self.ALL_RESULTS.filter(**{field: val})
-        first = results.order_by('match__date', 'match__id').select_related()[0]
-        return {'sum': val, 'mid': first.match_id,
-                'pid': first.player_id, 'pname': first.player.name}
-        
-    def gt0_avg(self, round_type):
-        field = "sum_"+round_type
-        result = self.ALL_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
-        return round(result[field+'__avg'],1)
-    
-    def top_total(self, amount):
-        return self.top(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
-    def bot_total(self, amount):
-        return self.bot(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
-    
-    def bot(self, amount, value_field):
-        return self.top(amount, value_field, "")
-    
-    def top(self, amount, value_field_usage, total_prechar="-"):
-        select_query = {'total': '('+value_field_usage+')'}
-        results = self.ALL_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
-        top = []
-        for i in range(min(results.count(), amount)):
-            top.append({'sum': results[i].total, 'mid': results[i].match_id,
-                        'pid': results[i].player_id, 'pname': results[i].player.name})
-        return top
 
 def rating(request):
     _update_ratings()
@@ -303,3 +262,44 @@ def _update_ratings():
         for p in new_player_ratings:
             players[p.dbid] = p.rating
             PlayerResult.objects.filter(player=p.dbid).filter(match=match).update(rating=p.rating)
+            
+class PlayerResultStatser:
+    """ Does all kind of statistical fun fact calculations with the
+    supplied PlayerResult object.
+    
+    """
+    ALL_RESULTS = None
+    
+    def __init__(self, all_results):
+        self.ALL_RESULTS = all_results
+    
+    def minmax(self, aggfunc, round_type):
+        """ Returns min or max value for a round type"""
+        field = "sum_"+round_type
+        val = self.ALL_RESULTS.aggregate(aggfunc(field))[field+'__max']
+        results = self.ALL_RESULTS.filter(**{field: val})
+        first = results.order_by('match__date', 'match__id').select_related()[0]
+        return {'sum': val, 'mid': first.match_id,
+                'pid': first.player_id, 'pname': first.player.name}
+        
+    def gt0_avg(self, round_type):
+        field = "sum_"+round_type
+        result = self.ALL_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
+        return round(result[field+'__avg'],1)
+    
+    def top_total(self, amount):
+        return self.top(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
+    def bot_total(self, amount):
+        return self.bot(amount, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph")
+    
+    def bot(self, amount, value_field):
+        return self.top(amount, value_field, "")
+    
+    def top(self, amount, value_field_usage, total_prechar="-"):
+        select_query = {'total': '('+value_field_usage+')'}
+        results = self.ALL_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
+        top = []
+        for i in range(min(results.count(), amount)):
+            top.append({'sum': results[i].total, 'mid': results[i].match_id,
+                        'pid': results[i].player_id, 'pname': results[i].player.name})
+        return top
