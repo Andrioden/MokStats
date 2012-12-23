@@ -21,6 +21,9 @@
 
 .ui-body-c .ui-link {text-decoration: none;}
 
+footer {
+	font-size: 60%;
+}
 /************************* Match.html *************************/
 table#results {
 	width: 100%;
