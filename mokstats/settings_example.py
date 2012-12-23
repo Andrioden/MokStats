@@ -1,5 +1,5 @@
 """ PART 1: Settings that are unique for each deployment 
-
+------------------------------------------------------------
 """
 
 ADMINS = (
@@ -7,10 +7,11 @@ ADMINS = (
 )
 
 PROJECT_DIR = "D:/HIST/eclipse/mokstats/"
+CACHE_DIR = 'c:/temp/djangocache'
 
 DEBUG = True
 
-COMPRESS_ENABLED = True
+#COMPRESS_ENABLED = True
 
 DATABASES = {
     'default': {
@@ -23,17 +24,9 @@ DATABASES = {
     }
 }
 
-CACHE_DIR = 'c:/temp/djangocache'
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-        'LOCATION': CACHE_DIR,
-        'TIMEOUT': 60*60*24*31 # 1 Month
-    }
-}
 
 """ PART 2: General settings 
-
+------------------------------------------------------------
 """
 
 TEMPLATE_DEBUG = DEBUG
@@ -44,11 +37,11 @@ MANAGERS = ADMINS
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/Oslo'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'no-bok'
 
 SITE_ID = 1
 
@@ -64,9 +57,6 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
 STATIC_ROOT = ''
 
 # URL prefix for static files.
@@ -88,11 +78,10 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '6!q07bf+fgqal72_%gc=ri)o*z2ys(2r&amp;x)fu17)@%208z*%^w'
+SECRET_KEY = 'yesitisunquieontheserverfucktard'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -111,9 +100,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.middleware.cache.UpdateCacheMiddleware',
+    #'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    #'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -127,11 +116,9 @@ ROOT_URLCONF = 'mokstats.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'mokstats.wsgi.application'
 
+# Absolute paths to folders to check for templates
 TEMPLATE_DIRS = (
     PROJECT_DIR+"mokstats/templates"
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
 )
 
 INSTALLED_APPS = (
@@ -146,11 +133,14 @@ INSTALLED_APPS = (
     'compressor',
 )
 
-# A sample logging configuration. The only tangible logging
-# performed by this configuration is to send an email to
-# the site admins on every HTTP 500 error when DEBUG=False.
-# See http://docs.djangoproject.com/en/dev/topics/logging for
-# more details on how to customize your logging configuration.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': CACHE_DIR,
+        'TIMEOUT': 60*60*24*31 # 1 Month
+    }
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -176,7 +166,8 @@ LOGGING = {
 }
 
 COMPRESS_CSS_FILTERS = [
-     'compressor.filters.cssmin.CSSMinFilter'
+     'compressor.filters.css_default.CssAbsoluteFilter',
+     'compressor.filters.cssmin.CSSMinFilter',
 ]
 COMPRESS_JS_FILTERS = [
      'compressor.filters.jsmin.JSMinFilter'
