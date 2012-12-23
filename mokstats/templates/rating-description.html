@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 
-{% block title %}Beskrivelse av ratingsystemet{% endblock %} 
+{% block title %}Om rating{% endblock %} 
 
 {% block content %}
 
@@ -9,13 +9,13 @@
 	
 		<div data-role="header">
 			<a href="../../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
-			<h1>Hvordan rating blir regnet ut</h1>
+			<h1>Om rating</h1>
 		</div>
 		
 		<div data-role="content">
 			<p>
 			Rating er en verdi som angir ferdighet på gitt tidspunkt og blir regnet ut 
-			tilsvarende <a href="http://en.wikipedia.org/wiki/Elo_rating_system">Elo rating</a>, 
+			tilsvarende <a href="http://en.wikipedia.org/wiki/Elo_rating_system">Elo rating systemet</a>, 
 			bare i en enklere form. Følgende skjer:</p>
 			<ol>
 				<li>Alle spillere starter med {{ START_RATING }} rating.</li>
@@ -26,8 +26,8 @@
 				<li>En <i>K-verdi</i> multipliseres så med differansen og man har ergo rating tap eller økning. Lavere K-verdi gir altså 
 				en lavere rating forandring, og sørger dermed får en mer stabil rating utvikling.</li>
 			</ol>
-			<p>En egenskap ved dette systemet er at det blir et null-regnskap, totalt så vil spillernes tap/økning bli 0.
-			Dette gjør at man inngår inflasjon, noe som igjen gjør at spillere med få kamper kan nå høyt opp på topplaseringen.
+			<p>En egenskap ved dette systemet er at det blir et null-regnskap, som betyr at spillernes økning/minkning av rating totalt blir 0.
+			Dette gjør at man ungår inflasjon, noe som igjen gjør at det ikke nødvendigvis er en fordel å ha spilt mange kamper.
 			</p>
 			
 			<h3>Scenario</h3>

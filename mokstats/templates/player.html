@@ -16,33 +16,21 @@
 		<div data-role="content">
 			<div class="center_outer">
 				<div id="{{id}}_pie_graph" class="graph center_inner"></div>
+			</div>
+			<div class="center_outer">
 				<div id="{{id}}_rating_graph" class="graph center_inner"></div>
 			</div>
-		
 		</div>
 		
 		{% load compress %}
 		{% compress js inline %}
 		<script>
 			$("#player_page_{{id}}").on('pageinit', function(){
-				/*
-				* This method is a semi-hax that attempts to init the graph in
-				* an interval until it succeds. I was unable to trigger the method
-				* at the correct time.
-				*/
-				var interval = setInterval(function(){
-					try {
-						initResultGraph({{ id }}+'_pie_graph', {{ played }}, {{ won }}, {{ lost }});
-						initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}], "../../matches/");
-					}
-					catch(err) {
-						window.clearInterval(interval);
-						alert("Failed to initiate graph: "+err);
-					}
-					if ($("#{{ id }}_pie_graph").find('canvas').length > 0) {
-						window.clearInterval(interval);		
-					}
-				},100);				
+				$("#{{ id }}_rating_graph").width($(window).width()-20);
+				tryToGraph("{{ id }}_rating_graph", function() {
+					initResultGraph({{ id }}+'_pie_graph', {{ played }}, {{ won }}, {{ lost }});
+					initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}], "../../matches/");
+				});		
 			});
 		</script>
 		{% endcompress %}

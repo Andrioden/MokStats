@@ -1,0 +1,51 @@
+{% extends "base.html" %} 
+
+{% block title %}Aktivitet{% endblock %}
+
+{% block content %}
+	<!-- Start of first page -->
+	<div id="activity_page" data-role="page" data-dom-cache="true">
+	
+		<div data-role="header">
+			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Aktivitet (månedlig)</h1>
+		</div>
+		
+		{{list}}
+		<div data-role="content">
+			<div id="activity_graph" style="position: relative;"></div>
+		</div>
+		
+		{% load compress %}
+		{% compress js inline %}
+		<script>
+		$("#activity_page").on('pageinit', function(){
+			tryToGraph("activity_graph", function() {
+				$("#activity_graph").width($(window).width()-20);
+				initActivityGraph("activity_graph", {{ activity|safe }}, {{ places|safe }});
+			});
+		});
+		</script>
+		{% endcompress %}
+		
+	</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

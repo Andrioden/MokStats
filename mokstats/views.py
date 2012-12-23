@@ -10,7 +10,10 @@ from rating import K as K_VALUE
 from django.core.cache import cache
 import calendar, copy
 import logging
+from datetime import timedelta
 logger = logging.getLogger("file_logger")
+#from django.db import transaction
+#transaction.rollback()
 
 def index(request):
     return render_to_response('index.html', {}, context_instance=RequestContext(request))
@@ -240,6 +243,38 @@ def rating(request):
 def rating_description(request):
     data = {'K_VALUE': int(K_VALUE), 'START_RATING': int(START_RATING)}
     return render_to_response('rating-description.html', data, context_instance=RequestContext(request))
+
+def activity(request):
+    matches = Match.objects.select_related('place').order_by('date')
+    
+    # First do a temporarly dynamic count that spawns from the start to the end
+    data = {}
+    first_year = matches[0].date.year
+    last_year = matches[len(matches)-1].date.year
+    for match in matches:
+        place = match.place.name
+        if not data.has_key(place):
+            data[place] = {}
+            for year in range(first_year, last_year+1):
+                data[place][year] = {}
+                for month in range(1,13):
+                    data[place][year][month] = 0
+        # Add data
+        data[place][match.date.year][match.date.month] += 1
+        
+    # use temporarly data to create fitting array for the template grapher
+    activity = {'places': [], 'activity': []}
+    for place in data:
+        place_activity = []
+        for year in data[place]:
+            for month in data[place][year]:
+                c = data[place][year][month]
+                if month < 10:
+                    month = "0%s" % month
+                place_activity.append(["%s-%s-15" % (year,month), c])
+        activity['places'].append(str(place))
+        activity['activity'].append(place_activity)
+    return render_to_response('activity.html', activity, context_instance=RequestContext(request))
 
 def _month_name(month_number):
     return calendar.month_name[month_number]

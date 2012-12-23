@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^stats/worst-results/$', 'mokstats.views.stats_worst_results'),
     (r'^rating/$', 'mokstats.views.rating'),
     (r'^rating/description/$', 'mokstats.views.rating_description'),
+    (r'^activity/$', 'mokstats.views.activity'),
     # AJAX CALLS
     (r'^ajax_last_playerlist/$', 'mokstats.ajax.last_playerlist'),
     # ADMIN PAGES

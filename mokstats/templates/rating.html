@@ -35,23 +35,9 @@
 			$("#rating_page").on('pageinit', function(){
 				// Set graph with
 				$("#ratings_graph").width($(window).width()-20);
-				/*
-				* This method is a semi-hax that attempts to init the graph in
-				* an interval until it succeds. I was unable to trigger the method
-				* at the correct time.
-				*/
-				var interval = setInterval(function(){
-					try {
-						initRatingGraph('ratings_graph', {{ players|safe }}, "../matches/", {{ player_names|safe }});
-					}
-					catch(err) {
-						window.clearInterval(interval);
-						alert("Failed to initiate graph: "+err);
-					}
-					if ($("#ratings_graph").find('canvas').length > 0) {
-						window.clearInterval(interval);
-					}
-				},100);
+				tryToGraph("ratings_graph", function(){
+					initRatingGraph('ratings_graph', {{ players|safe }}, "../matches/", {{ player_names|safe }});
+				});
 			});
 		</script>
 		{% endcompress %}
