@@ -21,9 +21,9 @@ $(document).ready(function() {
 	
 	var playersTable = $('table').first();
 	
-	/*
-	 * Add a button that - by using ajax - loads the last games player list.
-	 */
+	//Left float delete match button
+	$('.deletelink-box').addClass("left");
+	//Add a button that - by using ajax - loads the last games player list.
 	var loadPlayersButton = $('<input type="button" class="left" value="Use last playerlist">');
 	loadPlayersButton.on("click", function(){
 		$.get('../../../../ajax_last_playerlist/', function(data) {
@@ -34,7 +34,7 @@ $(document).ready(function() {
 			});
 		},'json');
 	});
-	$('.submit-row').prepend(loadPlayersButton);
+	$('.submit-row').append(loadPlayersButton);
 	
 	/*
 	 * Triggers on every keyup event triggered in the match round input fields.
@@ -59,47 +59,79 @@ $(document).ready(function() {
 		playerRow.find('.field-total').find('p').text(total);
 		
 		// Automatically fill in remaining numbers if possible
-		var addedPlayersCount = playersTable.find('select').filter(function() {
-	        return $(this).val() != "";
-		}).size();
-		
-		var playerRowInputs = [];
-		playersTable.find("select").each(function(i) {
-			var roundInputs = $(this).parents('tr').find('input').slice('2');
-			if (i < addedPlayersCount-1) { // Not last player row
-				var roundInputsWithValCount = roundInputs.filter(function(){
-					return $(this).val() != ""; 
-				}).size();
-				if (roundInputsWithValCount < 7) return false; // Stops loop
-				else playerRowInputs.push(roundInputs);
-			}
-			else if (i == addedPlayersCount-1) { // Last player row
-				// Summarize all other players sum together
-				var roundSums = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
-				$(playerRowInputs).each(function() { // Each player
-					$(this).each(function(i) { // Each player's round value
-						roundSums[i] += parseInt($(this).val());
+		if (settings.getSetting("auto-calc") == "true") {
+	
+			var addedPlayersCount = playersTable.find('select').filter(function() {
+		        return $(this).val() != "";
+			}).size();
+			
+			var playerRowInputs = [];
+			playersTable.find("select").each(function(i) {
+				var roundInputs = $(this).parents('tr').find('input').slice('2');
+				if (i < addedPlayersCount-1) { // Not last player row
+					var roundInputsWithValCount = roundInputs.filter(function(){
+						return $(this).val() != ""; 
+					}).size();
+					if (roundInputsWithValCount < 7) return false; // Stops loop
+					else playerRowInputs.push(roundInputs);
+				}
+				else if (i == addedPlayersCount-1) { // Last player row
+					// Summarize all other players sum together
+					var roundSums = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0};
+					$(playerRowInputs).each(function() { // Each player
+						$(this).each(function(i) { // Each player's round value
+							roundSums[i] += parseInt($(this).val());
+						});
 					});
-				});
-				// Spades
-				if (!roundInputs.eq(0).val() && !targetEle.is(roundInputs.eq(0))) {
-					roundInputs.eq(0).val(13-roundSums[0]);
-					changeAnimate(roundInputs.eq(0));
-				}
-				// Queens
-				if (!roundInputs.eq(1).val() && !targetEle.is(roundInputs.eq(1))) {
-					roundInputs.eq(1).val(16-roundSums[1]);
-					changeAnimate(roundInputs.eq(1));
-				}
-				// Pass|Grand|Trumph
-				var cardsPerPlayer = Math.floor(52/addedPlayersCount);
-				$([4,5,6]).each(function(_, i) {
-					if (!roundInputs.eq(i).val() && !targetEle.is(roundInputs.eq(i))) {
-						roundInputs.eq(i).val(cardsPerPlayer-roundSums[i]);
-						changeAnimate(roundInputs.eq(i));
+					// Spades
+					if (!roundInputs.eq(0).val() && !targetEle.is(roundInputs.eq(0))) {
+						roundInputs.eq(0).val(13-roundSums[0]);
+						changeAnimate(roundInputs.eq(0));
 					}
-				});
-			}
-		});
+					// Queens
+					if (!roundInputs.eq(1).val() && !targetEle.is(roundInputs.eq(1))) {
+						roundInputs.eq(1).val(16-roundSums[1]);
+						changeAnimate(roundInputs.eq(1));
+					}
+					// Pass|Grand|Trumph
+					var cardsPerPlayer = Math.floor(52/addedPlayersCount);
+					$([4,5,6]).each(function(_, i) {
+						if (!roundInputs.eq(i).val() && !targetEle.is(roundInputs.eq(i))) {
+							roundInputs.eq(i).val(cardsPerPlayer-roundSums[i]);
+							changeAnimate(roundInputs.eq(i));
+						}
+					});
+				}
+			});
+		}	
 	});
+	
+	// Initiate settings
+	settings.initSettingsBox();
 });
+
+var settings = new function() {
+	var PREPEND = "setting.";
+	
+	this.getSetting = function(key) {
+		return window.localStorage.getItem(PREPEND+key);
+	};
+	
+	this.setSetting = function(key, val) {
+		window.localStorage.setItem(PREPEND+key, val);
+	};
+	
+	this.initSettingsBox = function() {
+		var thisSettings = this;
+		
+		var cBox = $('<span class="setting_item left"><input type="checkbox"> Automatic Calculation</span>');
+		if (this.getSetting("auto-calc") == "true") cBox.find('input').prop('checked', true);
+		cBox.find('input').on("click", function() {
+			var isChecked = $(this).prop('checked');
+			thisSettings.setSetting("auto-calc", isChecked);
+		});
+		$('.submit-row').append(cBox);
+	}
+	
+	
+}

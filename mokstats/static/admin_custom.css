@@ -5,3 +5,7 @@
 #playerresult_set-group tbody td.field-total p { 
 	font-weight: bold;
 }
+
+.setting_item {
+	margin: 5px 0 0 5px;
+}
