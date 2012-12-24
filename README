@@ -1,5 +1,5 @@
-A web page used to generate statistics for our traditional cabin game "Møkkis", which is a 6athlon card game.
+A web page that generates statistics and graphs for our traditional cabin game Møkkis, which is a 6athlon card game.
 
 Live page: http://andresh.nerdvana.tihlde.org:20000/mokstats/
 
-The web page is developed using the python web framework Django. It also contains small amounts of JavaScript code, mostly to generate graphs with jqPlot (http://www.jqplot.com/). 
+The web page is developed using the python web framework Django. It also contains small amounts of JavaScript code, mostly to generate graphs with jqPlot (http://www.jqplot.com/).
