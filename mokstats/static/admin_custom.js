@@ -24,7 +24,7 @@ $(document).ready(function() {
 	//Left float delete match button
 	$('.deletelink-box').addClass("left");
 	//Add a button that - by using ajax - loads the last games player list.
-	var loadPlayersButton = $('<input type="button" class="left" value="Use last playerlist">');
+	var loadPlayersButton = $('<input type="button" class="left" value="Use last playerlist (no save)">');
 	loadPlayersButton.on("click", function(){
 		$.get('../../../../ajax_last_playerlist/', function(data) {
 			$(data).each(function(i, id) {
