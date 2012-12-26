@@ -27,14 +27,15 @@ footer {
 /************************* Match.html *************************/
 table#results {
 	width: 100%;
+	border-collapse: collapse;
 }
 
 table#results td.center {
 	text-align: center;
 }
 
-table#results td {
-	border: 1px solid gray;
+table#results tr {
+	border-bottom: 1px solid gray;	
 }
 
 table#results td.dif {
