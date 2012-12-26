@@ -34,7 +34,9 @@
 				{% for result in results %}
 					<tr>
 						<td>
-							<span class="left" style="margin-right: 5px;">{{result.player.name}}</span>
+							<span class="left" style="margin-right: 5px;">
+								<a href="../../players/{{result.player.id}}/">{{result.player.name}}</a>
+							</span>
 							{% if result.winner %}
 								<span title="Vinner" class="icon icon_star left"></span>
 							{% endif %}
