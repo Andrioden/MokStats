@@ -17,8 +17,8 @@
 			{% for r in results %}
 			    <li>
 			    	<span class="ui-li-count">{{r.sum}}</span>
-			    	<span onclick='$.mobile.changePage("../../../players/{{r.pid}}/")'>{{r.pname}}</span>
-			    	<span class="smaller">(<a href="../../../matches/{{r.mid}}/">kampen</a>)</span>
+			    	<span style="cursor: pointer;" onclick='$.mobile.changePage("../../players/{{r.pid}}/")'>{{r.pname}}</span>
+			    	<span class="smaller">(<a href="../../matches/{{r.mid}}/">kampen</a>)</span>
 			    </li>
 			{% endfor %}
 			</ol>
