@@ -15,6 +15,17 @@
 		
 	
 		<div data-role="content">
+			<div style="margin-bottom: 5px;">
+				<i>
+				{% if aase_los %}
+					{% if andre_win %}
+						" Æ vil sitt atmed mommo! "
+					{% else %}
+						" Hva er det vi spiller nu? "
+					{% endif %}
+				{% endif %}
+				</i>
+			</div>
 			<table id="results">
 				<thead>
 					<tr>
@@ -60,6 +71,15 @@
 				{% endfor %}
 				</tbody>
 			</table>
+			<div style="margin-top: 20px;">
+				<i>
+				{% if moffa_win %}
+					" Dette er et ganske intelligent spill... "
+				{% elif moffa_los %}
+					" Dette er ikke akkurat et intelligent spill... "
+				{% endif %}
+				</i>
+			</div>
 		</div>
 		
 		<div style="overflow: hidden" data-role="footer" >

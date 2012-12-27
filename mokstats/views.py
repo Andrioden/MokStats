@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render_to_response, get_object_or_404, redirect
 from django.utils import simplejson
 from django.core.serializers.json import DjangoJSONEncoder
@@ -121,7 +123,11 @@ def match(request, mid):
             'place': m.place.name,
             'results': results,
             'next_match_id': m.get_next_match_id(),
-            'prev_match_id': m.get_prev_match_id()}
+            'prev_match_id': m.get_prev_match_id(),
+            'moffa_los': results[len(results)-1]['player']['name'] == "Bengt",
+            'moffa_win': (results[0]['player']['name'] == "Bengt") and (results[0]['total'] < 0),
+            'aase_los': results[len(results)-1]['player']['name'] == "Aase",
+            'andre_win': results[0]['player']['name'] == u"André"}
     return render_to_response('match.html', data, context_instance=RequestContext(request))
 
 
@@ -158,7 +164,7 @@ def stats(request):
             
             'extremes': {'gain': PRS.top(1, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass")[0],
                          'loss': PRS.bot(1, "0 - sum_grand - sum_trumph")[0],
-                         'match_size': Match.objects.annotate(count=Count("playerresult")).order_by("-count", "-date", "-id").values("id", "count")[0]},
+                         'match_size': Match.objects.annotate(count=Count("playerresult")).order_by("-count", "date", "id").values("id", "count")[0]},
             
             'total': {'best': best_match_result,
                     'worst': worst_match_result,

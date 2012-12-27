@@ -85,7 +85,8 @@ $(document).ready(function() {
 					});
 					// Spades
 					if (!roundInputs.eq(0).val() && !targetEle.is(roundInputs.eq(0))) {
-						roundInputs.eq(0).val(13-roundSums[0]);
+						var spadesInPlay = $.inArray(addedPlayersCount,[6,8,9]) != -1 ? 12 : 13;
+						roundInputs.eq(0).val(spadesInPlay-roundSums[0]);
 						changeAnimate(roundInputs.eq(0));
 					}
 					// Queens

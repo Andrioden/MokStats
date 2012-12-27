@@ -33,8 +33,14 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
                 pass
         if player_count < 3:
             raise forms.ValidationError('Minst 3 spillere')
-        if not spades_total == 13:
-            raise forms.ValidationError('For få/mange Spa poeng gitt, %s totalt nå, 13 krevd' % spades_total)
+        
+        if player_count in [6,8,9]:
+            spades_in_play = 12
+        else:
+            spades_in_play = 13
+        if not spades_total == spades_in_play:
+            raise forms.ValidationError('For få/mange Spa poeng gitt, %s totalt nå, %s krevd' % (spades_total, spades_in_play))
+        
         if not queens_total == 16:
             raise forms.ValidationError('For få/mange Damer poeng gitt, %s totalt nå, 16 krevd' % queens_total)
         cards_per_player = 52/player_count
