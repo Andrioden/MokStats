@@ -173,9 +173,7 @@ def stats(request):
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def stats_best_results(request):
-    print request.GET 
     amount = int(request.GET.get("amount", 20))
-    print amount
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.bot_total(amount)}
     return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))

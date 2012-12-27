@@ -90,7 +90,7 @@ class Match(models.Model):
                         return pos+1
                 # Player did not have the same total as someone else
                 return i+1
-        print 'PlayerResult for player %s not found in match %s' % (pid, self.pk)
+        #print 'PlayerResult for player %s not found in match %s' % (pid, self.pk)
     def get_newer_matches(self):
         excludeQ = Q(date__lt=self.date) | (Q(date=self.date) & Q(id__lte=self.pk))
         return Match.objects.exclude(excludeQ)
