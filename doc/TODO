@@ -4,9 +4,8 @@ HIGH PRI
 LOW PRI
 ---------
 - Filter player stats by period.
-- List all worst spades, queens games.
+- List all worst spades, queens, etc games.
 - Filter players list by percentage played.
-- Match list in players page.
 
 PERFORMANCE / INTERNAL SHIT
 -------------------------
