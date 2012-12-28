@@ -25,7 +25,7 @@ Uncertain about exact shit to be done, but git clone, and folder creation has to
 - projectdir/static/CACHE/js
 - some (not js/css) cache folder anywhere.
 - Both cache folders, 777
-
+- Create config file
 
 Apache 2 virtual host file (/etc/apache2/sites-enabled)
 ------------------------------------------------

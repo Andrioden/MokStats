@@ -63,6 +63,7 @@ function initRatingGraph(id, plotdata, clickUrl, labels) {
 		};
 	}
 	
+	// Create graph
 	var chart = $.jqplot(id, plotdata, {
 		title:'Rating utvikling',
 		legend: customLegend,
@@ -71,7 +72,7 @@ function initRatingGraph(id, plotdata, clickUrl, labels) {
 				renderer:$.jqplot.DateAxisRenderer,
 				tickOptions:{
 					formatString:'%b&nbsp;%y'
-				}
+				},
 			},
 			yaxis:{
 				tickOptions:{

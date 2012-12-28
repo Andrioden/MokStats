@@ -1,3 +1,5 @@
+/******************** Add match page ********************/
+
 .left {
 	float: left;
 }
@@ -8,4 +10,10 @@
 
 .setting_item {
 	margin: 5px 0 0 5px;
+}
+
+/******************** Add configuration page ********************/
+
+.aligned label {
+	width: 20em;
 }

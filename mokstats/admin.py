@@ -65,3 +65,8 @@ class MatchAdmin(admin.ModelAdmin):
               "admin_custom.js",)
         css = {'all': ('admin_custom.css',)}
 admin.site.register(Match, MatchAdmin)
+
+class ConfigurationAdmin(admin.ModelAdmin):
+    class Media:
+        css = {'all': ('admin_custom.css',)}
+admin.site.register(Configuration, ConfigurationAdmin)

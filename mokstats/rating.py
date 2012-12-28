@@ -1,11 +1,9 @@
 from decimal import *
-
-K = Decimal('3.0')
-START_RATING = Decimal('100.0')
+from models import Configuration, cur_config
 
 class RatingCalculator:
     def __init__(self):
-        pass
+        self.K = cur_config().rating_k
     def new_ratings(self, players):
         total_rating = sum([p.rating for p in players])
         points_for_position = self.points_for_position(players)
@@ -20,7 +18,7 @@ class RatingCalculator:
             win_chance = p.rating/total_rating
             expected_points = total_points * win_chance
             actual_points = points_for_position[p.position-1]
-            p.rating += K * (actual_points - expected_points)
+            p.rating += self.K * (actual_points - expected_points)
             #print "(%s) %s - Win chance of %s and position %s, gives expected / actual points of %s/%s and %s as new rating " % (p.dbid, round(from_rating,2), round(win_chance,2), p.position, round(expected_points,2), actual_points, round(p.rating,2))
         return players
     

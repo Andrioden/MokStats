@@ -2,19 +2,21 @@ from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, post_delete
 from mokstats.settings import CACHE_DIR
-from rating import START_RATING
+#from rating import START_RATING
 import os
 import shutil
 import datetime
+from decimal import *
 
-""" SOME QUERIES """
+def cur_config():
+    return Configuration.objects.latest('id')
 
 class Player(models.Model):
     name = models.CharField(max_length=20)
     def get_ratings(self):
         results = PlayerResult.objects.filter(player=self).select_related('match__date')
         ratings = []
-        prev_rating = START_RATING
+        prev_rating = cur_config().rating_start
         for res in results.order_by('match__date', 'match__id'):
             dif = res.rating-prev_rating
             if dif > 0:
@@ -38,21 +40,22 @@ class Place(models.Model):
     def __unicode__(self):
         return self.name
     
-def get_last_match_date():
+def _get_last_match_date():
     match_count = Match.objects.count()
     if match_count == 0:
         return datetime.datetime.now()
     else:
         return Match.objects.all()[match_count-1].date
-def get_last_match_place():
+def _get_last_match_place():
     match_count = Match.objects.count()
     if match_count == 0:
         return None
     else:
         return Match.objects.all()[match_count-1].place_id
+    
 class Match(models.Model):
-    date = models.DateField(default=get_last_match_date)
-    place = models.ForeignKey(Place, default=get_last_match_place)
+    date = models.DateField(default=_get_last_match_date)
+    place = models.ForeignKey(Place, default=_get_last_match_place)
     def get_winners(self):
         min_sum = 1000
         winners = []
@@ -115,23 +118,6 @@ class Match(models.Model):
         verbose_name = "Match"
         verbose_name_plural = "Matches" 
         
-def delete_cache(sender, **kwargs):
-    for root, dirs, files in os.walk(CACHE_DIR):
-        for f in files:
-            os.unlink(os.path.join(root, f))
-        for d in dirs:
-            shutil.rmtree(os.path.join(root, d))
-post_save.connect(delete_cache, sender=Match)
-post_delete.connect(delete_cache, sender=Match)
-
-def clear_affected_results_rating(instance, **kwargs):
-    newer = instance.get_newer_matches()
-    newer_mids = list(newer.values_list('id', flat=True))
-    affected_mids = newer_mids + [instance.id]
-    PlayerResult.objects.filter(match_id__in=affected_mids).update(rating=None)
-post_save.connect(clear_affected_results_rating, sender=Match)
-post_delete.connect(clear_affected_results_rating, sender=Match)
-    
 class PlayerResult(models.Model):
     match = models.ForeignKey(Match)
     player = models.ForeignKey(Player)
@@ -151,7 +137,7 @@ class PlayerResult(models.Model):
         if older_results.exists(): 
             return self.rating - older_results.order_by('-match__date', '-match__id')[0].rating
         else:
-            return self.rating - START_RATING
+            return self.rating - cur_config().rating_start
     def vals(self):
         return {'player': {'id': self.player.id,
                            'name': self.player.name},
@@ -170,3 +156,43 @@ class PlayerResult(models.Model):
         return "Results for %s" % self.player.name
     class Meta:
         unique_together = ("match", "player")
+
+class Configuration(models.Model):
+    active_player_match_treshold = models.PositiveSmallIntegerField("Terskel for aktiv spiller", default=20)
+    rating_start = models.DecimalField("Rating: startverdi", max_digits=6, 
+                                       decimal_places=2, default=Decimal("100.00"))
+    rating_k = models.DecimalField("Rating: K-Verdi", max_digits=6,
+                                   decimal_places=2, default=Decimal("3.00"))
+    def __unicode__(self):
+        if self.pk == cur_config().id:
+            return "** Current config**"
+        else:
+            return "Unused config"
+        
+        
+"""----------------------------- SIGNALS -----------------------------------
+----------------------------------------------------------------------------
+-------------------------------------------------------------------------"""
+
+def delete_cache(sender, **kwargs):
+    for root, dirs, files in os.walk(CACHE_DIR):
+        for f in files:
+            os.unlink(os.path.join(root, f))
+        for d in dirs:
+            shutil.rmtree(os.path.join(root, d))
+def clear_affected_results_rating(instance, **kwargs):
+    newer = instance.get_newer_matches()
+    newer_mids = list(newer.values_list('id', flat=True))
+    affected_mids = newer_mids + [instance.id]
+    PlayerResult.objects.filter(match_id__in=affected_mids).update(rating=None)
+def clear_all_rating(sender, **kwargs):
+    PlayerResult.objects.all().update(rating=None)
+    
+post_save.connect(delete_cache, sender=Match)
+post_delete.connect(delete_cache, sender=Match)
+post_save.connect(clear_affected_results_rating, sender=Match)
+post_delete.connect(clear_affected_results_rating, sender=Match)
+post_save.connect(delete_cache, sender=Configuration)
+post_delete.connect(delete_cache, sender=Configuration)
+post_save.connect(clear_all_rating, sender=Configuration)
+post_delete.connect(clear_all_rating, sender=Configuration)

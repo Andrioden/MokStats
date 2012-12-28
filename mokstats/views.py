@@ -7,8 +7,7 @@ from django.http import HttpResponse
 from django.template import RequestContext
 from django.db.models import Max, Min, Avg, Count
 from models import *
-from rating import RatingCalculator, RatingResult, START_RATING
-from rating import K as K_VALUE
+from rating import RatingCalculator, RatingResult
 from django.core.cache import cache
 import calendar, copy
 import logging
@@ -67,7 +66,8 @@ def players(request):
         p = {'name': place.name}
         p['selected'] = "selected" if (place.id in place_ids) else ""
         places.append(p)
-    data = {'players': players, 'places': places}
+    data = {'players': players, 'places': places, 
+            'config': {'active_treshold': cur_config().active_player_match_treshold}}
     return render_to_response('players.html', data, context_instance=RequestContext(request))
 
 def player(request, pid):
@@ -204,7 +204,9 @@ def rating(request):
     return render_to_response('rating.html', data, context_instance=RequestContext(request))
 
 def rating_description(request):
-    data = {'K_VALUE': int(K_VALUE), 'START_RATING': int(START_RATING)}
+    conf = cur_config()
+    data = {'K_VALUE': int(conf.rating_k), 
+            'START_RATING': int(conf.rating_start)}
     return render_to_response('rating-description.html', data, context_instance=RequestContext(request))
 
 def activity(request):
@@ -244,6 +246,7 @@ def _month_name(month_number):
 
 calc = RatingCalculator()
 def _update_ratings():
+    START_RATING = cur_config().rating_start
     players = {}
     match_ids = list(set(PlayerResult.objects.filter(rating=None).values_list('match_id', flat=True)))
     for match in Match.objects.filter(id__in=match_ids).order_by('date', 'id'):

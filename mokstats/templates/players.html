@@ -37,6 +37,14 @@
 		</div>
 		
 		<div data-role="footer">
+			<div data-role="fieldcontain">
+				<label for="active_filter">Vis bare aktive spillere:</label>
+				<select name="active_filter" id="active_filter" data-role="slider">
+					<option value="off">Av</option>
+					<option value="on" selected="selected">På</option>
+				</select> 
+			</div>
+			
 			<div data-role="fieldcontain" style="margin: 0;">
 				<label for="select_place" class="select">Sted(er):</label>
 				<select name="select_place" class="select_place" id="select_place" data-native-menu="false" data-inline="false" multiple>
@@ -51,7 +59,26 @@
 		{% load compress %}
 		{% compress js inline %}
 		<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
-		<script>			
+		<script>
+			$( "#active_filter" ).on( 'slidestop change', function( event ) {
+				console.log($(this).val())
+				if ($(this).val() == "on") {
+					hideAllInactivePlayers();
+				}
+				else {
+					$("#players").children().show();
+				}
+			});
+			
+			function hideAllInactivePlayers() {
+				$("#players").children().each(function(){
+					if (parseInt($(this).find('.played').text()) < {{config.active_treshold}}) {
+						$(this).hide();
+					}
+				})
+			}
+			
+			
 			$('.select_place').last().bind( "change", function(event, ui) {
 				var places = []; 
 				$(this).find(':selected').each(function(){ 
@@ -80,6 +107,8 @@
 			$("#players_page").on('pageinit', function(){
 				$('#players').find('.ui-li-last').removeClass('ui-li-last');
 				sortBy($('#sort_me'), "rating");
+				hideAllInactivePlayers();
+				$( "#active_filter" ).val("on");
 			});
 		</script>
 		{% endcompress %}
