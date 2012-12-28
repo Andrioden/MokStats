@@ -158,7 +158,7 @@ class PlayerResult(models.Model):
         unique_together = ("match", "player")
 
 class Configuration(models.Model):
-    active_player_match_treshold = models.PositiveSmallIntegerField("Terskel for aktiv spiller", default=20)
+    active_player_match_treshold = models.PositiveSmallIntegerField("Terskel aktiv spiller (kamper)", default=20)
     rating_start = models.DecimalField("Rating: startverdi", max_digits=6, 
                                        decimal_places=2, default=Decimal("100.00"))
     rating_k = models.DecimalField("Rating: K-Verdi", max_digits=6,

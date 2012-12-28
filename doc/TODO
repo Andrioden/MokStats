@@ -3,8 +3,9 @@ HIGH PRI
 
 LOW PRI
 ---------
-- Filter player stats by period.
+- Filter player stats by period/year.
 - List all worst spades, queens, etc games.
+- Add a last backup date page.
 
-PERFORMANCE / INTERNAL SHIT
--------------------------
+PERFORMANCE / INTERNAL STUFF
+----------------------------
