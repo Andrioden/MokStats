@@ -6,8 +6,8 @@ ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
 
-PROJECT_DIR = "D:/HIST/eclipse/mokstats/"
-CACHE_DIR = 'c:/temp/djangocache'
+PROJECT_DIR = "/srv/djangoapps/mokstatsapp/"
+CACHE_DIR = "/tmp/mokstatscache"
 
 DEBUG = True
 
@@ -57,11 +57,11 @@ USE_L10N = True
 USE_TZ = True
 
 # Absolute path to the directory static files should be collected to.
-STATIC_ROOT = ''
+STATIC_ROOT = PROJECT_DIR+"static/"
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = '/static/'
+STATIC_URL = '/mokstats/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (

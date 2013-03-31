@@ -1,0 +1,23 @@
+Apache 2 virtual host file (/etc/apache2/sites-enabled)
+------------------------------------------------
+<VirtualHost *:20000>
+
+        ServerName lindebergvpn.dynalias.net
+
+        WSGIScriptAlias /mokstats /srv/djangoapps/mokstatsapp/mokstats/wsgi.py
+
+        <Directory /srv/djangoapps/mokstatsapp/mokstats>
+                <Files wsgi.py>
+                Order deny,allow
+                Allow from all
+                </Files>
+        </Directory>
+
+        Alias /mokstats/static/ /srv/djangoapps/mokstatsapp/static/
+
+        <Directory /srv/djangoapps/mokstatsapp/static>
+        Order deny,allow
+        Allow from all
+        </Directory>
+        
+</VirtualHost>
