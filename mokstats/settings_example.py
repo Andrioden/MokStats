@@ -10,6 +10,7 @@ PROJECT_DIR = "/srv/djangoapps/mokstatsapp/"
 CACHE_DIR = "/tmp/mokstatscache"
 
 DEBUG = True
+TEMPLATE_DEBUG = DEBUG
 
 #COMPRESS_ENABLED = True
 
@@ -30,8 +31,6 @@ SECRET_KEY = 'yesitisunquieontheserverfucktard'
 """ PART 2: General settings 
 ------------------------------------------------------------
 """
-
-TEMPLATE_DEBUG = DEBUG
 
 MANAGERS = ADMINS
 
@@ -99,9 +98,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
-    #'django.middleware.cache.UpdateCacheMiddleware',
+    #'django.middleware.cache.UpdateCacheMiddleware', #Uncomment to Activate Cache
     'django.middleware.common.CommonMiddleware',
-    #'django.middleware.cache.FetchFromCacheMiddleware',
+    #'django.middleware.cache.FetchFromCacheMiddleware', #Uncomment to Activate Cache
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -137,30 +136,6 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
         'LOCATION': CACHE_DIR,
         'TIMEOUT': 60*60*24*31 # 1 Month
-    }
-}
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
     }
 }
 
