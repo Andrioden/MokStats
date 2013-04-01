@@ -193,13 +193,12 @@ def rating(request):
     min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
     min_obj = PlayerResult.objects.select_related('player__name').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
     players = Player.objects.all()
-    player_names = simplejson.dumps([p.name for p in players], cls=DjangoJSONEncoder)
     data = {'max': {'pid': max_obj.player_id, 'pname': max_obj.player.name, 
                     'mid': max_obj.match_id, 'rating': max_obj.rating},
             'min': {'pid': min_obj.player_id, 'pname': min_obj.player.name, 
                     'mid': min_obj.match_id, 'rating': min_obj.rating},
             'players': [p.get_ratings() for p in players],
-            'player_names': player_names,
+            'player_names': [p.name for p in players],
             }
     return render_to_response('rating.html', data, context_instance=RequestContext(request))
 

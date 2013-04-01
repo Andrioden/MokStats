@@ -24,6 +24,8 @@ DATABASES = {
     }
 }
 
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'yesitisunquieontheserverfucktard'
 
 """ PART 2: General settings 
 ------------------------------------------------------------
@@ -79,9 +81,6 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'yesitisunquieontheserverfucktard'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (

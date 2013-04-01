@@ -35,8 +35,16 @@
 			$("#rating_page").on('pageinit', function(){
 				// Set graph with
 				$("#ratings_graph").width($(window).width()-20);
+				
+				// Convert name list from unicode string to a javascript string
+				var names = [];
+				{% for name in player_names %}
+				    names.push("{{name}}");
+				{% endfor %}
+
+				// Create graph
 				tryToGraph("ratings_graph", function(){
-					initRatingGraph('ratings_graph', {{ players|safe }}, "../matches/", {{ player_names|safe }});
+					initRatingGraph('ratings_graph', {{ players|safe }}, "../matches/", names);
 				});
 			});
 		</script>
