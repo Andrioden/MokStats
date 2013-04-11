@@ -1,7 +1,9 @@
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+Heisann! Har klikka gjennom diverse statsistikk, ser ut til at alt fungerer så langt. Og for moro skyld gjorde jeg det i Firefox og ikke IE Mulig jeg har nevnt det før, men kunne godt tenkt meg litt mer under hver omgang i "Diverse"-statistikken; dvs. f.eks. står det under spar-runden at " Dårligste reultat er 13 poeng først oppnåd av Johnny Dag i denne kampen"... Siden dette aldri kommer til å endre seg kunne det vært greit med litt annen statistikk også her; f.eks. 10/20 dårligste beste, eller hvem som har hatt flest kamper med 13 poeng osv. Ellers virket det kanskje litt tregere på Odd sin server enn på HiST sin, men det er mulig det bare var innbilning.
+
 HIGH PRI
 ---------
 - The rating system awards to much points from games with many players (6+?)
-- Add a monthly permanent backup
 
 LOW PRI
 ---------
