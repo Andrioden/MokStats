@@ -204,13 +204,20 @@ def rating(request):
     max_obj = PlayerResult.objects.select_related('player__name').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
     min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
     min_obj = PlayerResult.objects.select_related('player__name').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
+    # Only list active players
+    active_players = []
     players = Player.objects.all()
+    active_player_match_treshold = cur_config().active_player_match_treshold
+    for p in players:
+        if PlayerResult.objects.filter(player_id=p.id).count() >= active_player_match_treshold:
+            active_players.append(p)
+    # Create data context and return response
     data = {'max': {'pid': max_obj.player_id, 'pname': max_obj.player.name, 
                     'mid': max_obj.match_id, 'rating': max_obj.rating},
             'min': {'pid': min_obj.player_id, 'pname': min_obj.player.name, 
                     'mid': min_obj.match_id, 'rating': min_obj.rating},
-            'players': [p.get_ratings() for p in players],
-            'player_names': [p.name for p in players],
+            'players': [p.get_ratings() for p in active_players],
+            'player_names': [p.name for p in active_players],
             }
     return render_to_response('rating.html', data, context_instance=RequestContext(request))
 
@@ -255,8 +262,8 @@ def activity(request):
 def _month_name(month_number):
     return calendar.month_name[month_number]
 
-calc = RatingCalculator()
 def _update_ratings():
+    calc = RatingCalculator()
     START_RATING = cur_config().rating_start
     players = {}
     match_ids = list(set(PlayerResult.objects.filter(rating=None).values_list('match_id', flat=True)))
