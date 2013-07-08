@@ -1,12 +1,10 @@
 from django.db import models
 from django.db.models import Q
 from django.db.models.signals import post_save, post_delete
-from mokstats.settings import CACHE_DIR
-#from rating import START_RATING
-import os
-import shutil
+from django.core.cache import cache
+
 import datetime
-from decimal import *
+from decimal import Decimal
 
 def cur_config():
     return Configuration.objects.latest('id')
@@ -174,12 +172,8 @@ class Configuration(models.Model):
 ----------------------------------------------------------------------------
 -------------------------------------------------------------------------"""
 
-def delete_cache(sender, **kwargs):
-    for root, dirs, files in os.walk(CACHE_DIR):
-        for f in files:
-            os.unlink(os.path.join(root, f))
-        for d in dirs:
-            shutil.rmtree(os.path.join(root, d))
+def clear_cache(sender, **kwargs):
+    cache.clear()
 def clear_affected_results_rating(instance, **kwargs):
     newer = instance.get_newer_matches()
     newer_mids = list(newer.values_list('id', flat=True))
@@ -188,11 +182,11 @@ def clear_affected_results_rating(instance, **kwargs):
 def clear_all_rating(sender, **kwargs):
     PlayerResult.objects.all().update(rating=None)
     
-post_save.connect(delete_cache, sender=Match)
-post_delete.connect(delete_cache, sender=Match)
+post_save.connect(clear_cache, sender=Match)
+post_delete.connect(clear_cache, sender=Match)
 post_save.connect(clear_affected_results_rating, sender=Match)
 post_delete.connect(clear_affected_results_rating, sender=Match)
-post_save.connect(delete_cache, sender=Configuration)
-post_delete.connect(delete_cache, sender=Configuration)
+post_save.connect(clear_cache, sender=Configuration)
+post_delete.connect(clear_cache, sender=Configuration)
 post_save.connect(clear_all_rating, sender=Configuration)
 post_delete.connect(clear_all_rating, sender=Configuration)

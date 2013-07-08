@@ -1,6 +1,5 @@
 HIGH PRI
 ---------
-- The rating system awards to much points from games with many players (6+?)
 
 LOW PRI
 ---------
@@ -13,5 +12,4 @@ LOW PRI
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
 - Investigate static files pattern thingy in urls
-- Use cache.clear() to delete cache. 
 - Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate.
