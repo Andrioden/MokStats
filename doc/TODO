@@ -4,11 +4,8 @@ HIGH PRI
 
 MEDIUM PRI
 ------------------
-- Add a last backup date page, which indicates if the backup function is running by green/red something.
-- Stats that can indicate if starting for a given round has an advantage.
-- Stats of "Most significant round", what round gives at average the most points.
-- Personal stats; what round is player worst at, compared to the average?
 - Under the div stats for rounds that has statistics that never will change (like most points in spades): Change to who has the "max/min points" the most amount of times.
+- Add a last backup date page, which indicates if the backup function is running by green/red something.
 
 LOW PRI
 ------------------
@@ -19,3 +16,5 @@ PERFORMANCE / INTERNAL STUFF
 ----------------------------
 - Investigate static files pattern thingy in urls
 - Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate.
+- Add field to PlayerResult: solitaire_sum, summarize the solitaire values "on save" to simplify everything in regard to it.
+- Add field to PlayerResult: rating earned, can then check best earned rating and simplify rating earned calculations.

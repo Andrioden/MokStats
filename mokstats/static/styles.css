@@ -53,10 +53,10 @@ span.icon {
 	display: block;
 }
 span.icon_star {background-position: -0px -0px;}
-span.icon_spade {background-position: -18px -0px;}
-span.icon_queen {background-position: -36px -0px;}
+span.icon_spade, span.icon_spades {background-position: -18px -0px;}
+span.icon_queen, span.icon_queens {background-position: -36px -0px;}
 span.icon_solit_lines {background-position: -54px -0px;}
-span.icon_solit_cards {background-position: -72px -0px;}
+span.icon_solit_cards, span.icon_solitaire {background-position: -72px -0px;}
 span.icon_pass {background-position: -90px -0px;}
 span.icon_grand {background-position: -108px -0px;}
 span.icon_trumph {background-position: -126px -0px;}
@@ -79,3 +79,33 @@ span.icon_sum {background-position: -144px -0px;}
 /************************* Players *************************/
 .ascending { border: 2px solid red; }
 .descending { border: 2px solid green; }
+
+/************************* Player *************************/
+.jquery_plot_similar_title {
+	margin: 15px;
+    color: #666666;
+    font-family: "Trebuchet MS",Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+table.default {margin: 0 auto;}
+
+table.default th {
+    background: none repeat scroll 0 0 #CACACA;
+    border: 1px solid #A0A0A0;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+table.default th > * {
+	margin: auto;
+}
+table.default td {
+    border: 1px solid #A0A0A0;
+    font-weight: normal;
+    padding: 2px;
+    vertical-align: middle;
+}

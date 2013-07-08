@@ -20,6 +20,36 @@
 			<div class="center_outer">
 				<div id="{{id}}_rating_graph" class="graph center_inner"></div>
 			</div>
+			<div class="center_outer">
+				<div class="center_inner">
+					<div class="jquery_plot_similar_title">Runde prestasjoner</div>
+					<table class="default">
+						<thead>
+							<tr>
+								<th></th>
+								<th>{{name}}'s snitt</th>
+								<th>Samlet Snitt</th>
+								<th>Forskjell</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for round in round_performances %}
+								<tr>
+									<td><span class="icon icon_{{round.type}}"></span></td>
+									<td>{{round.player_average}}</td>
+									<td>{{round.all_average}}</td>
+									{% if round.good %}
+										<td class="positive">{{round.performance}}%</td>
+									{% else %}
+										<td class="negative">{{round.performance}}%</td>
+									{% endif %}
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+				
+			</div>
 		</div>
 		
 		{% load compress %}

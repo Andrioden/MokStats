@@ -84,8 +84,31 @@ def player(request, pid):
             won += 1
         elif position == PlayerResult.objects.filter(match=match).count():
             lost += 1
+    # Round performance
+    all_calc = PlayerResultStatser(PlayerResult.objects.all())
+    player_calc = PlayerResultStatser(PlayerResult.objects.filter(player=player))
+    round_perf = []
+    for round_type in ["spades", "queens", "solitaire", "pass", "grand", "trumph"]:
+        if round_type == "solitaire":
+            all_avg = all_calc.avg("sum_solitaire_lines + sum_solitaire_cards")
+            player_avg = player_calc.avg("sum_solitaire_lines + sum_solitaire_cards")
+        else:
+            all_avg = all_calc.avg("sum_"+round_type)
+            player_avg = player_calc.avg("sum_"+round_type)
+        if round_type in ["grand", "trumph"]:
+            good_average = player_avg >= all_avg
+        else:
+            good_average = player_avg < all_avg
+        round_perf.append({
+            'type': round_type,
+            'all_average': all_avg,
+            'player_average': player_avg,
+            'performance': round((player_avg-all_avg)*100/all_avg,1),
+            'good': good_average
+        })
     data = {'name': player.name, 'id': player.id, 'won': won, 'lost': lost, 
-            'played': matches.count(), 'ratings': player.get_ratings()}
+            'played': matches.count(), 'ratings': player.get_ratings(),
+            'round_performances': round_perf}
     return render_to_response('player.html', data, context_instance=RequestContext(request))
 
 def matches(request):
@@ -145,16 +168,17 @@ def stats(request):
     worst_match_result = PRS.top_total(1)[0]
 
     data = {'spades': {'worst': PRS.minmax(Max, 'spades'),
-                       'average': PRS.gt0_avg("spades")},
+                       'gt0_average': PRS.gt0_avg("spades")},
             
             'queens': {'worst': PRS.minmax(Max, 'queens'),
-                       'average': PRS.gt0_avg("queens")},
+                       'gt0_average': PRS.gt0_avg("queens")},
             
             'solitaire_lines': {'worst': PRS.minmax(Max, "solitaire_lines"),
-                                'average': PRS.gt0_avg("solitaire_lines")},
+                                'gt0_average': PRS.gt0_avg("solitaire_lines")},
             'solitaire_cards': {'worst': PRS.minmax(Max, "solitaire_cards"),
-                                'average': PRS.gt0_avg("solitaire_cards")},
-            'solitaire_total': {'worst': PRS.top(1, "sum_solitaire_lines + sum_solitaire_cards")[0]},
+                                'gt0_average': PRS.gt0_avg("solitaire_cards")},
+            'solitaire_total': {'worst': PRS.top(1, "sum_solitaire_lines + sum_solitaire_cards")[0],
+                                'average': PRS.avg("sum_solitaire_lines + sum_solitaire_cards")},
             
             'pass': {'worst': PRS.minmax(Max, 'pass')},
             
@@ -168,8 +192,8 @@ def stats(request):
             
             'total': {'best': best_match_result,
                     'worst': worst_match_result,
-                    'average': total_avg},
-            }   
+                    'gt0_average': total_avg},
+            }
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def stats_best_results(request):
@@ -307,7 +331,15 @@ class PlayerResultStatser:
         return {'sum': val, 'mid': first.match_id,
                 'pid': first.player_id, 'pname': first.player.name}
         
+    def avg(self, value_field_usage):
+        select_query = {'total': '('+value_field_usage+')'}
+        average = 0.0
+        for res in self.ALL_RESULTS.extra(select=select_query):
+            average += res.total
+        return round(average/self.ALL_RESULTS.count(),1)
+    
     def gt0_avg(self, round_type):
+        """ Average score for the round type for results with greater than 0. """
         field = "sum_"+round_type
         result = self.ALL_RESULTS.filter(**{field+"__gt": 0}).aggregate(Avg(field))
         return round(result[field+'__avg'],1)

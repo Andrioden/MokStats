@@ -20,7 +20,7 @@
 					<h3><span class="icon icon_spade left"></span><span class="text left">Spar</span></h3>
 					<p>
 						<ul>
-							<li>Gjennomsnitt hvis man fikk spa(r): {{spades.average}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk spa(r): {{spades.gt0_average}} poeng.</li>
 							<li>Se de <a href="./top-rounds/?round=spades&amount=20">20 dårligste</a> rundene. Sortert etter dato.</li>
 						</ul>
 					</p>
@@ -30,7 +30,7 @@
 					<h3><span class="icon icon_queen left"></span><span class="text left">Damer</span></h3>
 					<p>
 						<ul>
-							<li>Gjennomsnitt hvis man fikk dame(r): {{queens.average}} poeng.</li>
+							<li>Gjennomsnitt hvis man fikk dame(r): {{queens.gt0_average}} poeng.</li>
 							<li>Se de <a href="./top-rounds/?round=queens&amount=20">20 dårligste</a> rundene. Sortert etter dato.</li>
 						</ul>
 					</p>
@@ -41,10 +41,11 @@
 					<p>
 						<ul>
 							<li>Høyeste antall strek i en <a href="../matches/{{solitaire_lines.worst.mid}}/">runde</a>: <a href="../players/{{solitaire_lines.worst.pid}}/">{{solitaire_lines.worst.pname}}</a> med {{solitaire_lines.worst.sum}} strek.</li>
-							<li>Gjennomsnitt av antal strek hvis man fikk en eller flere: {{solitaire_lines.average}} strek.</li>
+							<li>Gjennomsnitt av antal strek hvis man fikk en eller flere: {{solitaire_lines.gt0_average}} strek.</li>
 							<li>Høyeste antall kort igjen i en <a href="../matches/{{solitaire_cards.worst.mid}}/">runde</a>: <a href="../players/{{solitaire_cards.worst.pid}}/">{{solitaire_cards.worst.pname}}</a> med {{solitaire_cards.worst.sum}} kort.</li>
-							<li>Gjennomsnitt av antal kort hvis man satt igjen med et eller flere: {{solitaire_cards.average}} kort.</li>
+							<li>Gjennomsnitt av antal kort hvis man satt igjen med et eller flere: {{solitaire_cards.gt0_average}} kort.</li>
 							<li>Dårligste <a href="../matches/{{solitaire_total.worst.mid}}/">runde</a>: <a href="../players/{{solitaire_total.worst.pid}}/">{{solitaire_total.worst.pname}}</a> med {{solitaire_total.worst.sum}} poeng. Se <a href="./top-rounds/?round=solitaire&amount=20">dårligste20</a>.</li>
+							<li>Gjennomsnittlig sum er {{solitaire_total.average}}.</li>
 						</ul>
 					</p>
 				</div>
@@ -82,7 +83,7 @@
 						<ul>
 							<li>Beste <a href="../matches/{{total.best.mid}}/">kamp</a>: <a href="../players/{{total.best.pid}}/">{{total.best.pname}}</a> med {{total.best.sum}} poeng. Se <a href="./best-results/?amount=20">top20</a>.</li>
 							<li>Dårligste <a href="../matches/{{total.worst.mid}}/">kamp</a>: <a href="../players/{{total.worst.pid}}/">{{total.worst.pname}}</a> med {{total.worst.sum}} poeng. Se <a href="./worst-results/?amount=20">bunn20</a>.</li>
-							<li>Gjennomsnittet er {{total.average}} poeng.</li>
+							<li>Gjennomsnittet er {{total.gt0_average}} poeng.</li>
 						</ul>
 					</p>
 				</div>
