@@ -10,7 +10,7 @@ LOW PRI
 - Filter player stats by period/year.
 - List all worst spades, queens, etc games.
 - Add a last backup date page.
-- Investigate static files pattern thingy in urls
-- Use cache.clear() to delete cache. 
+- Show only active players at rating progression page, or maybe last active players.
+
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
