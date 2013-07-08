@@ -1,6 +1,3 @@
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-Heisann! Har klikka gjennom diverse statsistikk, ser ut til at alt fungerer s� langt. Og for moro skyld gjorde jeg det i Firefox og ikke IE Mulig jeg har nevnt det f�r, men kunne godt tenkt meg litt mer under hver omgang i "Diverse"-statistikken; dvs. f.eks. st�r det under spar-runden at " D�rligste reultat er 13 poeng f�rst oppn�d av Johnny Dag i denne kampen"... Siden dette aldri kommer til � endre seg kunne det v�rt greit med litt annen statistikk ogs� her; f.eks. 10/20 d�rligste beste, eller hvem som har hatt flest kamper med 13 poeng osv. Ellers virket det kanskje litt tregere p� Odd sin server enn p� HiST sin, men det er mulig det bare var innbilning.
-
 HIGH PRI
 ---------
 - The rating system awards to much points from games with many players (6+?)
@@ -9,8 +6,12 @@ LOW PRI
 ---------
 - Filter player stats by period/year.
 - List all worst spades, queens, etc games.
-- Add a last backup date page.
+- Add a last backup date page, which indicates if the backup function is running by green/red something.
 - Show only active players at rating progression page, or maybe last active players.
+- Under the div stats for rounds that has statistics that never will change (like most points in spades): Change to who has the "max/min points" the most amount of times.
 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
+- Investigate static files pattern thingy in urls
+- Use cache.clear() to delete cache. 
+- Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate.
