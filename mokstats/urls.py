@@ -21,6 +21,8 @@ urlpatterns = patterns('',
     (r'^stats/$', 'mokstats.views.stats'),
     (r'^stats/best-results/$', 'mokstats.views.stats_best_results'),
     (r'^stats/worst-results/$', 'mokstats.views.stats_worst_results'),
+    (r'^stats/top-rounds/$', 'mokstats.views.stats_top_rounds'),
+    
     (r'^rating/$', 'mokstats.views.rating'),
     (r'^rating/description/$', 'mokstats.views.rating_description'),
     (r'^activity/$', 'mokstats.views.activity'),

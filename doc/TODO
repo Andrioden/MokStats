@@ -1,13 +1,21 @@
 HIGH PRI
----------
+------------------
+- Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
 
-LOW PRI
----------
-- Filter player stats by period/year.
-- List all worst spades, queens, etc games.
+MEDIUM PRI
+------------------
 - Add a last backup date page, which indicates if the backup function is running by green/red something.
 - Show only active players at rating progression page, or maybe last active players.
+- Stats that can indicate if starting for a given round has an advantage.
+- Stats of "Most significant round", what round gives at average the most points.
+- Highest rating gain/loss, under rating.
+- Personal stats; what round is player worst at, compared to the average?
 - Under the div stats for rounds that has statistics that never will change (like most points in spades): Change to who has the "max/min points" the most amount of times.
+
+LOW PRI
+------------------
+- Filter player stats by period/year.
+- Who has the worst stats for the different round the most times.
 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------

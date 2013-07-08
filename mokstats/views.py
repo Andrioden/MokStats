@@ -175,15 +175,27 @@ def stats(request):
 def stats_best_results(request):
     amount = int(request.GET.get("amount", 20))
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
-    data = {'results': PRS.bot_total(amount)}
-    return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
+    data = {'results': PRS.bot_total(amount), 'title': "%s beste kampresultater" % amount}
+    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
    
 def stats_worst_results(request):
     amount = int(request.GET.get("amount", 20))
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
-    data = {'results': PRS.top_total(amount)}
-    return render_to_response('stats-top-results.html', data, context_instance=RequestContext(request))
+    data = {'results': PRS.top_total(amount), 'title': "%s dårligste kampresultater" % amount}
+    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
 
+def stats_top_rounds(request):
+    amount = int(request.GET.get("amount", 20))
+    round_type = request.GET.get("round", None)
+    if round_type == "solitaire":
+        round_value_fields = "sum_solitaire_lines + sum_solitaire_cards"
+    else:
+        round_value_fields = "sum_%s" % round_type
+    PRS = PlayerResultStatser(PlayerResult.objects.select_related())
+    data = {'results': PRS.top(amount, round_value_fields), 
+            'title': "%s toppresultater for %s " % (amount, round_type)}
+    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
+    
 def rating(request):
     _update_ratings()
     if PlayerResult.objects.count() == 0:
@@ -302,6 +314,7 @@ class PlayerResultStatser:
         return self.top(amount, value_field, "")
     
     def top(self, amount, value_field_usage, total_prechar="-"):
+        """ Get the top results for the summed fields """
         select_query = {'total': '('+value_field_usage+')'}
         results = self.ALL_RESULTS.extra(select=select_query).order_by(total_prechar+'total', 'match__date', 'match__id')
         top = []

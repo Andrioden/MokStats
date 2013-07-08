@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 
-{% block title %}Sorterte Kampresultater{% endblock %}
+{% block title %}{{title}}{% endblock %}
 
 {% block content %}
 	<!-- Start of first page -->
@@ -8,7 +8,7 @@
 	
 		<div data-role="header">
 			<a href="../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
-			<h1>Sorterte Kampresultater</h1>
+			<h1>{{title}}</h1>
 		</div>
 		
 	
@@ -22,7 +22,9 @@
 			    </li>
 			{% endfor %}
 			</ol>
-
+			<div>
+				<p><i class="smaller">Listen er sortert etter dato.</i></p>
+			</div>
 		</div>
 	</div>
 {% endblock %}
