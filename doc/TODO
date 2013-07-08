@@ -1,5 +1,5 @@
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
-Heisann! Har klikka gjennom diverse statsistikk, ser ut til at alt fungerer så langt. Og for moro skyld gjorde jeg det i Firefox og ikke IE Mulig jeg har nevnt det før, men kunne godt tenkt meg litt mer under hver omgang i "Diverse"-statistikken; dvs. f.eks. står det under spar-runden at " Dårligste reultat er 13 poeng først oppnåd av Johnny Dag i denne kampen"... Siden dette aldri kommer til å endre seg kunne det vært greit med litt annen statistikk også her; f.eks. 10/20 dårligste beste, eller hvem som har hatt flest kamper med 13 poeng osv. Ellers virket det kanskje litt tregere på Odd sin server enn på HiST sin, men det er mulig det bare var innbilning.
+Heisann! Har klikka gjennom diverse statsistikk, ser ut til at alt fungerer sï¿½ langt. Og for moro skyld gjorde jeg det i Firefox og ikke IE Mulig jeg har nevnt det fï¿½r, men kunne godt tenkt meg litt mer under hver omgang i "Diverse"-statistikken; dvs. f.eks. stï¿½r det under spar-runden at " Dï¿½rligste reultat er 13 poeng fï¿½rst oppnï¿½d av Johnny Dag i denne kampen"... Siden dette aldri kommer til ï¿½ endre seg kunne det vï¿½rt greit med litt annen statistikk ogsï¿½ her; f.eks. 10/20 dï¿½rligste beste, eller hvem som har hatt flest kamper med 13 poeng osv. Ellers virket det kanskje litt tregere pï¿½ Odd sin server enn pï¿½ HiST sin, men det er mulig det bare var innbilning.
 
 HIGH PRI
 ---------
@@ -10,6 +10,7 @@ LOW PRI
 - Filter player stats by period/year.
 - List all worst spades, queens, etc games.
 - Add a last backup date page.
-
+- Investigate static files pattern thingy in urls
+- Use cache.clear() to delete cache. 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------

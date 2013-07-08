@@ -10,7 +10,7 @@ Legend
 	"sudo apt-get upgrade"
 
 1. Install project packages
-	"sudo apt-get install apache2 python python-django libapache2-mod-wsgi python-pip postgresql python-psycopg2 git"
+	"sudo apt-get install apache2 python libapache2-mod-wsgi python-pip postgresql python-psycopg2 git"
 	"sudo pip install django==1.5.1, django_compressor"
 
 2. Download project from GitHub
