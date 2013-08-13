@@ -9,6 +9,5 @@ LOW PRI
 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
-- Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate on prod server, not localy.
 - Add field to PlayerResult: solitaire_sum, summarize the solitaire values "on save" to simplify everything in regard to it.
 - Add field to PlayerResult: rating earned, can then check best earned rating and simplify rating earned calculations.
