@@ -285,7 +285,7 @@ def activity(request):
 
 @cache_page(1)
 def about(request):
-    last_backup_str = os.listdir(BACKUP_DIR)[-1]
+    last_backup_str = sorted(os.listdir(BACKUP_DIR))[-1]
     last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
     hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
     data = {'hours_since_backup': hours_since_backup,
