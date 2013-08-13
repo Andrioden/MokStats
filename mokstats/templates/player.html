@@ -34,7 +34,7 @@
 						</thead>
 						<tbody>
 							{% for round in round_performances %}
-								<tr>
+								<tr title="{{round.name}}">
 									<td><span class="icon icon_{{round.type}}"></span></td>
 									<td>{{round.player_average}}</td>
 									<td>{{round.all_average}}</td>

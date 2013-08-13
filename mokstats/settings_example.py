@@ -8,6 +8,7 @@ ADMINS = (
 
 PROJECT_DIR = "/srv/djangoapps/mokstatsapp/"
 CACHE_DIR = "/tmp/mokstatscache"
+BACKUP_DIR = "C:/Filer/Dropbox/mokstats/backup/daily"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -27,6 +28,8 @@ DATABASES = {
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'yesitisunquieontheserverfucktard'
+
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 """ PART 2: General settings 
 ------------------------------------------------------------

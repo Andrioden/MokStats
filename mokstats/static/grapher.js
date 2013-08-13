@@ -65,7 +65,7 @@ function initRatingGraph(id, plotdata, clickUrl, labels) {
 	
 	// Create graph
 	var chart = $.jqplot(id, plotdata, {
-		title:'Rating utvikling for aktive spillere',
+		title:'Rating utvikling',
 		legend: customLegend,
 		axes:{
 			xaxis:{

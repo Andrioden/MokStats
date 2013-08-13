@@ -1,0 +1,46 @@
+{% extends "base.html" %} 
+
+{% block title %}Om Siden{% endblock %}
+
+{% block content %}
+	<!-- Start of first page -->
+	<div id="about_page" data-role="page" data-dom-cache="true">
+	
+		<div data-role="header">
+			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Om Siden</h1>
+		</div>
+		
+		<div data-role="content">
+			<ul>
+				{% if hours_since_backup > 24 %}
+					<li>Last database backup <span class="negative">{{hours_since_backup}}</span> hours ago: {{db_backup_size}} KB.</li>
+				{% else %}
+					<li>Last database backup <span class="positive">{{hours_since_backup}}</span> hours ago: {{db_backup_size}} KB.</li>
+				{% endif %}
+				<li>Project business logic files totals at: {{project_size}} KB.</li>
+			</ul>
+		</div>
+		
+
+	</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

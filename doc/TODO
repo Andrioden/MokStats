@@ -2,19 +2,13 @@ HIGH PRI
 ------------------
 - Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
 
-MEDIUM PRI
-------------------
-- Under the div stats for rounds that has statistics that never will change (like most points in spades): Change to who has the "max/min points" the most amount of times.
-- Add a last backup date page, which indicates if the backup function is running by green/red something.
-
 LOW PRI
 ------------------
 - Filter player stats by period/year.
-- Who has the worst stats for the different round the most times.
+- Ha en liste som viser hvilke spillere har best prestasjon for alle rundene, i en liste form.
 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
-- Investigate static files pattern thingy in urls
-- Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate.
+- Can ALLOWED_HOSTS = ["127.0.0.1", "localhost"] be used to set debug=false? Investigate on prod server, not localy.
 - Add field to PlayerResult: solitaire_sum, summarize the solitaire values "on save" to simplify everything in regard to it.
 - Add field to PlayerResult: rating earned, can then check best earned rating and simplify rating earned calculations.

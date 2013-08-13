@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render_to_response, get_object_or_404, redirect
-from django.utils import simplejson
-from django.core.serializers.json import DjangoJSONEncoder
-from django.http import HttpResponse
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.db.models import Max, Min, Avg, Count
-from models import *
+from models import Place, Player, PlayerResult, Match, cur_config
 from rating import RatingCalculator, RatingResult
-from django.core.cache import cache
-import calendar, copy
+import calendar
 import logging
-from datetime import timedelta
+import os
+from settings import BACKUP_DIR, PROJECT_DIR
+from datetime import datetime
 logger = logging.getLogger("file_logger")
+from django.views.decorators.cache import cache_page
 #from django.db import transaction
 #transaction.rollback()
 
@@ -100,6 +99,7 @@ def player(request, pid):
         else:
             good_average = player_avg < all_avg
         round_perf.append({
+            'name': round_type.capitalize(),
             'type': round_type,
             'all_average': all_avg,
             'player_average': player_avg,
@@ -283,6 +283,16 @@ def activity(request):
         activity['activity'].append(place_activity)
     return render_to_response('activity.html', activity, context_instance=RequestContext(request))
 
+@cache_page(1)
+def about(request):
+    last_backup_str = os.listdir(BACKUP_DIR)[-1]
+    last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
+    hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
+    data = {'hours_since_backup': hours_since_backup,
+            'project_size': _get_size(PROJECT_DIR)/1024,
+            'db_backup_size': _get_size(BACKUP_DIR+"/"+last_backup_str)/1024}
+    return render_to_response('about.html', data, context_instance=RequestContext(request)) 
+
 def _month_name(month_number):
     return calendar.month_name[month_number]
 
@@ -361,3 +371,11 @@ class PlayerResultStatser:
             top.append({'sum': results[i].total, 'mid': results[i].match_id,
                         'pid': results[i].player_id, 'pname': results[i].player.name})
         return top
+    
+def _get_size(start_path = '.'):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            total_size += os.path.getsize(fp)
+    return total_size
