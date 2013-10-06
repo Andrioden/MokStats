@@ -58,7 +58,7 @@ Legend
 	5.2. PostgreSql password file
 		Add .pgpass file to root home, http://www.postgresql.org/docs/current/static/libpq-pgpass.html
 	5.3. Cronjob
-		"cronjob -e" and add
+		"crontab -e" and add
 		0 0 * * * sh /root/Dropbox/mokstats/backup.sh -d /root/Dropbox/mokstats/backup/daily
 		0 0 1 * * sh /root/Dropbox/mokstats/backup.sh -d /root/Dropbox/mokstats/backup/monthly
 
