@@ -1,6 +1,10 @@
 HIGH PRI
 ------------------
 - Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
+- Lage sjekk at ikke samme person blir lagt inn 2 ganger. Eventuelt gjøre navn unikt.
+- Utvid status siden med kjøre 
+	- python dropbox status 
+	- python dropbox running
 
 LOW PRI
 ------------------
