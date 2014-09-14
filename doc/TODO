@@ -6,6 +6,7 @@ LOW PRI
 ------------------
 - Filter player stats by period/year.
 - Ha en liste som viser hvilke spillere har best prestasjon for alle rundene, i en liste form.
+- Send mail on 500 til min gmail.
 
 PERFORMANCE / INTERNAL STUFF
 ----------------------------
