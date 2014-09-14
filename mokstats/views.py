@@ -281,7 +281,7 @@ def activity(request):
                 if month < 10:
                     month = "0%s" % month
                 place_activity.append(["%s-%s-15" % (year,month), c])
-        response_places.append(str(place))
+        response_places.append(place)
         response_activities.append(place_activity)
     
     response_data_jsonified = {'places': json.dumps(response_places), 'activity': json.dumps(response_activities)}
