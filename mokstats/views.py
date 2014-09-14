@@ -12,6 +12,7 @@ from settings import BACKUP_DIR, PROJECT_DIR
 from datetime import datetime
 logger = logging.getLogger("file_logger")
 from django.views.decorators.cache import cache_page
+import json
 #from django.db import transaction
 #transaction.rollback()
 
@@ -270,7 +271,8 @@ def activity(request):
         data[place][match.date.year][match.date.month] += 1
         
     # use temporarly data to create fitting array for the template grapher
-    activity = {'places': [], 'activity': []}
+    response_places = []
+    response_activities = []
     for place in data:
         place_activity = []
         for year in data[place]:
@@ -279,9 +281,11 @@ def activity(request):
                 if month < 10:
                     month = "0%s" % month
                 place_activity.append(["%s-%s-15" % (year,month), c])
-        activity['places'].append(str(place))
-        activity['activity'].append(place_activity)
-    return render_to_response('activity.html', activity, context_instance=RequestContext(request))
+        response_places.append(str(place))
+        response_activities.append(place_activity)
+    
+    response_data_jsonified = {'places': json.dumps(response_places), 'activity': json.dumps(response_activities)}
+    return render_to_response('activity.html', response_data_jsonified, context_instance=RequestContext(request))
 
 @cache_page(1)
 def about(request):
