@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 
-{% block title %}Diverse{% endblock %}
+{% block title %}Statistikk og Tall{% endblock %}
 
 {% block content %}
 	<!-- Start of first page -->
@@ -8,7 +8,7 @@
 	
 		<div data-role="header">
 			<a href="../" data-role="button" data-icon="home" data-iconpos="notext"></a>
-			<h1>Diverse</h1>
+			<h1>Statistikk og Tall</h1>
 		</div>
 		
 	
@@ -73,6 +73,9 @@
 					<p>
 						<ul>
 							<li>Først med beste <a href="../matches/{{trumph.best.mid}}/">runde</a>: <a href="../players/{{trumph.best.pid}}/">{{trumph.best.pname}}</a> med {{trumph.best.sum}} stikk. Se <a href="./top-rounds/?round=trumph&amount=20">beste20</a>.</li>
+							<li>Gjenomsnitt hvis man valgte trumf: {{trumph.average_for_trumph_picker}}</li>
+							<li>Gjenomsnitt samlet: {{trumph.average}}</li>
+							<li>Kamper der trumf velgeren ikke tapte: {{trumph.saved_count}}/{{match_count}} ({{trumph.saved_percent}}%)</li>
 						</ul>
 					</p>
 				</div>
@@ -89,7 +92,7 @@
 				</div>
 				
 				<div data-role="collapsible" data-collapsed="false">
-					<h3>Ytterpunkter</h3>
+					<h3>Annet</h3>
 					<p>
 						<ul>
 							<li>Høyeste antall poeng oppnådd før Grand er {{extremes.gain.sum}} av <a href="../players/{{extremes.gain.pid}}/">{{extremes.gain.pname}}</a> i <a href="../matches/{{extremes.gain.mid}}/">denne kampen.</a></li>

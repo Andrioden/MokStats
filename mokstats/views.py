@@ -8,11 +8,12 @@ from rating import RatingCalculator, RatingResult
 import calendar
 import logging
 import os
-from settings import BACKUP_DIR, PROJECT_DIR
+from settings import DAILY_BACKUP_DIR, PROJECT_DIR
 from datetime import datetime
 logger = logging.getLogger("file_logger")
 from django.views.decorators.cache import cache_page
 import json
+from external import dropbox
 #from django.db import transaction
 #transaction.rollback()
 
@@ -160,14 +161,17 @@ def stats(request):
     anywhere else.
     
     """
-    ALL_RESULTS = PlayerResult.objects.select_related() # User several times
+    ALL_RESULTS = PlayerResult.objects.select_related()
     PRS = PlayerResultStatser(ALL_RESULTS)
         
     results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
     total_avg = sum([r.total for r in results_totals])/results_totals.count()
     best_match_result = PRS.bot_total(1)[0]
     worst_match_result = PRS.top_total(1)[0]
-
+    
+    trumph_stats = TrumphStatser(ALL_RESULTS)
+    match_count = Match.objects.count()
+    
     data = {'spades': {'worst': PRS.minmax(Max, 'spades'),
                        'gt0_average': PRS.gt0_avg("spades")},
             
@@ -185,7 +189,11 @@ def stats(request):
             
             'grand': {'best': PRS.minmax(Max, 'grand')},
             
-            'trumph': {'best': PRS.minmax(Max, 'trumph')},
+            'trumph': {'best': PRS.minmax(Max, 'trumph'),
+                       'average': PRS.avg("sum_trumph"),
+                       'average_for_trumph_picker': round(trumph_stats.average_trumph_sum_for_trumph_pickers,1),
+                       'saved_count': trumph_stats.matches_trumph_picker_not_lost,
+                       'saved_percent': round(trumph_stats.matches_trumph_picker_not_lost * 100 / float(match_count), 1)},
             
             'extremes': {'gain': PRS.top(1, "sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass")[0],
                          'loss': PRS.bot(1, "0 - sum_grand - sum_trumph")[0],
@@ -194,7 +202,9 @@ def stats(request):
             'total': {'best': best_match_result,
                     'worst': worst_match_result,
                     'gt0_average': total_avg},
-            }
+            
+            'match_count': match_count
+    }
     return render_to_response('stats.html', data, context_instance=RequestContext(request))
 
 def stats_best_results(request):
@@ -288,14 +298,17 @@ def activity(request):
     return render_to_response('activity.html', response_data_jsonified, context_instance=RequestContext(request))
 
 @cache_page(1)
-def about(request):
-    last_backup_str = sorted(os.listdir(BACKUP_DIR))[-1]
+def system_status(request):
+    last_backup_str = sorted(os.listdir(DAILY_BACKUP_DIR))[-1]
     last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
     hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
+
     data = {'hours_since_backup': hours_since_backup,
             'project_size': _get_size(PROJECT_DIR)/1024,
-            'db_backup_size': _get_size(BACKUP_DIR+"/"+last_backup_str)/1024}
-    return render_to_response('about.html', data, context_instance=RequestContext(request)) 
+            'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
+            'dropbox_running': dropbox.is_dropbox_running(),
+    }
+    return render_to_response('system-status.html', data, context_instance=RequestContext(request)) 
 
 def _month_name(month_number):
     return calendar.month_name[month_number]
@@ -375,6 +388,85 @@ class PlayerResultStatser:
             top.append({'sum': results[i].total, 'mid': results[i].match_id,
                         'pid': results[i].player_id, 'pname': results[i].player.name})
         return top
+    
+"""
+from mokstats.models import *
+from mokstats.views import TrumphStatser
+TrumphStatser(PlayerResult.objects.select_related().order_by('match'))
+"""
+class TrumphStatser:
+    ALL_RESULTS = None
+    
+    average_trumph_sum_for_trumph_pickers = None
+    matches_trumph_picker_not_lost = 0
+    
+    def __init__(self, all_results):
+        self.ALL_RESULTS = all_results
+        self.set_trumph_stats()
+        
+    def set_trumph_stats(self):
+        match_sorted_results = {}
+        for res in self.ALL_RESULTS.order_by('match'):
+            if not match_sorted_results.has_key(res.match_id):
+                match_sorted_results[res.match_id] = []
+            match_sorted_results[res.match_id].append(res)
+        
+        trump_sum_for_trumph_pickers = []
+        for match_results in match_sorted_results.itervalues():
+            trumph_picker_player_result = self.get_trumph_picker_result_from_match_results(match_results)
+            
+            if trumph_picker_player_result == "IGNORE":
+                continue
+            else:
+                # Average trumph picker sum list
+                trump_sum_for_trumph_pickers.append(trumph_picker_player_result.sum_trumph)
+                # Check if trumph picker avoided loss due to trumph pick
+                match_loser_id = self.get_match_loser_id_from_match_results(match_results)
+                if (match_loser_id == "IGNORE"):
+                    pass
+                elif trumph_picker_player_result.player_id != match_loser_id:
+                    self.matches_trumph_picker_not_lost += 1
+        
+        self.average_trumph_sum_for_trumph_pickers = sum(trump_sum_for_trumph_pickers) / float(len(trump_sum_for_trumph_pickers))
+        
+    def get_trumph_picker_result_from_match_results(self, match_results):
+        highest_sum_before_trumph = -1000
+        has_multiple_trumphers = False
+        trumph_picker_player_result = None
+        
+        for res in match_results:
+            total_before_trumph = res.total_before_trumph()
+            if total_before_trumph > highest_sum_before_trumph:
+                highest_sum_before_trumph = total_before_trumph
+                trumph_picker_player_result = res
+                has_multiple_trumphers = False
+            elif total_before_trumph == highest_sum_before_trumph:
+                has_multiple_trumphers = True
+        
+        if has_multiple_trumphers:
+            return "IGNORE"
+        else:
+            return trumph_picker_player_result
+        
+    def get_match_loser_id_from_match_results(self, match_results):
+        highest_total_sum = -1000
+        has_multiple_losers = False
+        highest_player_result = None
+        
+        for res in match_results:
+            total = res.total()
+            if total > highest_total_sum:
+                highest_total_sum = total
+                highest_player_result = res
+                has_multiple_losers = False
+            elif total == highest_total_sum:
+                has_multiple_losers = True
+        
+        if has_multiple_losers:
+            return "IGNORE"
+        else:
+            return highest_player_result.player_id
+            
     
 def _get_size(start_path = '.'):
     total_size = 0

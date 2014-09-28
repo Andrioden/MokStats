@@ -10,7 +10,7 @@ def cur_config():
     return Configuration.objects.latest('id')
 
 class Player(models.Model):
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=20, unique=True)
     def get_ratings(self):
         results = PlayerResult.objects.filter(player=self).select_related('match__date')
         ratings = []
@@ -148,6 +148,8 @@ class PlayerResult(models.Model):
                 'trumph': self.sum_trumph,
                 'total': self.total(),
                 'rating_change': self.rating_dif()}
+    def total_before_trumph(self):
+        return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand
     def total(self):
         return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):
@@ -160,7 +162,7 @@ class Configuration(models.Model):
     rating_start = models.DecimalField("Rating: startverdi", max_digits=6, 
                                        decimal_places=2, default=Decimal("100.00"))
     rating_k = models.DecimalField("Rating: K-Verdi", max_digits=6,
-                                   decimal_places=2, default=Decimal("3.00"))
+                                   decimal_places=2, default=Decimal("2.00"))
     def __unicode__(self):
         if self.pk == cur_config().id:
             return "** Current config**"

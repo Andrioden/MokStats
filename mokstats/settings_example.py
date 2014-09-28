@@ -8,7 +8,7 @@ ADMINS = (
 
 PROJECT_DIR = "/srv/djangoapps/mokstatsapp/"
 CACHE_DIR = "/tmp/mokstatscache"
-BACKUP_DIR = "C:/Filer/Dropbox/mokstats/backup/daily"
+DAILY_BACKUP_DIR = "C:/Filer/Dropbox/mokstats/backup/daily"
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

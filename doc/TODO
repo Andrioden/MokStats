@@ -1,13 +1,16 @@
 HIGH PRI
 ------------------
-- Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
-- Lage sjekk at ikke samme person blir lagt inn 2 ganger. Eventuelt gjøre navn unikt.
-- Utvid status siden med kjøre 
-	- python dropbox status 
-	- python dropbox running
+- Støtt nyeste jquery, jquery plot failer som fan.
+
+- Liste over kamper med flest spillere.
+- dobbeltsjekk at gjennomsnitt på total score faktisk er float utregnet.
+- Fikse selection av sortering, før var det grønt/rødt, nå fungerer det ikke.
+- bruk piltaster til å flytt frem og tilbake
+- Tittel i browser viser ikke møkkis stats.
 
 LOW PRI
 ------------------
+- Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
 - Filter player stats by period/year.
 - Ha en liste som viser hvilke spillere har best prestasjon for alle rundene, i en liste form.
 - Send mail on 500 til min gmail.
@@ -16,3 +19,9 @@ PERFORMANCE / INTERNAL STUFF
 ----------------------------
 - Add field to PlayerResult: solitaire_sum, summarize the solitaire values "on save" to simplify everything in regard to it.
 - Add field to PlayerResult: rating earned, can then check best earned rating and simplify rating earned calculations.
+
+PROD
+------
+- Fiks dropbox running
+- Sla av debug
+- oppdater postgresql
