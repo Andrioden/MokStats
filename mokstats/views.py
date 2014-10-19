@@ -220,6 +220,7 @@ def stats_worst_results(request):
     return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
 
 def stats_top_rounds(request):
+    """ Page that show the best results for a specific round type """
     amount = int(request.GET.get("amount", 20))
     round_type = request.GET.get("round", None)
     if round_type == "solitaire":

@@ -91,5 +91,20 @@
 			{% endif %}
 		</div>
 		
+		<script>
+			// Jquery mobile does not completely load a new page when navigating, instead it is appended to a cached page list.
+			// This is why we have to remove previously added keypress listeners before adding the new one.
+			// It is scoped to body because thats the only way I was able to have it focused on page load.
+			$("body").off("keypress");
+			$("body").keypress(function (event) {
+				var IsNextMatch = "{{ next_match_id }}" != "None";
+				
+				if (event.keyCode == 37)
+					$.mobile.pageContainer.pagecontainer("change", "../{{ prev_match_id }}/");
+				else if (event.keyCode == 39 && IsNextMatch)
+					$.mobile.pageContainer.pagecontainer("change", "../{{ next_match_id }}/");
+			});
+		</script>
+
 	</div>
 {% endblock %}
