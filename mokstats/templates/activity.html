@@ -21,12 +21,12 @@
 		{% load compress %}
 		{% compress js inline %}
 		<script>
-		$("#activity_page").on('pageinit', function(){
-			tryToGraph("activity_graph", function() {
-				$("#activity_graph").width($(window).width()-20);
-				initActivityGraph("activity_graph", {{ activity|safe }}, {{ places|safe }});
+			$("#activity_page").on('pageinit', function(){
+				tryToGraph("activity_graph", function() {
+					$("#activity_graph").width($(window).width()-20);
+					initActivityGraph("activity_graph", {{ activity|safe }}, {{ places|safe }});
+				});
 			});
-		});
 		</script>
 		{% endcompress %}
 		
