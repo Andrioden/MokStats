@@ -16,7 +16,7 @@
 			<ul id="matches" data-role="listview" data-theme="d" data-filter="true" data-filter-placeholder="Søk i kamper...">
 				{% for match in matches %}
 				    <li>
-				    	<a href="./{{match.id}}/" >{{ match.year }}, {{match.month}} | {{match.place}} 
+				    	<a href="./{{match.id}}/" >{{ match.year }} {{match.month}} | {{match.place}} 
 				    		<span class="smallest"></span>
 				    	</a>
 				    </li>

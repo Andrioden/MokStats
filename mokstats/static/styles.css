@@ -77,8 +77,8 @@ span.icon_sum {background-position: -144px -0px;}
 }
 
 /************************* Players *************************/
-.ascending { border: 2px solid red; }
-.descending { border: 2px solid green; }
+a.ascending { border-color: red !important; }
+a.descending { border-color: green !important; }
 
 /************************* Player *************************/
 .jquery_plot_similar_title {

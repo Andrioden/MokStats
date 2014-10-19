@@ -1,0 +1,30 @@
+{% extends "base.html" %} 
+
+{% block title %}Største kamper{% endblock %}
+
+{% block content %}
+	<!-- Start of first page -->
+	<div data-role="page" id="stats_biggest_match_sizes">
+	
+		<div data-role="header">
+			<a href="../../" data-role="button" data-icon="home" data-iconpos="notext"></a>
+			<h1>Største kamper</h1>
+		</div>
+		
+	
+		<div data-role="content">
+			<ol data-role="listview" data-filter="true">
+			{% for m in matches %}
+			    <li>
+			    	<span class="ui-li-count">{{m.size}}</span>
+			    	<span>{{m.place}} - {{m.year}} {{m.month}}</span>
+			    	<span class="smaller">(<a href="../../matches/{{m.mid}}/">kampen</a>)</span>
+			    </li>
+			{% endfor %}
+			</ol>
+			<div>
+				<p><i class="smaller">Listen er sortert sekundert etter dato.</i></p>
+			</div>
+		</div>
+	</div>
+{% endblock %}

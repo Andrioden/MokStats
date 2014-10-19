@@ -165,7 +165,7 @@ def stats(request):
     PRS = PlayerResultStatser(ALL_RESULTS)
         
     results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
-    total_avg = sum([r.total for r in results_totals])/results_totals.count()
+    total_avg = round(sum([r.total for r in results_totals])/(results_totals.count() * 1.0), 1)
     best_match_result = PRS.bot_total(1)[0]
     worst_match_result = PRS.top_total(1)[0]
     
@@ -231,6 +231,21 @@ def stats_top_rounds(request):
             'title': "%s toppresultater for %s " % (amount, round_type)}
     return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
     
+def stats_biggest_match_sizes(request):
+    match_amount = int(request.GET.get("amount", 20))
+    biggest_matches = Match.objects.annotate(count=Count("playerresult")).order_by("-count", "date", "id").values("id", "count", "place__name", "date")
+    data = {'matches': []}
+    for match in biggest_matches[:match_amount]:
+        data['matches'].append({
+            'mid': match['id'], 
+            'size': match['count'], 
+            'place': match['place__name'],
+            'year': match['date'].year,
+            'month': _month_name(match['date'].month),
+            #'day': match['date'].day,
+        })
+    return render_to_response('stats-biggest-match-sizes.html', data, context_instance=RequestContext(request))
+        
 def rating(request):
     _update_ratings()
     if PlayerResult.objects.count() == 0:

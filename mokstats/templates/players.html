@@ -61,7 +61,6 @@
 		<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
 		<script>
 			$( "#active_filter" ).on( 'slidestop change', function( event ) {
-				console.log($(this).val())
 				if ($(this).val() == "on") {
 					hideAllInactivePlayers();
 				}

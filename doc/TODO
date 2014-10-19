@@ -1,12 +1,8 @@
 HIGH PRI
 ------------------
-- Støtt nyeste jquery, jquery plot failer som fan.
-
-- Liste over kamper med flest spillere.
-- dobbeltsjekk at gjennomsnitt på total score faktisk er float utregnet.
-- Fikse selection av sortering, før var det grønt/rødt, nå fungerer det ikke.
 - bruk piltaster til å flytt frem og tilbake
 - Tittel i browser viser ikke møkkis stats.
+- investigate top-rounds in urls, is it used??
 
 LOW PRI
 ------------------
