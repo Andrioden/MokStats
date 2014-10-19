@@ -5,6 +5,11 @@
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
+EMAIL_USE_TLS = True # Can be kept
+EMAIL_HOST = 'smtp.gmail.com' # Can be kept
+EMAIL_PORT = 587 # Can be kept
+EMAIL_HOST_USER = '????@gmail.com'
+EMAIL_HOST_PASSWORD = '???'
 
 PROJECT_DIR = "/srv/djangoapps/mokstatsapp/"
 CACHE_DIR = "/tmp/mokstatscache"

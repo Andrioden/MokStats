@@ -1,0 +1,6 @@
+1. Log on to server
+2. Go to root folder of git project, example: /srv/djangoapps/mokstatsapp
+3. run "git pull"
+4. run "python manage.py collectstatic"
+5. Delete cache folder, specified under CACHE_DIR. No need to recreate it. "sudo rm -rf [folder]"
+6. run "sudo service apache2 restart"

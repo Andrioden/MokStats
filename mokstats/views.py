@@ -13,7 +13,6 @@ from datetime import datetime
 logger = logging.getLogger("file_logger")
 from django.views.decorators.cache import cache_page
 import json
-from external import dropbox
 #from django.db import transaction
 #transaction.rollback()
 
@@ -313,16 +312,16 @@ def activity(request):
     response_data_jsonified = {'places': json.dumps(response_places), 'activity': json.dumps(response_activities)}
     return render_to_response('activity.html', response_data_jsonified, context_instance=RequestContext(request))
 
-@cache_page(1)
+@cache_page(1) # This set cache expire time to 1 second for this view
 def system_status(request):
     last_backup_str = sorted(os.listdir(DAILY_BACKUP_DIR))[-1]
     last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
     hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
 
-    data = {'hours_since_backup': hours_since_backup,
-            'project_size': _get_size(PROJECT_DIR)/1024,
-            'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
-            'dropbox_running': dropbox.is_dropbox_running(),
+    data = {
+        'hours_since_backup': hours_since_backup,
+        'project_size': _get_size(PROJECT_DIR)/1024,
+        'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
     }
     return render_to_response('system-status.html', data, context_instance=RequestContext(request)) 
 

@@ -19,12 +19,6 @@
 					<li>Last database backup <span class="positive">{{hours_since_backup}}</span> hours ago: {{db_backup_size}} KB</li>
 				{% endif %}
 				
-				{% if dropbox_running %}
-					<li>Dropbox sync is <span class="positive">running</span></li>
-				{% else %}
-					<li>Dropbox sync is <span class="negative">not running</span></li>
-				{% endif %}
-				
 				<li>Project business logic files totals at: {{project_size}} KB</li>
 			</ul>
 		</div>

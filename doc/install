@@ -1,7 +1,8 @@
 Afterchanges:
-Allowing other people to read root's dropbox backup folder. requires:
-	chmod 777 /root/ -R,
-	Needs to be changed to using an non-root folder
+	Allowing other people to read root's dropbox backup folder. requires:
+		chmod 777 /root/ -R,
+		Needs to be changed to using an non-root folder
+	Dropbox should be installed using the cli
 
 Install Document (complete)
 ----------------------------------------------------------------

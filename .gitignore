@@ -5,6 +5,7 @@
 settings.py
 wsgi.py
 /logs
+/static
 
 #################
 ## Eclipse
