@@ -18,3 +18,4 @@ PROD
 ------
 - Sla av debug
 - oppdater postgresql
+- add dropbox to crontab or something that makes it run every time.
