@@ -6,5 +6,4 @@ LOW PRI
 ------------------
 - Can register new matches through mobile, idea: auth using a predined password, to avoid having to login to django.
 - Filter player stats by period/year.
-- Ha en liste som viser hvilke spillere har best prestasjon for alle rundene, i en liste form.
-- Send mail on 500 til min gmail.
+- List player performance per round in a top list format, now only the individual skill is shown on the player page.
