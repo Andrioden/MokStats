@@ -9,13 +9,7 @@ LOW PRI
 - Ha en liste som viser hvilke spillere har best prestasjon for alle rundene, i en liste form.
 - Send mail on 500 til min gmail.
 
-PERFORMANCE / INTERNAL STUFF
-----------------------------
-- Add field to PlayerResult: solitaire_sum, summarize the solitaire values "on save" to simplify everything in regard to it.
-- Add field to PlayerResult: rating earned, can then check best earned rating and simplify rating earned calculations.
-
 PROD
 ------
 - Sla av debug
 - oppdater postgresql
-- add dropbox to crontab or something that makes it run every time.
