@@ -1,0 +1,101 @@
+Afterchanges:
+	Allowing other people to read root's dropbox backup folder. requires:
+		chmod 777 /root/ -R,
+		Needs to be changed to using an non-root folder
+	Dropbox should be installed using the cli
+
+Install Document (complete)
+----------------------------------------------------------------
+Legend
+	"command" = Command to run in linux window
+	[something] = Needs to be replaced by input, brackets included.
+	{PDIR} = Directory where the project is placed
+
+0. Update all existing packages (not neccesary, but adviced)
+	"sudo apt-get update"
+	"sudo apt-get upgrade"
+
+1. Install project packages
+	"sudo apt-get install apache2 python libapache2-mod-wsgi python-pip postgresql python-psycopg2 git"
+	"sudo pip install django==1.5.1, django_compressor"
+
+2. Download project from GitHub
+	2.1. GitHub Profile SSH Key: https://help.github.com/articles/generating-ssh-keys
+	2.2. cd to django apps parent folder
+	2.3 "git clone git@github.com:Andrioden/MokStats.git"
+
+3. Setup Django Project
+	3.1. Settings
+		"cp {PDIR}/mokstats/settings_example.py {PDIR}/mokstats/settings.py"
+		Edit part 1 of settings.py "nano {PDIR}/mokstats/settings.py"
+		Create cache directory "mkdir -m 777 /tmp/[dir]"
+	3.2. WSGI
+		"cp {PDIR}/mokstats/wsgi_example.py {PDIR}/mokstats/wsgi.py"
+	3.3. Cache directories
+		"mkdir {PDIR}/static"
+		"mkdir -m 777 {PDIR}/static/CACHE"
+		"mkdir -m 777 {PDIR}/static/CACHE/css"
+		"mkdir -m 777 {PDIR}/static/CACHE/js"
+	3.4. Static Content
+		"python {PDIR}/manage.py collectstatic"
+		
+4. Setup PostgreSQL
+	4.1. Change postgres password: "sudo passwd postgres"
+	4.2. Create project database user: "sudo -u postgres createuser -P [dbuser]", No privliges
+	4.3. Create database
+		"su postgres"
+		"psql template1"
+		"CREATE DATABASE [dbname] OWNER [dbuser] ENCODING 'UTF8'; "
+		"\q"
+		"/etc/init.d/postgresql restart" (Expect errors)
+	4.4. Update {PDIR}/mokstats/settings.py with database settings.
+
+5. Setup Dropbox Backup
+	5.1. Follow the guides
+		A modified version of the backup script can be
+		found under /doc, and the correct database settings needs to be edited in it.
+		http://lassebunk.dk/2011/03/16/linux-dropbox-remote-backup/
+		http://lassebunk.dk/2011/03/11/linux-backup-script/
+	5.2. PostgreSql password file
+		Add .pgpass file to root home, http://www.postgresql.org/docs/current/static/libpq-pgpass.html
+	5.3. Cronjob
+		"crontab -e" and add
+		0 0 * * * sh /root/Dropbox/mokstats/backup.sh -d /root/Dropbox/mokstats/backup/daily
+		0 0 1 * * sh /root/Dropbox/mokstats/backup.sh -d /root/Dropbox/mokstats/backup/monthly
+	5.4 Make sure dropbox always runs on startup
+		Need new solution for this,
+		think i managed to run the apt-get dropbox shit
+			sudo python /root/dropbox-cli/dropbox.py start
+
+6. Populate database
+	6.A. Fresh Install
+		"python {PDIR}/manage.py syncdb"
+		"python {PDIR}/setup.py"
+	6.B. Restore database from backup/dump
+		- Get dump file
+		- "pg_restore -d mokstatsdb --role=mokstats [dumpfile]"
+		
+7. Setup Apache 2
+	7.1 Add and enable site
+		"touch /etc/apache2/sites-available/mokstats"
+		Copy content of {PDIR}/doc/apache-site-file to created file.
+		Edit paths to fit newly created project.
+		Add used port to /etc/apache2/ports.conf
+		"a2enablesite mokstats"
+	7.2 Change server hostname
+		Possible have to set the server hostname; "hostname [hostname]"
+	7.3 Enable WSGI Mod
+		"a2enmod wsgi"
+	7.4 Apply changes
+		"service apache2 restart"
+	
+	
+Source guides this install document has been inspired by
+----------------------------------------------------------------
+Guide 1 and 2 are loosely followed. Guide 3 and 4 are almost fully followed. 5 are modified and used.
+
+1. http://chenliangblog.wordpress.com/2011/01/02/some-pointers-on-setting-up-a-basic-django-project-under-ubuntu-10-04-1/
+2. http://www.lennu.net/2012/05/14/django-deployement-installation-to-ubuntu-12-dot-04-server/
+3. http://blog.iiilx.com/programming/how-to-install-postgres-on-ubuntu-for-django/
+4. http://lassebunk.dk/2011/03/16/linux-dropbox-remote-backup/
+5. http://lassebunk.dk/2011/03/11/linux-backup-script/
