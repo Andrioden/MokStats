@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.contrib import admin
@@ -10,27 +10,28 @@ from django.contrib.auth.models import Group
 admin.site.unregister(User)
 admin.site.unregister(Group)
 
+from mokstats import views, ajax
+
 """ LIST OF PATTERNS """
-urlpatterns = patterns('',
-    # VIEWS
-    (r'^$', 'mokstats.views.index'),
-    (r'^players/(?P<pid>\d+)/$', 'mokstats.views.player'),
-    (r'^players/$', 'mokstats.views.players'),
-    (r'^matches/(?P<mid>\d+)/$', 'mokstats.views.match'),
-    (r'^matches/$', 'mokstats.views.matches'),
-    (r'^stats/$', 'mokstats.views.stats'),
-    (r'^stats/best-results/$', 'mokstats.views.stats_best_results'),
-    (r'^stats/worst-results/$', 'mokstats.views.stats_worst_results'),
-    (r'^stats/top-rounds/$', 'mokstats.views.stats_top_rounds'),
-    (r'^stats/biggest-match-sizes/$', 'mokstats.views.stats_biggest_match_sizes'),
-    (r'^rating/$', 'mokstats.views.rating'),
-    (r'^rating/description/$', 'mokstats.views.rating_description'),
-    (r'^activity/$', 'mokstats.views.activity'),
-    (r'^system-status/$', 'mokstats.views.system_status'),
+urlpatterns = [
+    url(r'^$', views.index),
+    url(r'^players/(?P<pid>\d+)/$', views.player),
+    url(r'^players/$', views.players),
+    url(r'^matches/(?P<mid>\d+)/$', views.match),
+    url(r'^matches/$', views.matches),
+    url(r'^stats/$', views.stats),
+    url(r'^stats/best-results/$', views.stats_best_results),
+    url(r'^stats/worst-results/$', views.stats_worst_results),
+    url(r'^stats/top-rounds/$', views.stats_top_rounds),
+    url(r'^stats/biggest-match-sizes/$', views.stats_biggest_match_sizes),
+    url(r'^rating/$', views.rating),
+    url(r'^rating/description/$', views.rating_description),
+    url(r'^activity/$', views.activity),
+    #url(r'^system-status/$', views.system_status),
     # AJAX CALLS
-    (r'^ajax_last_playerlist/$', 'mokstats.ajax.last_playerlist'),
+    url(r'^ajax_last_playerlist/$', ajax.last_playerlist),
     # ADMIN PAGES
-    (r'^admin/', include(admin.site.urls)),
-)
+    url(r'^admin/', include(admin.site.urls)),
+]
 
 urlpatterns += staticfiles_urlpatterns()

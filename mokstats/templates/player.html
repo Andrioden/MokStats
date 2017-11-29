@@ -51,19 +51,17 @@
 				
 			</div>
 		</div>
-		
-		{% load compress %}
-		{% compress js inline %}
+
 		<script>
 			$("#player_page_{{id}}").on('pageinit', function(){
 				$("#{{ id }}_rating_graph").width($(window).width()-20);
 				tryToGraph("{{ id }}_rating_graph", function() {
 					initResultGraph({{ id }}+'_pie_graph', {{ played }}, {{ won }}, {{ lost }});
 					initRatingGraph({{ id }}+'_rating_graph', [{{ ratings|safe }}], "../../matches/");
-				});		
+				});
 			});
 		</script>
-		{% endcompress %}
+
 	</div>
 
 

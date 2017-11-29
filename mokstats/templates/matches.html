@@ -23,9 +23,7 @@
 				{% endfor %}
 			</ul>
 		</div>
-		
-		{% load compress %}
-		{% compress js inline %}
+
 		<script>
 			// Custom search function for the filter bar
 			$(document).on('pageinit', function() {
@@ -43,6 +41,6 @@
 			    });
 			});
 		</script>
-		{% endcompress %}
+
 	</div>
 {% endblock %}

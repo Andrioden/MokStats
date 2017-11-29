@@ -90,9 +90,7 @@
 				<a href="../{{ next_match_id }}/" class="right" data-role="button" data-icon="arrow-r" data-iconpos="right">Neste</a>
 			{% endif %}
 		</div>
-		
-		{% load compress %}
-		{% compress js inline %}
+
 		<script>
 			// Jquery mobile does not completely load a new page when navigating, instead it is appended to a cached page list.
 			// This is why we have to remove previously added keypress listeners before adding the new one.
@@ -108,6 +106,6 @@
 					$.mobile.pageContainer.pagecontainer("change", "../{{ next_match_id }}/");
 			});
 		</script>
-		{% endcompress %}
+
 	</div>
 {% endblock %}

@@ -17,9 +17,7 @@
 				<p><i class="smaller">OBS. Datomerking før 2013 er ikke nøyaktig, det er en liten mulighet for at noen kamper er registrert på feil måned på grunn av manglende datomerking i notatblokken.</i></p>
 			</div>
 		</div>
-		
-		{% load compress %}
-		{% compress js inline %}
+
 		<script>
 			$("#activity_page").on('pageinit', function(){
 				tryToGraph("activity_graph", function() {
@@ -28,7 +26,6 @@
 				});
 			});
 		</script>
-		{% endcompress %}
 		
 	</div>
 {% endblock %}

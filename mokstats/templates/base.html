@@ -1,19 +1,14 @@
-{% load compress %}
-
-<!DOCTYPE html>  
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 	<title>Møkkis stats | {% block title %}{% endblock %}</title>
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 	<link rel="stylesheet" href="{{ STATIC_URL }}jquery/jquery.mobile-1.4.4.min.css" />
-	{% compress css %}
 	<link rel="stylesheet" href="{{ STATIC_URL }}styles.css" />
 	<link rel="stylesheet" href="{{ STATIC_URL }}jqplot/jquery.jqplot.min.css" />
-	{% endcompress %}
 	<script src="{{ STATIC_URL }}jquery/jquery-2.1.1.min.js"></script>
 	<script src="{{ STATIC_URL }}jquery/jquery.mobile-1.4.4.min.js"></script>
-	{% compress js %}
 	<script src="{{ STATIC_URL }}jqplot/jquery.jqplot.min.js"></script>
 	<script src="{{ STATIC_URL }}jqplot/jqplot.pieRenderer.min.js"></script>
 	<script src="{{ STATIC_URL }}jqplot/jqplot.highlighter.min.js"></script>
@@ -21,7 +16,6 @@
 	<script src="{{ STATIC_URL }}jqplot/jqplot.dateAxisRenderer.min.js"></script>
 	<script src="{{ STATIC_URL }}jqplot/jqplot.enhancedLegendRenderer.min.js"></script>
 	<script src="{{ STATIC_URL }}grapher.js"></script>
-	{% endcompress %}
 </head>
 <body>
 	{% block content %}{% endblock %}

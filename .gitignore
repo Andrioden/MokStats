@@ -3,9 +3,12 @@
 #################
 
 settings.py
-wsgi.py
 /logs
 /static
+/env
+/lib
+.idea
+/mokstats/migrations
 
 #################
 ## Eclipse
@@ -72,3 +75,5 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+.idea/vcs.xml
+.idea/vcs.xml

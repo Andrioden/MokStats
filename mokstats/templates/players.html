@@ -52,9 +52,7 @@
 				</select>
 			</div>
 		</div>
-	
-		{% load compress %}
-		{% compress js inline %}
+
 		<script src="{{ STATIC_URL }}jquery.tinysort.min.js"></script>
 		<script>
 			$( "#active_filter" ).on( 'slidestop change', function( event ) {
@@ -107,6 +105,6 @@
 				$( "#active_filter" ).val("on");
 			});
 		</script>
-		{% endcompress %}
+
 	</div>
 {% endblock %}

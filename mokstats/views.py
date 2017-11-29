@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.db.models import Max, Min, Avg, Count
 from models import Place, Player, PlayerResult, Match, cur_config
@@ -8,7 +8,6 @@ from rating import RatingCalculator, RatingResult
 import calendar
 import logging
 import os
-from settings import DAILY_BACKUP_DIR, PROJECT_DIR
 from datetime import datetime
 logger = logging.getLogger("file_logger")
 from django.views.decorators.cache import cache_page
@@ -17,7 +16,7 @@ import json
 #transaction.rollback()
 
 def index(request):
-    return render_to_response('index.html', {}, context_instance=RequestContext(request))
+    return render(request, 'index.html', {})
 
 def players(request):
     places_strings = request.GET.getlist('places[]', None)
@@ -68,7 +67,8 @@ def players(request):
         places.append(p)
     data = {'players': players, 'places': places, 
             'config': {'active_treshold': cur_config().active_player_match_treshold}}
-    return render_to_response('players.html', data, context_instance=RequestContext(request))
+
+    return render(request, 'players.html', data)
 
 def player(request, pid):
     _update_ratings()
@@ -110,7 +110,7 @@ def player(request, pid):
     data = {'name': player.name, 'id': player.id, 'won': won, 'lost': lost, 
             'played': matches.count(), 'ratings': player.get_ratings(),
             'round_performances': round_perf}
-    return render_to_response('player.html', data, context_instance=RequestContext(request))
+    return render(request, 'player.html', data)
 
 def matches(request):
     places = {}
@@ -123,7 +123,7 @@ def matches(request):
                         'month': _month_name(match.date.month),
                         'place': places[match.place_id]})
     data = {'matches': matches}
-    return render_to_response('matches.html', data, context_instance=RequestContext(request))
+    return render(request, 'matches.html', data)
 
 def match(request, mid):
     _update_ratings()
@@ -131,7 +131,7 @@ def match(request, mid):
     m = Match.objects.select_related('place').get(id=mid)
     results = []
     # Get players result for match
-    for result in PlayerResult.objects.select_related('player', 'match__date').filter(match=m):
+    for result in PlayerResult.objects.select_related('player', 'match').filter(match=m):
         vals = result.vals()
         if vals['player']['id'] in [p.id for p in m.get_winners()]:
             vals['winner'] = True
@@ -152,7 +152,7 @@ def match(request, mid):
             'moffa_win': (results[0]['player']['name'] == "Bengt") and (results[0]['total'] < 0),
             'aase_los': results[len(results)-1]['player']['name'] == "Aase",
             'andre_win': results[0]['player']['name'] == u"André"}
-    return render_to_response('match.html', data, context_instance=RequestContext(request))
+    return render(request, 'match.html', data)
 
 
 def stats(request):
@@ -162,9 +162,10 @@ def stats(request):
     """
     ALL_RESULTS = PlayerResult.objects.select_related()
     PRS = PlayerResultStatser(ALL_RESULTS)
-        
-    results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
-    total_avg = round(sum([r.total for r in results_totals])/(results_totals.count() * 1.0), 1)
+
+    #results_totals = ALL_RESULTS.extra(select={'total': '(sum_spades + sum_queens + sum_solitaire_lines + sum_solitaire_cards + sum_pass - sum_grand - sum_trumph)'})
+    total_avg = round(sum([(r.sum_spades + r.sum_queens + r.sum_solitaire_lines + r.sum_solitaire_cards + r.sum_pass - r.sum_grand - r.sum_trumph) for r in ALL_RESULTS])/(ALL_RESULTS.count() * 1.0), 1)
+
     best_match_result = PRS.bot_total(1)[0]
     worst_match_result = PRS.top_total(1)[0]
     
@@ -204,19 +205,19 @@ def stats(request):
             
             'match_count': match_count
     }
-    return render_to_response('stats.html', data, context_instance=RequestContext(request))
+    return render(request, 'stats.html', data)
 
 def stats_best_results(request):
     amount = int(request.GET.get("amount", 20))
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.bot_total(amount), 'title': "%s beste kampresultater" % amount}
-    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
+    return render(request, 'stats-result-list.html', data)
    
 def stats_worst_results(request):
     amount = int(request.GET.get("amount", 20))
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.top_total(amount), 'title': "%s dårligste kampresultater" % amount}
-    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
+    return render(request, 'stats-result-list.html', data)
 
 def stats_top_rounds(request):
     """ Page that show the best results for a specific round type """
@@ -229,7 +230,7 @@ def stats_top_rounds(request):
     PRS = PlayerResultStatser(PlayerResult.objects.select_related())
     data = {'results': PRS.top(amount, round_value_fields), 
             'title': "%s toppresultater for %s " % (amount, round_type)}
-    return render_to_response('stats-result-list.html', data, context_instance=RequestContext(request))
+    return render(request, 'stats-result-list.html', data)
     
 def stats_biggest_match_sizes(request):
     match_amount = int(request.GET.get("amount", 20))
@@ -244,16 +245,16 @@ def stats_biggest_match_sizes(request):
             'month': _month_name(match['date'].month),
             #'day': match['date'].day,
         })
-    return render_to_response('stats-biggest-match-sizes.html', data, context_instance=RequestContext(request))
+    return render(request, 'stats-biggest-match-sizes.html', data)
         
 def rating(request):
     _update_ratings()
     if PlayerResult.objects.count() == 0:
         return render_to_response('rating.html', {}, context_instance=RequestContext(request))
     max_rating = PlayerResult.objects.aggregate(Max('rating'))['rating__max']
-    max_obj = PlayerResult.objects.select_related('player__name').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
+    max_obj = PlayerResult.objects.select_related('player').filter(rating = max_rating).order_by('match__date', 'match__id')[0]
     min_rating = PlayerResult.objects.aggregate(Min('rating'))['rating__min']
-    min_obj = PlayerResult.objects.select_related('player__name').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
+    min_obj = PlayerResult.objects.select_related('player').filter(rating = min_rating).order_by('match__date', 'match__id')[0]
     # Only list active players
     active_players = []
     players = Player.objects.all()
@@ -269,13 +270,14 @@ def rating(request):
             'players': [p.get_ratings() for p in active_players],
             'player_names': [p.name for p in active_players],
             }
-    return render_to_response('rating.html', data, context_instance=RequestContext(request))
+    return render(request, 'rating.html', data)
 
 def rating_description(request):
     conf = cur_config()
     data = {'K_VALUE': int(conf.rating_k), 
             'START_RATING': int(conf.rating_start)}
-    return render_to_response('rating-description.html', data, context_instance=RequestContext(request))
+    return render(request, 'rating-description.html', data)
+
 
 def activity(request):
     matches = Match.objects.select_related('place').order_by('date')
@@ -310,20 +312,20 @@ def activity(request):
         response_activities.append(place_activity)
     
     response_data_jsonified = {'places': json.dumps(response_places), 'activity': json.dumps(response_activities)}
-    return render_to_response('activity.html', response_data_jsonified, context_instance=RequestContext(request))
+    return render(request, 'activity.html', response_data_jsonified)
 
-@cache_page(1) # This set cache expire time to 1 second for this view
-def system_status(request):
-    last_backup_str = sorted(os.listdir(DAILY_BACKUP_DIR))[-1]
-    last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
-    hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
-
-    data = {
-        'hours_since_backup': hours_since_backup,
-        'project_size': _get_size(PROJECT_DIR)/1024,
-        'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
-    }
-    return render_to_response('system-status.html', data, context_instance=RequestContext(request)) 
+# @cache_page(1) # This set cache expire time to 1 second for this view
+# def system_status(request):
+#     last_backup_str = sorted(os.listdir(DAILY_BACKUP_DIR))[-1]
+#     last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
+#     hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
+#
+#     data = {
+#         'hours_since_backup': hours_since_backup,
+#         'project_size': _get_size(PROJECT_DIR)/1024,
+#         'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
+#     }
+#     return render(request, 'system-status.html', data)
 
 def _month_name(month_number):
     return calendar.month_name[month_number]

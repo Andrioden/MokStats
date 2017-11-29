@@ -6,13 +6,16 @@ from django.core.cache import cache
 import datetime
 from decimal import Decimal
 
+import logging
+logger = logging.getLogger(__name__)
+
 def cur_config():
     return Configuration.objects.latest('id')
 
 class Player(models.Model):
     name = models.CharField(max_length=20, unique=True)
     def get_ratings(self):
-        results = PlayerResult.objects.filter(player=self).select_related('match__date')
+        results = PlayerResult.objects.filter(player=self).select_related('match')
         ratings = []
         prev_rating = cur_config().rating_start
         for res in results.order_by('match__date', 'match__id'):
@@ -25,7 +28,7 @@ class Player(models.Model):
             else:
                 css_class = ""
             ratings.append([res.match.date.isoformat(), int(res.rating), 
-                            css_class, str(dif), res.match_id])
+                            css_class, str(dif), int(res.match.id)])
             prev_rating = res.rating
         return ratings
     class Meta:
@@ -151,7 +154,10 @@ class PlayerResult(models.Model):
     def total_before_trumph(self):
         return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand
     def total(self):
-        return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
+        if self.id is None: # Is one of the empty rows added by Admin TabularInline
+            return 0
+        else:
+            return self.sum_spades+self.sum_queens+self.sum_solitaire_lines+self.sum_solitaire_cards+self.sum_pass-self.sum_grand-self.sum_trumph
     def __unicode__(self):
         return "Results for %s" % self.player.name
     class Meta:

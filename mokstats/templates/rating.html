@@ -28,9 +28,7 @@
 				<p><i class="smaller">Les om hvordan ratingen blir regnet ut <a href="./description/">her</a>.</i></p>
 			</div>
 		</div>
-		
-		{% load compress %}
-		{% compress js inline %}
+
 		<script>
 			$("#rating_page").on('pageinit', function(){
 				// Set graph with
@@ -48,6 +46,6 @@
 				});
 			});
 		</script>
-		{% endcompress %}
+
 	</div>
 {% endblock %}
