@@ -1,5 +1,5 @@
 "Activating python environment"
-& .\env\scripts\activate
+& env\scripts\activate
 
 "Django - Collectstatic"
 & python manage.py collectstatic --noinput
