@@ -314,19 +314,6 @@ def activity(request):
     response_data_jsonified = {'places': json.dumps(response_places), 'activity': json.dumps(response_activities)}
     return render(request, 'activity.html', response_data_jsonified)
 
-# @cache_page(1) # This set cache expire time to 1 second for this view
-# def system_status(request):
-#     last_backup_str = sorted(os.listdir(DAILY_BACKUP_DIR))[-1]
-#     last_backup = datetime.strptime(last_backup_str, "%Y%m%d%H%M%S")
-#     hours_since_backup = int(round((datetime.now() - last_backup).total_seconds()/(60*60)))
-#
-#     data = {
-#         'hours_since_backup': hours_since_backup,
-#         'project_size': _get_size(PROJECT_DIR)/1024,
-#         'db_backup_size': _get_size(DAILY_BACKUP_DIR+"/"+last_backup_str)/1024,
-#     }
-#     return render(request, 'system-status.html', data)
-
 def _month_name(month_number):
     return calendar.month_name[month_number]
 

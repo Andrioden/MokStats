@@ -27,7 +27,6 @@ urlpatterns = [
     url(r'^rating/$', views.rating),
     url(r'^rating/description/$', views.rating_description),
     url(r'^activity/$', views.activity),
-    #url(r'^system-status/$', views.system_status),
     # AJAX CALLS
     url(r'^ajax_last_playerlist/$', ajax.last_playerlist),
     # ADMIN PAGES
