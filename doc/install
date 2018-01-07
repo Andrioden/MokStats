@@ -1,3 +1,5 @@
+This is not a complete install guide, its raw notes
+
 Following guides have been followed:
 - https://cloud.google.com/python/django/appengine
 - https://stackoverflow.com/questions/26866147/mysql-python-install-error-cannot-open-include-file-config-win-h
@@ -15,3 +17,5 @@ Backup from Postgresql to insert statements:
 
 Backup from Postgresql to csv in specific pattern:
 Copy (Select id, sum_spades, sum_queens, sum_solitaire_lines, sum_solitaire_cards, sum_pass, sum_grand, sum_trumph, rating, match_id, player_id From mokstats_playerresult) To 'C:\temp\mokstats_playerresult_querytest.csv' With CSV DELIMITER ',';
+
+Run setup.py to create an configuration object
