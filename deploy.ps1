@@ -7,4 +7,7 @@
 "Deploying to google cloud"
 & gcloud app deploy --quiet
 
-Read-Host -Prompt "Finish deployment - press enter to exit"
+"Clearing site cache"
+Invoke-WebRequest -Uri "http://mokstats.appspot.com/ajax/clear_cache/"
+
+Read-Host -Prompt "Finished deployment - press enter to exit"

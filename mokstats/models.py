@@ -180,21 +180,37 @@ class Configuration(models.Model):
 ----------------------------------------------------------------------------
 -------------------------------------------------------------------------"""
 
+
+# Has to use a method in between, cant reference cache.clear directly in connect() signals
 def clear_cache(sender, **kwargs):
     cache.clear()
+
+
 def clear_affected_results_rating(instance, **kwargs):
     newer = instance.get_newer_matches()
     newer_mids = list(newer.values_list('id', flat=True))
     affected_mids = newer_mids + [instance.id]
     PlayerResult.objects.filter(match_id__in=affected_mids).update(rating=None)
+
+
 def clear_all_rating(sender, **kwargs):
     PlayerResult.objects.all().update(rating=None)
-    
+
+
+post_save.connect(clear_cache, sender=Player)
+post_delete.connect(clear_cache, sender=Player)
+
+post_save.connect(clear_cache, sender=Place)
+post_delete.connect(clear_cache, sender=Place)
+
 post_save.connect(clear_cache, sender=Match)
 post_delete.connect(clear_cache, sender=Match)
+
 post_save.connect(clear_affected_results_rating, sender=Match)
 post_delete.connect(clear_affected_results_rating, sender=Match)
+
 post_save.connect(clear_cache, sender=Configuration)
 post_delete.connect(clear_cache, sender=Configuration)
+
 post_save.connect(clear_all_rating, sender=Configuration)
 post_delete.connect(clear_all_rating, sender=Configuration)

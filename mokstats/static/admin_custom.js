@@ -32,7 +32,7 @@ $(document).ready(function() {
 function loadLastMatchPlayers() {
     var playersTable = $('table').first();
 
-    $.get('../../../../ajax_last_playerlist/', function(data) {
+    $.get('../../../../ajax/last_playerlist/', function(data) {
         $(data).each(function(i, id) {
             var playerRowCount = playersTable.find('select').size()-1;
             if (i > playerRowCount-1)

@@ -144,7 +144,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.security.SecurityMiddleware'
+    'django.middleware.security.SecurityMiddleware',
+    # Site wide Cache (https://docs.djangoproject.com/en/1.11/topics/cache/#the-per-site-cache)
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'mokstats.urls'
@@ -162,3 +165,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'mokstats',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'site_cache',
+        'TIMEOUT': None,
+    }
+}

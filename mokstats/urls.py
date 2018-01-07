@@ -28,7 +28,8 @@ urlpatterns = [
     url(r'^rating/description/$', views.rating_description),
     url(r'^activity/$', views.activity),
     # AJAX CALLS
-    url(r'^ajax_last_playerlist/$', ajax.last_playerlist),
+    url(r'^ajax/last_playerlist/$', ajax.last_playerlist),
+    url(r'^ajax/clear_cache/$', ajax.clear_cache),
     # ADMIN PAGES
     url(r'^admin/', include(admin.site.urls)),
 ]
