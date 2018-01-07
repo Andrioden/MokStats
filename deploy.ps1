@@ -8,6 +8,6 @@
 & gcloud app deploy --quiet
 
 "Clearing site cache"
-Invoke-WebRequest -Uri "http://mokstats.appspot.com/ajax/clear_cache/"
+Invoke-WebRequest -Uri "https://mokstats.appspot.com/ajax/clear_cache/"
 
 Read-Host -Prompt "Finished deployment - press enter to exit"

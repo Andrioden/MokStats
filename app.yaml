@@ -6,8 +6,10 @@ threadsafe: yes
 handlers:
 - url: /static
   static_dir: static/
+  secure: always
 - url: .*
   script: mokstats.wsgi.application
+  secure: always
 
 # Only pure Python libraries can be vendored
 # Python libraries that use C extensions can

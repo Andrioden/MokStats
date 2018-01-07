@@ -3,9 +3,7 @@
 from mokstats.models import *
 from django.contrib import admin
 from django import forms
-
-admin.site.register(Player)
-admin.site.register(Place)
+from django.contrib.auth.models import User, Group
 
 
 class ResultInlineFormset(forms.models.BaseInlineFormSet):
@@ -87,5 +85,7 @@ class ConfigurationAdmin(admin.ModelAdmin):
         css = {'all': ('admin_custom.css',)}
 
 
+admin.site.register(Player)
+admin.site.register(Place)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
