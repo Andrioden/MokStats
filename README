@@ -1,3 +1,5 @@
 A web page that generates statistics and graphs for our traditional cabin game Møkkis, which is a 6athlon card game.
 
-The web page is developed using the python web framework Django. It also contains small amounts of JavaScript code, mostly to generate graphs with jqPlot (http://www.jqplot.com/).
+The web page is created using the python web framework Django, which generates jQuery Mobile pages. It also contains small amounts of custom JavaScript code, mostly to generate graphs with jqPlot (http://www.jqplot.com/).
+
+The project is hosted on Google App Engine Standard Environment, and has related helperscripts and config.
