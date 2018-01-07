@@ -17,15 +17,22 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
         pass_total = 0
         grand_total = 0
         trumph_total = 0
+        players_with_zero_solitaire_cards = 0
         for form in self.forms:
             try:
                 if form.cleaned_data:
+                    player_count += 1
+
+                    spades_total += form.cleaned_data['sum_spades']
+
                     sum_queens = form.cleaned_data['sum_queens']
                     if not sum_queens % 4 == 0:
-                        raise forms.ValidationError('Ulovlig dameverdi, %s er gitt, bare 4 er lovlig' % sum_queens)
-                    player_count += 1
-                    spades_total += form.cleaned_data['sum_spades']
+                        raise forms.ValidationError('Ulovlig dameverdi, %s er gitt, bare multiplikasjon av 4 er lovlig' % sum_queens)
                     queens_total += sum_queens
+
+                    if form.cleaned_data['sum_solitaire_cards'] == 0:
+                        players_with_zero_solitaire_cards += 1
+
                     pass_total += form.cleaned_data['sum_pass']
                     grand_total += form.cleaned_data['sum_grand']
                     trumph_total += form.cleaned_data['sum_trumph']
@@ -43,7 +50,12 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
 
         if not queens_total == 16:
             raise forms.ValidationError('For få/mange Damer poeng gitt, %s totalt nå, 16 krevd' % queens_total)
+
+        if players_with_zero_solitaire_cards != 1:
+            raise forms.ValidationError('For få/mange spillere med 0 kort igjen i Kabal, %s nå, 1 krevd' % players_with_zero_solitaire_cards)
+
         cards_per_player = 52 / player_count
+
         if not pass_total == cards_per_player:
             raise forms.ValidationError('For få/mange Pass poeng gitt, %s totalt nå, %s krevd' % (pass_total, cards_per_player))
         if not grand_total == cards_per_player:
