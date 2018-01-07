@@ -3,10 +3,10 @@
 from mokstats.models import *
 from django.contrib import admin
 from django import forms
-import math
 
 admin.site.register(Player)
 admin.site.register(Place)
+
 
 class ResultInlineFormset(forms.models.BaseInlineFormSet):
     def clean(self):
@@ -21,7 +21,7 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
             try:
                 if form.cleaned_data:
                     sum_queens = form.cleaned_data['sum_queens']
-                    if not sum_queens%4 == 0:
+                    if not sum_queens % 4 == 0:
                         raise forms.ValidationError('Ulovlig dameverdi, %s er gitt, bare 4 er lovlig' % sum_queens)
                     player_count += 1
                     spades_total += form.cleaned_data['sum_spades']
@@ -33,17 +33,17 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
                 pass
         if player_count < 3:
             raise forms.ValidationError('Minst 3 spillere')
-        
-        if player_count in [6,8,9]:
+
+        if player_count in [6, 8, 9]:
             spades_in_play = 12
         else:
             spades_in_play = 13
         if not spades_total == spades_in_play:
             raise forms.ValidationError('For få/mange Spa poeng gitt, %s totalt nå, %s krevd' % (spades_total, spades_in_play))
-        
+
         if not queens_total == 16:
             raise forms.ValidationError('For få/mange Damer poeng gitt, %s totalt nå, 16 krevd' % queens_total)
-        cards_per_player = 52/player_count
+        cards_per_player = 52 / player_count
         if not pass_total == cards_per_player:
             raise forms.ValidationError('For få/mange Pass poeng gitt, %s totalt nå, %s krevd' % (pass_total, cards_per_player))
         if not grand_total == cards_per_player:
@@ -54,19 +54,26 @@ class ResultInlineFormset(forms.models.BaseInlineFormSet):
 
 class ResultInline(admin.TabularInline):
     exclude = ('rating',)
-    readonly_fields = ['total',]
+    readonly_fields = ['total', ]
     model = PlayerResult
     formset = ResultInlineFormset
+    extra = 0
+    min_num = 3
+
 
 class MatchAdmin(admin.ModelAdmin):
-    inlines = [ResultInline,]
+    inlines = [ResultInline, ]
+
     class Media:
         js = ("http://code.jquery.com/jquery-1.8.2.min.js",
               "admin_custom.js",)
         css = {'all': ('admin_custom.css',)}
-admin.site.register(Match, MatchAdmin)
+
 
 class ConfigurationAdmin(admin.ModelAdmin):
     class Media:
         css = {'all': ('admin_custom.css',)}
+
+
+admin.site.register(Match, MatchAdmin)
 admin.site.register(Configuration, ConfigurationAdmin)
