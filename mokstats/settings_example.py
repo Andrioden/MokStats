@@ -1,13 +1,14 @@
+import os
+
 """ PART 0: Init
 ------------------------------------------------------------
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-""" PART 1: Settings that are unique for each deployment
+
+""" PART 1: Settings that are unique for each environment
 ------------------------------------------------------------
 """
 
@@ -17,7 +18,7 @@ ADMINS = (
 
 DEBUG = True
 
-USE_LOCAL_PROD_DB_PROXY = False
+DEV_USE_LOCAL_PROD_DB_PROXY = False
 
 CACHE_SECONDS = 60*60*24*365 # 1 year
 
@@ -44,7 +45,7 @@ else:
     #     $ cloud_sql_proxy -instances=[INSTANCE_CONNECTION_NAME]=tcp:3306
     #
     # See https://cloud.google.com/sql/docs/mysql-connect-proxy
-    if USE_LOCAL_PROD_DB_PROXY:
+    if DEV_USE_LOCAL_PROD_DB_PROXY:
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.mysql',
