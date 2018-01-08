@@ -19,6 +19,12 @@ DEBUG = True
 
 USE_LOCAL_PROD_DB_PROXY = False
 
+CACHE_SECONDS = 60*60*24*365 # 1 year
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '??'
+
+# Database settings
 if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     # Running on production App Engine, so connect to Google Cloud SQL using
     # the unix socket at /cloudsql/<your-cloudsql-connection string>
@@ -62,16 +68,13 @@ else:
         }
 
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '??'
-
-ALLOWED_HOSTS = ["*"]
-
 """ PART 2: General settings 
 ------------------------------------------------------------
 """
 
 MANAGERS = ADMINS
+
+ALLOWED_HOSTS = ["*"]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -166,6 +169,7 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
         'LOCATION': 'site_cache',
-        'TIMEOUT': None,
+        'TIMEOUT': CACHE_SECONDS,
     }
 }
+CACHE_MIDDLEWARE_SECONDS = CACHE_SECONDS
