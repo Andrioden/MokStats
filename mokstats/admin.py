@@ -75,7 +75,7 @@ class MatchAdmin(admin.ModelAdmin):
     inlines = [ResultInline, ]
 
     class Media:
-        js = ("http://code.jquery.com/jquery-1.8.2.min.js",
+        js = ("https://code.jquery.com/jquery-1.8.2.min.js",
               "admin_custom.js",)
         css = {'all': ('admin_custom.css',)}
 
